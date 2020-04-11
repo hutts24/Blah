@@ -1,0 +1,27 @@
+TODO LIST for Blah.
+
+- All externally used structures should have an ..._init() function so that statically declared structures can still be initialised properly.
+
+- All ..._new() functions should dynamically allocate and then call corresponding init() function.
+
+- All structures with init functions should also have disable functions if applicable.
+
+- All ..._destroy() functions should call disable() before deallocating memory.
+
+The above will allow Blahoo to define classes which statically encapsulate the basic structures in Blah, and initialise/disable them properly without the need for additional code.  Blahoo uses 'new' keyword with constructors and 'delete' keyword with destructors that call init() and disable() funcs appropriately.
+
+- Change the naming of structs to not use under scores.  Struct functions should be named StructName_functionName().  Underscores should be used only as separator characters.
+
+- const correctness - limited to the standard C context.
+
+- For all functions that can be redefined via function pointers, there should be a default function and the init() function should always set the pointer to refer to this default function.  This way, there is no need to check if the function pointer has been redefined, but rather just call it anyway wih no regard for what it is.
+
+- Debug Log objects should be static.  They are small and it's a waste of resources to allocate them.
+
+- Add lots of error checking for malloc failures etc.
+
+- implement Drawing capabilities (lighting etc).
+
+- Fix bug where glIsEnabled causes segmentation fault - suspected call before GL context is created is the cause
+
+? Simplify API so that new() functions require arguments for properties which must be known before construction.

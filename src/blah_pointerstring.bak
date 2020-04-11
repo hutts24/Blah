@@ -1,0 +1,218 @@
+/* blah_pointer_string.c
+	Implements routines for manipulating pointer strings
+*/
+
+#include <malloc.h>
+#include <string.h>
+#include <stdio.h>
+
+
+#include "blah_list.h"
+#include "blah_types.h"
+#include "blah_macros.h"
+
+
+/* Element Function Definitions */
+BLAH_LIST_ELEMENT *Blah_List_Element_new(void *data) { //Creates a new list element 
+	BLAH_LIST_ELEMENT *new_element = malloc(sizeof(BLAH_LIST_ELEMENT));
+	new_element->prev=new_element->next=NULL;
+	new_element->data=data;
+	
+	return new_element;
+}
+
+	
+void Blah_List_Element_call_function(BLAH_LIST_ELEMENT *element, void *function) { 
+	//call function for with data pointer for every element
+	BLAH_CALL(function,element->data);
+}
+
+void Blah_List_Element_call_with_arg(BLAH_LIST_ELEMENT *element, void *function, void *arg) { 
+	//call function for with data pointer for every element
+	BLAH_CALL_2(function,element->data,arg);
+}
+
+blah_bool Blah_List_Element_call_arg_return_bool(BLAH_LIST_ELEMENT *element, void *function, void *arg) { 
+	//call function for with data pointer for every element
+	return BLAH_CALL_2_RETURN_BOOL(function,element->data,arg);
+}
+
+/* List Function Definitions */
+
+void Blah_List_init(BLAH_LIST *list, char *name) {
+	list->first = NULL;
+	list->last = NULL;
+	list->length=0;
+	strncpy(list->name, name, BLAH_LIST_NAME_LENGTH);  //set name property
+	list->name[BLAH_LIST_NAME_LENGTH] = '\0';
+	list->destroy_element_function = NULL;
+}
+
+BLAH_LIST *Blah_List_new(char *name) { //Creates a new empty list given name
+	BLAH_LIST *new_list = malloc(sizeof(BLAH_LIST));
+	Blah_List_init(new_list, name);
+	new_list->destroy_element_function = NULL;
+	return new_list;
+}
+
+BLAH_LIST_ELEMENT *Blah_List_find_element(BLAH_LIST *list, void *data) { //finds and returns a pointer to the element structure holding data pointer
+	BLAH_LIST_ELEMENT *temp_element = list->first;
+	blah_bool found = BLAH_FALSE;
+	
+	while (temp_element!=NULL && !found) {
+		if (temp_element->data==data) { //check if data pointers match
+			found = BLAH_TRUE;
+		}
+		else
+			temp_element=temp_element->next;
+	}
+	return temp_element;
+}
+
+blah_bool Blah_List_remove_element(BLAH_LIST *list, void *data) { 
+	//remove given list element from liste.  Does not destroy data
+	BLAH_LIST_ELEMENT *temp_element = Blah_List_find_element(list, data);
+	
+	if (temp_element) { //if a matching element was found
+		//Deal with previous link
+		if (temp_element->prev==NULL)  //if current element is first in the list
+			list->first=temp_element->next;		//second element now becomes first
+		else
+			temp_element->prev->next=temp_element->next; //else link prev with next
+		//Deal with next link
+		if (temp_element->next!=NULL)
+			temp_element->next->prev=temp_element->prev; //next element gets prev link from current element
+		else //if removing last element of list, update the last element pointer
+			list->last=temp_element->prev;
+		list->length--;
+		return BLAH_TRUE;	//removed matching element
+	} else
+		return BLAH_FALSE;	//no match was found
+}
+
+/* Function Blah_List_pop_element
+	Removes first element from list and returns data pointer */
+void *Blah_List_pop_element(BLAH_LIST *list) {
+	BLAH_LIST_ELEMENT *temp_element = list->first;
+	void *temp_data = NULL;	//assume no data
+	
+	if (temp_element) { //if first element points to a valid element structure
+		temp_data = temp_element->data;
+		list->first = temp_element->next; //make next element first element
+		if (list->first) //If new first element pointer is valid
+			list->first->prev = NULL; //Set prev pointer of new first element to NULL
+		free(temp_element);				//Once list is reconstructed, free element structure
+		list->length--;
+	}
+	
+	return temp_data; //return data pointer, NULL or valid
+}
+
+void Blah_List_remove_all(BLAH_LIST *list) {
+	//removes all elements but retains empty list structure.  Does not free data
+	BLAH_LIST_ELEMENT *temp_element = list->first, *free_element;
+
+	while (temp_element!=NULL) {
+		free_element = temp_element;  //remember current pointer
+		temp_element = temp_element->next;  //prepare for next element
+		free(free_element);	//free current element
+	}
+	list->first=list->last=NULL;
+	list->length=0;
+}	
+
+void Blah_List_destroy_all(BLAH_LIST *list) { 
+	//clears all memory allocated for elements and data but does not destroy basic list header
+	BLAH_LIST_ELEMENT *temp_element = list->first, *dest_element;
+
+	while (temp_element!=NULL) {
+		dest_element = temp_element;  //remember current pointer
+		temp_element = temp_element->next;  //prepare for next element
+		
+		if (list->destroy_element_function)
+			BLAH_CALL(list->destroy_element_function,dest_element->data);
+		else
+			free(dest_element->data);
+				
+		free(dest_element);	//free current element
+	}
+	list->first=list->last=NULL;  //clear list to empty
+}
+
+
+void Blah_List_destroy(BLAH_LIST *list) { //clears all memory allocated for elements, list header and contained data
+	Blah_List_destroy_all(list);	//remove all elements and data
+	free(list);	//clear the list itself
+}
+
+void Blah_List_append_element(BLAH_LIST *list, void *data) { //adds a new element with given data pointer
+	BLAH_LIST_ELEMENT *new_element = Blah_List_Element_new(data);
+	//Deal with previous link
+	if (list->first==NULL) //if list is empty
+		list->first=list->last=new_element;
+	else {//last element is guaranteed to be existent
+		list->last->next=new_element;  //link last to new
+		new_element->prev=list->last;	//link new to last
+		list->last=new_element;			//make new last
+	}
+	list->length++;
+}
+
+void Blah_List_insert_element(BLAH_LIST *list, void *data) { //inserts a new element with given data pointer
+	BLAH_LIST_ELEMENT *new_element = Blah_List_Element_new(data);
+	//Deal with previous link
+	if (list->first==NULL) //if list is empty
+		list->first=list->last=new_element;
+	else {//first element is guaranteed to be existent
+		new_element->next=list->first;  //link first element to new element
+		list->first->prev=new_element;  //link new to original first
+		list->first=new_element;		//make first element pointer of list point to new element
+	}
+	list->length++;
+}
+
+
+void Blah_List_call_function(BLAH_LIST *list, void *function) { 
+	//call function for with data pointer for every element
+	BLAH_LIST_ELEMENT *current_element=list->first, *next_element;
+	
+	while (current_element) {
+		next_element = current_element->next; 
+		//grab the next element in case function destroys current element
+		Blah_List_Element_call_function(current_element, function);
+		current_element = next_element;
+	}
+}
+
+void Blah_List_call_with_arg(BLAH_LIST *list, void *function, void *arg) { 
+	//call function for with data pointer and single argument for every element
+	BLAH_LIST_ELEMENT *current_element=list->first, *next_element;
+	
+	while (current_element) {
+		next_element = current_element->next; 
+		//grab the next element in case function destroys current element
+		Blah_List_Element_call_with_arg(current_element, function, arg);
+		current_element = next_element;
+	}
+}
+
+void *Blah_List_search(BLAH_LIST *list, blah_function *search_function, void *arg) {
+	//Calls search_function for each element of the list, using the element's data
+	//as the first argument, and 'arg' as second argument.  Returns the data pointer
+	//of the first element for which search_function returns BLAH_TRUE, or NULL if no
+	//match
+	
+	//call function for with data pointer and single argument for every element
+	BLAH_LIST_ELEMENT *current_element=list->first, *next_element, *match = NULL;
+		
+	while (current_element && !match) {
+		next_element = current_element->next; 
+		//grab the next element in case function destroys current element
+		if (Blah_List_Element_call_arg_return_bool(current_element, search_function, arg))
+			match = current_element->data;
+		else
+			current_element = next_element;
+	}
+	
+	return match;
+}
