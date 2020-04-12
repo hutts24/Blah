@@ -4,9 +4,6 @@ All: blah_shared
 all :All
 cleanAll: clean
 
-clean:
-	rm *.o
-
 LIBFLAGS := -lGLU -lSDL
 
 ifdef BLAH_USE_GLUT
@@ -14,12 +11,16 @@ ifdef BLAH_USE_GLUT
 	BLAHDEFS := -DBLAH_USE_GLUT
 endif
 
-BLAHFILES := $(shell echo *.c)
+BLAHFILES := $(wildcard *.c)
 
-BLAHOBJS := $(subst .c,.o, $(BLAHFILES))
+BLAHOBJS := $(patsubst %.c,%.o, $(BLAHFILES))
+
+#TODO - define macro to delete files for Windows or Unix
+clean:
+	del $(BLAHOBJS)
 
 %.o : %.c %.h
-	$(CC) -c -fPIC -Wall -Werror -O3 -Winline $< -o $@
+	gcc -c -std=c17 -fPIC -Wall -Werror -O3 -Winline $< -o $@
 
 blah_shared: $(BLAHOBJS)
 	gcc -Wall -O3 -Werror $(BLAHOBJS) $(LIBFLAGS) $(BLAHDEFS) -shared -o libblah.so
