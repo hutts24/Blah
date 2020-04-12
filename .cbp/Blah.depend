@@ -1,0 +1,604 @@
+# depslib dependency file v1.0
+1586594657 source:d:\source\jamie\blah\src\blah_colour.c
+	"blah_colour.h"
+
+1518862032 d:\source\jamie\blah\src\blah_colour.h
+	"blah_types.h"
+
+1586648466 d:\source\jamie\blah\src\blah_types.h
+	<stdbool.h>
+
+1586594657 source:d:\source\jamie\blah\src\blah_debug.c
+	<stdio.h>
+	<malloc.h>
+	<string.h>
+	"blah_debug.h"
+	"blah_list.h"
+	"blah_util.h"
+
+1518862026 d:\source\jamie\blah\src\blah_debug.h
+	<stdio.h>
+	"blah_types.h"
+
+1518862030 d:\source\jamie\blah\src\blah_list.h
+	"blah_types.h"
+
+1586653743 d:\source\jamie\blah\src\blah_util.h
+	"blah_types.h"
+
+1586594657 source:d:\source\jamie\blah\src\blah_draw.c
+	<stdio.h>
+	"blah_scene.h"
+	"blah_font.h"
+	"blah_draw.h"
+	"blah_point.h"
+	"blah_draw_gl.h"
+	"blah_texture.h"
+	"blah_material.h"
+	"blah_object.h"
+	"blah_entity.h"
+	"blah_region.h"
+	"blah_stack.h"
+	"blah_debug.h"
+
+1518862026 d:\source\jamie\blah\src\blah_scene.h
+	"blah_types.h"
+	"blah_primitive.h"
+	"blah_list.h"
+	"blah_scene_object.h"
+	"blah_object.h"
+	"blah_entity.h"
+	"blah_overlay.h"
+	"blah_light.h"
+
+1518862030 d:\source\jamie\blah\src\blah_primitive.h
+	"blah_list.h"
+	"blah_colour.h"
+	"blah_vertex.h"
+	"blah_point.h"
+	"blah_texture.h"
+	"blah_material.h"
+
+1518862026 d:\source\jamie\blah\src\blah_vertex.h
+	"blah_point.h"
+	"blah_vector.h"
+
+1518862026 d:\source\jamie\blah\src\blah_point.h
+	"blah_quaternion.h"
+
+1518862032 d:\source\jamie\blah\src\blah_quaternion.h
+	"blah_vector.h"
+
+1518862030 d:\source\jamie\blah\src\blah_vector.h
+
+1586652852 d:\source\jamie\blah\src\blah_texture.h
+	"blah_image.h"
+	"blah_point.h"
+
+1518862028 d:\source\jamie\blah\src\blah_image.h
+	<stdio.h>
+	"blah_types.h"
+
+1518862026 d:\source\jamie\blah\src\blah_material.h
+	"blah_types.h"
+	"blah_colour.h"
+
+1518862028 d:\source\jamie\blah\src\blah_scene_object.h
+	"blah_matrix.h"
+	"blah_object.h"
+	"blah_types.h"
+
+1518862026 d:\source\jamie\blah\src\blah_matrix.h
+	"blah_vector.h"
+	"blah_point.h"
+	"blah_quaternion.h"
+
+1518862028 d:\source\jamie\blah\src\blah_object.h
+	"blah_colour.h"
+	"blah_types.h"
+	"blah_primitive.h"
+	"blah_list.h"
+	"blah_model.h"
+
+1518862028 d:\source\jamie\blah\src\blah_model.h
+	<stdio.h>
+	"blah_image.h"
+	"blah_point.h"
+	"blah_primitive.h"
+	"blah_colour.h"
+	"blah_vector.h"
+
+1518862028 d:\source\jamie\blah\src\blah_entity.h
+	<malloc.h>
+	"blah_matrix.h"
+	"blah_vector.h"
+	"blah_point.h"
+	"blah_list.h"
+	"blah_quaternion.h"
+	"blah_entity_object.h"
+	"blah_types.h"
+
+1518862028 d:\source\jamie\blah\src\blah_entity_object.h
+	<malloc.h>
+	"blah_matrix.h"
+	"blah_object.h"
+	"blah_types.h"
+
+1518862026 d:\source\jamie\blah\src\blah_overlay.h
+	"blah_colour.h"
+	"blah_image.h"
+	"blah_types.h"
+	"blah_list.h"
+	"blah_types.h"
+	"blah_font.h"
+	"blah_overlay_text.h"
+
+1518862032 d:\source\jamie\blah\src\blah_font.h
+	"blah_colour.h"
+	"blah_image.h"
+	"blah_types.h"
+	"blah_tree.h"
+	"blah_matrix.h"
+
+1586652892 d:\source\jamie\blah\src\blah_tree.h
+	"blah_types.h"
+
+1586652277 d:\source\jamie\blah\src\blah_overlay_text.h
+	"blah_font.h"
+	"blah_point.h"
+	"blah_types.h"
+
+1518862028 d:\source\jamie\blah\src\blah_light.h
+	"blah_point.h"
+	"blah_vector.h"
+	"blah_colour.h"
+
+1518862028 d:\source\jamie\blah\src\blah_draw.h
+	"blah_scene.h"
+	"blah_matrix.h"
+	"blah_colour.h"
+	"blah_list.h"
+	"blah_texture.h"
+	"blah_material.h"
+	"blah_types.h"
+	"blah_region.h"
+
+1518862030 d:\source\jamie\blah\src\blah_region.h
+	"blah_types.h"
+
+1518862026 d:\source\jamie\blah\src\blah_draw_gl.h
+	"blah_point.h"
+	"blah_colour.h"
+	"blah_matrix.h"
+	"blah_list.h"
+	"blah_texture.h"
+	"blah_material.h"
+	"blah_video.h"
+
+1518862030 d:\source\jamie\blah\src\blah_video.h
+	"blah_types.h"
+	"blah_list.h"
+
+1518862028 d:\source\jamie\blah\src\blah_stack.h
+	"blah_types.h"
+
+1586648335 source:d:\source\jamie\blah\src\blah_draw_gl.c
+	<GL/gl.h>
+	<GL/glext.h>
+	<GL/glu.h>
+	<stdio.h>
+	<math.h>
+	<GL/glut.h>
+	"blah_draw.h"
+	"blah_draw_gl.h"
+	"blah_texture.h"
+	"blah_video.h"
+	"blah_debug.h"
+
+1586594657 source:d:\source\jamie\blah\src\blah_engine.c
+	<stdio.h>
+	"blah_engine.h"
+	"blah_video.h"
+	"blah_input.h"
+	"blah_draw.h"
+	"blah_entity.h"
+	"blah_debug.h"
+
+1518862028 d:\source\jamie\blah\src\blah_engine.h
+	"blah_types.h"
+
+1518862028 d:\source\jamie\blah\src\blah_input.h
+	"blah_types.h"
+
+1586594657 source:d:\source\jamie\blah\src\blah_entity.c
+	<stdlib.h>
+	<stdio.h>
+	<GL/glut.h>
+	<string.h>
+	"blah_entity.h"
+	"blah_macros.h"
+	"blah_matrix.h"
+	"blah_list.h"
+	"blah_draw.h"
+	"blah_util.h"
+
+1518862026 d:\source\jamie\blah\src\blah_macros.h
+	"blah_types.h"
+
+1586594658 source:d:\source\jamie\blah\src\blah_entity_object.c
+	<string.h>
+	"blah_entity.h"
+	"blah_entity_object.h"
+	"blah_types.h"
+	"blah_draw.h"
+	"blah_macros.h"
+
+1586594658 source:d:\source\jamie\blah\src\blah_file.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"blah_file.h"
+	"blah_types.h"
+	"blah_util.h"
+
+1518862028 d:\source\jamie\blah\src\blah_file.h
+	"blah_types.h"
+	<stdio.h>
+
+1586594658 source:d:\source\jamie\blah\src\blah_font.c
+	<malloc.h>
+	<string.h>
+	<stdio.h>
+	"blah_image.h"
+	"blah_draw.h"
+	"blah_font_raster.h"
+	"blah_font_texture.h"
+	"blah_font.h"
+	"blah_types.h"
+	"blah_debug.h"
+	"blah_macros.h"
+	"blah_tree.h"
+	"blah_util.h"
+
+1518862028 d:\source\jamie\blah\src\blah_font_raster.h
+	"blah_font.h"
+	"blah_colour.h"
+	"blah_image.h"
+	"blah_types.h"
+
+1518862032 d:\source\jamie\blah\src\blah_font_texture.h
+	"blah_types.h"
+	"blah_font.h"
+	"blah_matrix.h"
+	"blah_texture.h"
+
+1586594658 source:d:\source\jamie\blah\src\blah_font_raster.c
+	<malloc.h>
+	<string.h>
+	<stdio.h>
+	"blah_font_raster.h"
+	"blah_debug.h"
+	"blah_macros.h"
+	"blah_tree.h"
+	"blah_draw.h"
+
+1586594658 source:d:\source\jamie\blah\src\blah_font_texture.c
+	<malloc.h>
+	<string.h>
+	"blah_font_texture.h"
+	"blah_debug.h"
+	"blah_material.h"
+	"blah_draw.h"
+
+1586649910 source:d:\source\jamie\blah\src\blah_iff.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdbool.h>
+	"blah_file.h"
+	"blah_iff.h"
+	"blah_types.h"
+	"blah_util.h"
+
+1586648482 d:\source\jamie\blah\src\blah_iff.h
+	"blah_types.h"
+	<stdio.h>
+
+1586594658 source:d:\source\jamie\blah\src\blah_image.c
+	<malloc.h>
+	<string.h>
+	"blah_image.h"
+	"blah_image_targa.h"
+	"blah_tree.h"
+	"blah_util.h"
+	"blah_file.h"
+	"blah_types.h"
+
+1518862028 d:\source\jamie\blah\src\blah_image_targa.h
+	<stdio.h>
+	"blah_image.h"
+
+1586594658 source:d:\source\jamie\blah\src\blah_input.c
+	<stdio.h>
+	"blah_input.h"
+	"blah_input_keyboard.h"
+	"blah_debug.h"
+
+1518862026 d:\source\jamie\blah\src\blah_input_keyboard.h
+	"blah_types.h"
+
+1586594658 source:d:\source\jamie\blah\src\blah_input_keyboard.c
+	<stdio.h>
+	"blah_input_keyboard.h"
+	"blah_input_keyboard_sdl.h"
+	"blah_input_keyboard_glut.h"
+	"blah_macros.h"
+
+1586654180 d:\source\jamie\blah\src\blah_input_keyboard_sdl.h
+	<SDL/SDL.h>
+	"blah_types.h"
+
+1518862032 d:\source\jamie\blah\src\blah_input_keyboard_glut.h
+	<GL/glut.h>
+	"blah_types.h"
+
+1586594658 source:d:\source\jamie\blah\src\blah_input_keyboard_glut.c
+	<stdio.h>
+	"blah_input_keyboard_glut.h"
+	"blah_input_keyboard.h"
+	"blah_video_glut.h"
+
+1518862028 d:\source\jamie\blah\src\blah_video_glut.h
+	"blah_types.h"
+
+1586594658 source:d:\source\jamie\blah\src\blah_light.c
+	"blah_light.h"
+	"malloc.h"
+
+1586594658 source:d:\source\jamie\blah\src\blah_list.c
+	<malloc.h>
+	<string.h>
+	<stdio.h>
+	"blah_list.h"
+	"blah_types.h"
+	"blah_macros.h"
+	"blah_util.h"
+
+1586594658 source:d:\source\jamie\blah\src\blah_material.c
+	<malloc.h>
+	"blah_types.h"
+	"blah_material.h"
+	"blah_model.h"
+
+1586594658 source:d:\source\jamie\blah\src\blah_matrix.c
+	<math.h>
+	<malloc.h>
+	<string.h>
+	<stdio.h>
+	"blah_matrix.h"
+	"blah_quaternion.h"
+
+1586594659 source:d:\source\jamie\blah\src\blah_model.c
+	<stdio.h>
+	<malloc.h>
+	<string.h>
+	"blah_model.h"
+	"blah_model_lightwave.h"
+	"blah_point.h"
+	"blah_tree.h"
+	"blah_util.h"
+	"blah_file.h"
+
+1518862028 d:\source\jamie\blah\src\blah_model_lightwave.h
+	<stdio.h>
+	"blah_model.h"
+	"blah_object.h"
+	"blah_image.h"
+	"blah_tree.h"
+	"blah_types.h"
+	"blah_texture.h"
+
+1586615128 source:d:\source\jamie\blah\src\blah_model_lightwave.c
+	<malloc.h>
+	<string.h>
+	"blah_model_lightwave.h"
+	"blah_debug.h"
+	"blah_util.h"
+	"blah_file.h"
+	"blah_types.h"
+	"blah_point.h"
+	"blah_object.h"
+	"blah_list.h"
+	"blah_iff.h"
+
+1586594659 source:d:\source\jamie\blah\src\blah_object.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<math.h>
+	"blah_object.h"
+	"blah_macros.h"
+	"blah_entity.h"
+	"blah_primitive.h"
+	"blah_draw.h"
+	"blah_model.h"
+
+1586594659 source:d:\source\jamie\blah\src\blah_overlay.c
+	<malloc.h>
+	<string.h>
+	"blah_overlay_text.h"
+	"blah_draw.h"
+	"blah_overlay.h"
+	"blah_colour.h"
+	"blah_image.h"
+	"blah_types.h"
+	"blah_util.h"
+
+1586652181 source:d:\source\jamie\blah\src\blah_image_targa.c
+	<malloc.h>
+	<string.h>
+	"blah_image_targa.h"
+
+1586594659 source:d:\source\jamie\blah\src\blah_point.c
+	<malloc.h>
+	<math.h>
+	<string.h>
+	"blah_point.h"
+	"blah_vector.h"
+	"blah_matrix.h"
+
+1586594659 source:d:\source\jamie\blah\src\blah_primitive.c
+	<malloc.h>
+	<stdio.h>
+	<string.h>
+	"blah_primitive.h"
+	"blah_draw.h"
+
+1586648130 source:d:\source\jamie\blah\src\blah_quaternion.c
+	<malloc.h>
+	<math.h>
+	<stddef.h>
+	"blah_quaternion.h"
+
+1586594659 source:d:\source\jamie\blah\src\blah_region.c
+	"blah_region.h"
+
+1586594659 source:d:\source\jamie\blah\src\blah_scene.c
+	"blah_types.h"
+	"blah_primitive.h"
+	"blah_list.h"
+	"blah_scene.h"
+	"blah_scene_object.h"
+	"blah_object.h"
+	"blah_entity.h"
+	"blah_draw.h"
+
+1586594659 source:d:\source\jamie\blah\src\blah_scene_object.c
+	<malloc.h>
+	<string.h>
+	"blah_draw.h"
+	"blah_scene_object.h"
+	"blah_matrix.h"
+	"blah_types.h"
+	"blah_macros.h"
+	"blah_util.h"
+
+1586594659 source:d:\source\jamie\blah\src\blah_stack.c
+	<malloc.h>
+	<string.h>
+	<stdio.h>
+	"blah_stack.h"
+	"blah_types.h"
+	"blah_util.h"
+
+1586594659 source:d:\source\jamie\blah\src\blah_text_2d.c
+	"blah_colour.h"
+	"blah_image.h"
+	"blah_types.h"
+	"blah_text_2d.h"
+	"blah_util.h"
+
+1518862032 d:\source\jamie\blah\src\blah_text_2d.h
+	"blah_types.h"
+	"blah_font.h"
+	"malloc.h"
+	"string.h"
+
+1586594659 source:d:\source\jamie\blah\src\blah_texture_gl.c
+	<GL/gl.h>
+	<GL/glext.h>
+	"blah_texture.h"
+
+1586653940 source:d:\source\jamie\blah\src\blah_tree.c
+	<malloc.h>
+	<string.h>
+	<stdio.h>
+	"blah_tree.h"
+	"blah_types.h"
+	"blah_macros.h"
+	"blah_util.h"
+
+1586653831 source:d:\source\jamie\blah\src\blah_util.c
+	<math.h>
+	<stdlib.h>
+	<string.h>
+	"blah_util.h"
+	"blah_types.h"
+
+1586594660 source:d:\source\jamie\blah\src\blah_vector.c
+	<malloc.h>
+	<math.h>
+	<string.h>
+	<stdio.h>
+	"blah_vector.h"
+	"blah_matrix.h"
+
+1586594660 source:d:\source\jamie\blah\src\blah_vertex.c
+	"blah_vertex.h"
+	"malloc.h"
+
+1586594660 source:d:\source\jamie\blah\src\blah_video_glut.c
+	<GL/glut.h>
+	<stdlib.h>
+	<stdio.h>
+	"blah_video.h"
+	"blah_engine.h"
+
+1586652798 source:d:\source\jamie\blah\src\blah_overlay_text.c
+	<malloc.h>
+	<string.h>
+	"blah_text_2d.h"
+	"blah_overlay_text.h"
+	"blah_types.h"
+	"blah_macros.h"
+	"blah_util.h"
+
+1586653387 source:d:\source\jamie\blah\src\blah_video.c
+	<stdio.h>
+	<string.h>
+	<SDL/SDL.h>
+	"blah_video_glut.h"
+	"blah_video.h"
+	"blah_draw.h"
+	"blah_video_sdl.h"
+	"blah_types.h"
+	"blah_macros.h"
+	"blah_entity.h"
+	"blah_list.h"
+	"blah_debug.h"
+	"blah_util.h"
+
+1518862028 d:\source\jamie\blah\src\blah_video_sdl.h
+	"blah_video.h"
+	"blah_types.h"
+
+1586653398 source:d:\source\jamie\blah\src\blah_video_sdl.c
+	<SDL/SDL.h>
+	<GL/gl.h>
+	<stdlib.h>
+	<stdio.h>
+	"blah_video.h"
+	"blah_draw.h"
+	"blah_video_sdl.h"
+	"blah_draw_gl.h"
+	"blah_debug.h"
+	"blah_types.h"
+
+1586653610 source:d:\source\jamie\blah\src\blah_texture.c
+	<malloc.h>
+	<string.h>
+	"blah_texture.h"
+	"blah_texture_gl.h"
+	"blah_tree.h"
+	"blah_util.h"
+	"blah_types.h"
+
+1518862028 d:\source\jamie\blah\src\blah_texture_gl.h
+	"blah_image.h"
+
+1586653976 source:d:\source\jamie\blah\src\blah_input_keyboard_sdl.c
+	<stdio.h>
+	"blah_input_keyboard_sdl.h"
+	"blah_input_keyboard.h"
+	"blah_video_sdl.h"
+
