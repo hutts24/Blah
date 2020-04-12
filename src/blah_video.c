@@ -51,7 +51,7 @@ Blah_Video_Settings blah_video_settings = {
 	false	//initialised flag
 };
 
-Blah_Debug_Log *blah_video_log = NULL;
+static Blah_Debug_Log blah_video_log = { .filePointer = NULL };
 
 /* Private static functions */
 
@@ -94,23 +94,22 @@ bool blah_video_init() {
 	//Initialises the video component and sets current parameters to basic mode
 	//Returns TRUE upon success, else false for error
 
-	blah_video_log = Blah_Debug_Log_new("blah_video");
+	Blah_Debug_Log_init(&blah_video_log, "blah_video");
 
-	if (!blah_video_currentAPI) //If there is no API selected, raise error
-		Blah_Debug_Log_message(blah_video_log,"blah_video_init() failed.  No API is selected.");
-	else if (blah_video_settings.initialised) //if video already initialised
-		Blah_Debug_Log_message(blah_video_log,"blah_video_init() failed.  Video is already initialised.");
-	else { //Call current API init
+	if (!blah_video_currentAPI) {//If there is no API selected, raise error
+		Blah_Debug_Log_message(&blah_video_log, "blah_video_init() failed.  No API is selected.");
+	} else if (blah_video_settings.initialised) { //if video already initialised
+		Blah_Debug_Log_message(&blah_video_log, "blah_video_init() failed.  Video is already initialised.");
+	} else { //Call current API init
 		if (blah_video_currentAPI->initFunction(&blah_video_settings) ) {
 			//Sort video modes list
 			Blah_List_sort(&blah_video_modes, (blah_list_sort_func)blah_video_modeCompare);
 			blah_video_settings.initialised = true;
-			Blah_Debug_Log_message(blah_video_log,"blah_video_init() successful.");
+			Blah_Debug_Log_message(&blah_video_log, "blah_video_init() successful.");
 			return true;
 		}
 	}
-	Blah_Debug_Log_destroy(blah_video_log);
-	blah_video_log = NULL; //Destroy video log and set pointer to NULL
+	Blah_Debug_Log_disable(&blah_video_log);
 	return false;
 }
 
@@ -129,14 +128,14 @@ void blah_video_main() { //Handles video buffer swapping and drawing
 }
 
 void blah_video_exit() { //Exit video engine component
-	if (!blah_video_settings.initialised) //if video not yet initialised
+	if (!blah_video_settings.initialised) { //if video not yet initialised
 		fprintf(stderr,"blah_video_exit() failed.  Video is not initialised.\n");
-	else {
-		Blah_Debug_Log_message(blah_video_log,"blah_video_exit() called.");
+	} else {
+		Blah_Debug_Log_message(&blah_video_log, "blah_video_exit() called.");
 		blah_video_currentAPI->exitFunction(); //Call current API exit()
 		blah_video_settings.initialised = false;
 		Blah_List_destroyElements(&blah_video_modes);
-		Blah_Debug_Log_destroy(blah_video_log);
+		Blah_Debug_Log_disable(&blah_video_log);
 	}
 }
 
@@ -188,13 +187,14 @@ void blah_video_setSizeFullScreen(int width, int height) {;}
 
 bool blah_video_setMode(Blah_Video_Mode *mode) {
 	//Sets the display device to the given mode.  Returns TRUE upon success, else false
-	Blah_Debug_Log_message(blah_video_log,"Calling blah_video_sdl_set_mode()");
+	Blah_Debug_Log_message(&blah_video_log, "Calling blah_video_sdl_set_mode()");
 	if (blah_video_sdl_setMode(mode)) {
 		blah_video_currentMode = mode;
 		blah_draw_setViewport(0,0,mode->width-1, mode->height-1);
 		return true;
-	} else
+	} else {
 		return false;
+	}
 }
 
 Blah_Video_Mode *blah_video_getCurrentMode() {

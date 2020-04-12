@@ -36,7 +36,7 @@ bool Blah_Debug_Log_close(Blah_Debug_Log *log);
 	//Returns true apon success
 
 void Blah_Debug_Log_destroy(Blah_Debug_Log *log);
-	//Dregisters log from log list, frees memory and deallocates file resources
+	// Unregisters log from log list, frees memory and deallocates file resources
 
 void blah_debug_log_destroyAll();
 	//Cleanup routine to do garbage collection for logs on engine exit
@@ -44,7 +44,7 @@ void blah_debug_log_destroyAll();
 void Blah_Debug_Log_disable(Blah_Debug_Log *log);
 	//Disables Log.  Reverses initialisation.  Closes log.
 
-void Blah_Debug_Log_init(Blah_Debug_Log *log, char *log_name);
+void Blah_Debug_Log_init(Blah_Debug_Log *log, const char *log_name);
 	//Initialises a given log data structure as a new log with new open file pointer
 	//to a log file on the file system with the same name as the given log name.
 

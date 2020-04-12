@@ -40,7 +40,7 @@ bool Blah_Font_Texture_init(Blah_Font_Texture *font, char *fontName, Blah_Image 
 	//Returns TRUE on success, or FALSE on error.
 	unsigned int charsHigh, charsWide, charsNum, mapIndex;
 	unsigned int charRow, charCol, charCount;
-	Blah_Debug_Log fontLog;
+	Blah_Debug_Log fontLog = { .filePointer = NULL };
 	char tempString[100];
 	float coordLeft, coordRight, coordTop, coordBottom;
 	Blah_Point coords[4];

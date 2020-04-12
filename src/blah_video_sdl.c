@@ -19,9 +19,8 @@ extern Blah_Video_Mode *blah_video_currentMode;
 
 /* Globals */
 
-bool blah_video_sdl_initialised = false;  //state flag
-
-Blah_Debug_Log *blah_video_sdl_log = NULL;
+static bool blah_video_sdl_initialised = false;  //state flag
+static Blah_Debug_Log blah_video_sdl_log = { .filePointer = NULL };
 
 /* Function Declarations */
 
@@ -33,16 +32,16 @@ bool blah_video_sdl_init(Blah_Video_Settings *settings) {  //Initialise SDL vide
 	Blah_Video_Mode *tempMode;
 	SDL_VideoInfo *videoInfo; SDL_Rect **sdlModes, *sdlMode;;
 
-	blah_video_sdl_log = Blah_Debug_Log_new("blah_video_sdl"); //Set up SDL video log
+	Blah_Debug_Log_init(&blah_video_sdl_log, "blah_video_sdl"); //Set up SDL video log
 
 	if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) {	//Initialise SDL with no extra subsystems
-		sprintf(tempString,"Failed to initialise SDL: %s\n",SDL_GetError());
-		Blah_Debug_Log_message(blah_video_sdl_log, tempString);
-		Blah_Debug_Log_destroy(blah_video_sdl_log);
+		sprintf(tempString, "Failed to initialise SDL: %s\n", SDL_GetError());
+		Blah_Debug_Log_message(&blah_video_sdl_log, tempString);
+		Blah_Debug_Log_disable(&blah_video_sdl_log);
 		return false;
 	} else {
 		/* Get video info */
-		Blah_Debug_Log_message(blah_video_sdl_log,"Getting a list of available video modes through SDL");
+		Blah_Debug_Log_message(&blah_video_sdl_log,"Getting a list of available video modes through SDL");
 		videoInfo = (SDL_VideoInfo*)SDL_GetVideoInfo(); //Get pointer to SDL video info
 		bpp = videoInfo->vfmt->BitsPerPixel; //get bits per pixel in best colour mode
 		sdlModes = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_OPENGL);
@@ -56,7 +55,7 @@ bool blah_video_sdl_init(Blah_Video_Settings *settings) {  //Initialise SDL vide
 			sdlMode = sdlModes[modeIndex];
 			if (sdlMode->w != curResX || sdlMode->h != curResY) {
 				sprintf(modeName, "%dx%dx%d",curResX, curResY, bpp);
-				Blah_Debug_Log_message(blah_video_sdl_log, modeName);
+				Blah_Debug_Log_message(&blah_video_sdl_log, modeName);
 				tempMode = Blah_Video_Mode_new(modeName, true, true, curResX, curResY, bpp);
 				//Construct new mode structure and add to tree
 				Blah_List_appendElement(&blah_video_modes, tempMode);
@@ -66,8 +65,8 @@ bool blah_video_sdl_init(Blah_Video_Settings *settings) {  //Initialise SDL vide
 			curResY = sdlMode->h;
 
 		}
-		sprintf(modeName, "%dx%dx%d",curResX, curResY, bpp);
-		Blah_Debug_Log_message(blah_video_sdl_log, modeName);
+		sprintf(modeName, "%dx%dx%d", curResX, curResY, bpp);
+		Blah_Debug_Log_message(&blah_video_sdl_log, modeName);
 		tempMode = Blah_Video_Mode_new(modeName, true, true, curResX, curResY, bpp);
 		//Construct new mode structure and add to tree
 		Blah_List_appendElement(&blah_video_modes, tempMode);
@@ -78,16 +77,17 @@ bool blah_video_sdl_init(Blah_Video_Settings *settings) {  //Initialise SDL vide
 
 bool blah_video_sdl_exit() { //Shutdown SDL video component
 	if (blah_video_sdl_initialised) {
-		Blah_Debug_Log_message(blah_video_sdl_log,"Begin SDL Video shutdown blah_video_sdl_exit()");
+		Blah_Debug_Log_message(&blah_video_sdl_log, "Begin SDL Video shutdown blah_video_sdl_exit()");
 		SDL_ShowCursor(SDL_ENABLE); //Show cursor
 		SDL_WM_GrabInput(SDL_GRAB_OFF); //Allow mouse to roam free outside window
 		SDL_QuitSubSystem(SDL_INIT_VIDEO);
 		blah_video_sdl_initialised = false;  //set state flag off
-		Blah_Debug_Log_message(blah_video_sdl_log,"Video shutdown with SDL_QuitSubSystem()");
-		Blah_Debug_Log_destroy(blah_video_sdl_log); //deallocate log memory
+		Blah_Debug_Log_message(&blah_video_sdl_log, "Video shutdown with SDL_QuitSubSystem()");
+		Blah_Debug_Log_disable(&blah_video_sdl_log); //deallocate log memory
 		return true;
-	} else
+	} else {
 		return false;
+	}
 }
 
 void blah_video_sdl_updateBuffer() {
@@ -104,7 +104,7 @@ void blah_video_sdl_clearBuffer() {  //Clears current drawing buffer
 
 void blah_video_sdl_setDoubleBuffered(bool flag) {
 	//Turns double buffering on/off depending on flag
-	fprintf(stderr,"setting double buffering:%d\n",flag);
+	fprintf(stderr, "setting double buffering:%d\n",flag);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, blah_video_currentMode->doubleBuffered);
 	//FIXME blah_video_sdl_set_mode();
 }
@@ -132,7 +132,7 @@ bool blah_video_sdl_setMode(Blah_Video_Mode *mode) {
 
 	if (mode->fullScreen) {
 		//Calculate flags to send to SDL init
-		sdlFlags|=SDL_FULLSCREEN;
+		sdlFlags |= SDL_FULLSCREEN;
 		SDL_ShowCursor(SDL_DISABLE); //Hide cursor
 		SDL_WM_GrabInput(SDL_GRAB_ON); //confine keyboard and mouse to SDL window
 	} else {
@@ -143,20 +143,21 @@ bool blah_video_sdl_setMode(Blah_Video_Mode *mode) {
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, mode->doubleBuffered);
 
 	sprintf(tempString, "Setting video to %dx%dx%d\n", width, height, bpp);
-	Blah_Debug_Log_message(blah_video_sdl_log, tempString);
+	Blah_Debug_Log_message(&blah_video_sdl_log, tempString);
 	sdlBpp = SDL_VideoModeOK(width, height, bpp, sdlFlags);
 	sprintf(tempString, "SDL bpp is %d", sdlBpp);
+	Blah_Debug_Log_message(&blah_video_sdl_log, tempString);
 	sprintf(tempString, "Suggested bpp for %dx%d is %d", width, height, bpp);
-	Blah_Debug_Log_message(blah_video_sdl_log, tempString);
+	Blah_Debug_Log_message(&blah_video_sdl_log, tempString);
 	if (SDL_SetVideoMode(width, height, bpp, sdlFlags)) {
 		//blah_video_current_mode = mode;  //FIXME??
 		glViewport(0, 0, width, height);
 		blah_draw_gl_init();
 		blah_draw_gl_update2dProjection(mode);
-		Blah_Debug_Log_message(blah_video_sdl_log, "Video mode set successful");
+		Blah_Debug_Log_message(&blah_video_sdl_log, "Video mode set successful");
 		return true;
 	} else {
-		Blah_Debug_Log_message(blah_video_sdl_log, "Failed to set video mode");
+		Blah_Debug_Log_message(&blah_video_sdl_log, "Failed to set video mode");
 		return false;
 	}
 }

@@ -17,7 +17,7 @@
 
 /* Private Globals */
 
-Blah_Debug_Log *blah_model_lightwave_log;
+static Blah_Debug_Log blah_model_lightwave_log = { .filePointer = NULL };
 
 /* Private Function Prototypes */
 
@@ -140,15 +140,15 @@ static unsigned long Blah_Model_Lightwave_readTextureFlagsSubchunk(Blah_Model_Li
 	Blah_IFF_Subchunk_readUnsigned16(subchunk, &textureFlags);
 	//Now set the texture flags
 	if (textureFlags & BLAH_MODEL_LIGHTWAVE_TEXTURE_X_AXIS) {
-		Blah_Debug_Log_message(blah_model_lightwave_log, "Texture x axis");
+		Blah_Debug_Log_message(&blah_model_lightwave_log, "Texture x axis");
 		texture->xAxis = true;
 	}
 	if (textureFlags & BLAH_MODEL_LIGHTWAVE_TEXTURE_Y_AXIS) {
-		Blah_Debug_Log_message(blah_model_lightwave_log, "Texture y axis");
+		Blah_Debug_Log_message(&blah_model_lightwave_log, "Texture y axis");
 		texture->yAxis = true;
 	}
 	if (textureFlags & BLAH_MODEL_LIGHTWAVE_TEXTURE_Z_AXIS) {
-		Blah_Debug_Log_message(blah_model_lightwave_log, "Texture z axis");
+		Blah_Debug_Log_message(&blah_model_lightwave_log, "Texture z axis");
 		texture->zAxis = true;
 	}
 
@@ -177,7 +177,7 @@ static unsigned long Blah_Model_Lightwave_readTextureWrapSubchunk(Blah_Model_Lig
 			modeString = "mirror\0"; break;
 	}
 	sprintf(debugString, "Texture width wrap: %s\n",modeString);
-	Blah_Debug_Log_message(blah_model_lightwave_log, debugString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, debugString);
 
 	switch (heightWrap) {
 		case BLAH_MODEL_LIGHTWAVE_WRAP_BLACK :
@@ -190,7 +190,7 @@ static unsigned long Blah_Model_Lightwave_readTextureWrapSubchunk(Blah_Model_Lig
 			modeString = "mirror\0"; break;
 	}
 	sprintf(debugString, "Texture height wrap: %s\n",modeString);
-	Blah_Debug_Log_message(blah_model_lightwave_log, debugString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, debugString);
 
 	return subchunk->subchunkLength;
 }
@@ -207,7 +207,7 @@ static unsigned long Blah_Model_Lightwave_readTextureSizeSubchunk(Blah_Model_Lig
 	Blah_IFF_Subchunk_readFloat32(subchunk, &sizeZ);
 
 	sprintf(debugString, "Texture size: %f,%f,%f",sizeZ,sizeY,sizeZ);
-	Blah_Debug_Log_message(blah_model_lightwave_log, debugString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, debugString);
 
 	Blah_Vector_set(&texture->size, sizeX, sizeY, sizeZ);
 
@@ -227,7 +227,7 @@ static unsigned long Blah_Model_Lightwave_readTextureCenterSubchunk(Blah_Model_L
 	Blah_IFF_Subchunk_readFloat32(subchunk, &centerZ);
 
 	sprintf(debugString, "Texture center: %f,%f,%f",centerX,centerY,centerZ);
-	Blah_Debug_Log_message(blah_model_lightwave_log, debugString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, debugString);
 
 	Blah_Point_set(&texture->center, centerX, centerY, centerZ);
 
@@ -250,7 +250,7 @@ static unsigned long Blah_Model_Lightwave_readTextureColourSubchunk(Blah_Model_L
 
 	sprintf(debugString, "Texture colour: %f,%f,%f,%f",texture->colour.red,
 			texture->colour.green,texture->colour.blue,texture->colour.alpha);
-	Blah_Debug_Log_message(blah_model_lightwave_log, debugString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, debugString);
 
 	return subchunk->subchunkLength;
 }
@@ -263,30 +263,30 @@ static unsigned long Blah_Model_Lightwave_readTextureFilenameSubchunk(Blah_Model
 	Blah_Image *tempImage;
 	Blah_Texture *texture;
 
-	Blah_Debug_Log_message(blah_model_lightwave_log, "Reading texture filename");
-	sprintf(debugString, "Length of texture filename chunk:%u",subchunk->subchunkLength);
-	Blah_Debug_Log_message(blah_model_lightwave_log, debugString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, "Reading texture filename");
+	sprintf(debugString, "Length of texture filename chunk:%u", subchunk->subchunkLength);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, debugString);
 
 	tempString = Blah_IFF_Subchunk_readString(subchunk);
 	sprintf(debugString, "image filename read:%s",tempString);
-	Blah_Debug_Log_message(blah_model_lightwave_log, debugString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, debugString);
 	blah_util_strncpy(lwTexture->fileName, tempString, BLAH_MODEL_LIGHTWAVE_TEXTURE_FILENAME_LENGTH);
 	//Try to locate an existing texture from same image
 	texture = blah_texture_find(tempString);
-	Blah_Debug_Log_message(blah_model_lightwave_log, "looking for texture");
+	Blah_Debug_Log_message(&blah_model_lightwave_log, "looking for texture");
 
 	if (!texture) { //if no texture found
-		Blah_Debug_Log_message(blah_model_lightwave_log, "texture not found, looking for image");
+		Blah_Debug_Log_message(&blah_model_lightwave_log, "texture not found, looking for image");
 
 		tempImage = blah_image_find(tempString); //try to locate existing copy of image
 		if (!tempImage) { //if no copy of same image found
-			Blah_Debug_Log_message(blah_model_lightwave_log, "image not found");
+			Blah_Debug_Log_message(&blah_model_lightwave_log, "image not found");
 			tempImage = Blah_Image_fromFile(tempString); //load it from file
 		}
 
-		Blah_Debug_Log_message(blah_model_lightwave_log, "tried to load file");
+		Blah_Debug_Log_message(&blah_model_lightwave_log, "tried to load file");
 		if (tempImage) { //if loading image successful, create new texture from it
-			Blah_Debug_Log_message(blah_model_lightwave_log, "image loaded, creating texture");
+			Blah_Debug_Log_message(&blah_model_lightwave_log, "image loaded, creating texture");
 			texture = Blah_Texture_fromImage(tempImage); //create texture from image
 		}
 	}
@@ -305,15 +305,15 @@ static unsigned long Blah_Model_Lightwave_readColourTextureSubchunk(Blah_Model_L
 	//into the current lightwave texture parameters
 	char *tempString, debugString[200];
 
-	Blah_Debug_Log_message(blah_model_lightwave_log, "Reading colour texture");
+	Blah_Debug_Log_message(&blah_model_lightwave_log, "Reading colour texture");
 	sprintf(debugString, "Length of colour texture chunk:%u",subchunk->subchunkLength);
-	Blah_Debug_Log_message(blah_model_lightwave_log, debugString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, debugString);
 
 	tempString = Blah_IFF_Subchunk_readString(subchunk);
 	if (!strcmp(tempString, "Planar Image Map"))
 		texture->projectionMode = BLAH_MODEL_TEXTURE_PROJECTION_PLANAR;
 	sprintf(debugString, "texture type read:%s",tempString);
-	Blah_Debug_Log_message(blah_model_lightwave_log, debugString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, debugString);
 	blah_util_strncpy(texture->type, tempString, BLAH_MODEL_LIGHTWAVE_TEXTURE_TYPE_LENGTH);
 	free(tempString);
 
@@ -451,7 +451,7 @@ static unsigned long Blah_Model_Lightwave_skipSubchunk(Blah_IFF_Subchunk *subchu
 
 	skipLength = subchunk->subchunkLength - BLAH_IFF_SUBCHUNK_HEADER_LENGTH;
 	sprintf(tempString, "Skipping subchunk length:%u",skipLength);
-	Blah_Debug_Log_message(blah_model_lightwave_log, tempString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, tempString);
 
 
 	if (Blah_IFF_Chunk_seek(subchunk->parentChunk, skipLength)) //Skip subchunk length
@@ -472,19 +472,19 @@ static unsigned long Blah_Model_Lightwave_getSize(FILE *fileStream) {
 
 	if (lwobTag != BLAH_MODEL_LIGHTWAVE_FORM) {
 		sprintf(tempString, "IFF form tag is:%x\n",lwobTag);
-		Blah_Debug_Log_message(blah_model_lightwave_log, tempString);
-		Blah_Debug_Log_message(blah_model_lightwave_log, "File is not an IFF file");
+		Blah_Debug_Log_message(&blah_model_lightwave_log, tempString);
+		Blah_Debug_Log_message(&blah_model_lightwave_log, "File is not an IFF file");
 	} else {
-		Blah_Debug_Log_message(blah_model_lightwave_log, "File header conforms to IFF format");
+		Blah_Debug_Log_message(&blah_model_lightwave_log, "File header conforms to IFF format");
 		sprintf(tempString, "IFF data length is: %u\n",lwobLength);
-		Blah_Debug_Log_message(blah_model_lightwave_log, tempString);
+		Blah_Debug_Log_message(&blah_model_lightwave_log, tempString);
 
 		fread(&fileTag, sizeof(blah_unsigned32), 1, fileStream);
 
 		if (fileTag != BLAH_MODEL_LIGHTWAVE_LWOB)
-			Blah_Debug_Log_message(blah_model_lightwave_log, "IFF data is not a lightwave object");
+			Blah_Debug_Log_message(&blah_model_lightwave_log, "IFF data is not a lightwave object");
 		else {
-			Blah_Debug_Log_message(blah_model_lightwave_log, "Identified file as lightwave format");
+			Blah_Debug_Log_message(&blah_model_lightwave_log, "Identified file as lightwave format");
 			returnLength = lwobLength - 4;
 		}
 	}
@@ -514,11 +514,11 @@ static unsigned long Blah_Model_Lightwave_readPointsChunk(Blah_Model_Lightwave *
 
 	char tempString[100];
 
-	Blah_Debug_Log_message(blah_model_lightwave_log, "Reading points list");
+	Blah_Debug_Log_message(&blah_model_lightwave_log, "Reading points list");
 	numPoints = chunk->dataLength / 12; //divide by 12 bytes for num points
 	sprintf(tempString, "Number of points:%u",numPoints);
-	Blah_Debug_Log_message(blah_model_lightwave_log, tempString);
-	Blah_Debug_Log_message(blah_model_lightwave_log, "called list init - blah points");
+	Blah_Debug_Log_message(&blah_model_lightwave_log, tempString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, "called list init - blah points");
 
 	for (pointCount = 0; pointCount < numPoints; pointCount++) {
 		Blah_IFF_Chunk_readFloat32(chunk, &tempX);
@@ -540,9 +540,9 @@ static unsigned long Blah_Model_Lightwave_readFacesChunk(Blah_Model_Lightwave *m
 	char tempString[100];
 	Blah_Model_Surface **surfacePointers; //temporary pointer array for indexing
 
-	Blah_Debug_Log_message(blah_model_lightwave_log, "Reading facess list");
+	Blah_Debug_Log_message(&blah_model_lightwave_log, "Reading facess list");
 	sprintf(tempString, "Length of faces chunk:%u",chunk->chunkLength);
-	Blah_Debug_Log_message(blah_model_lightwave_log, tempString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, tempString);
 	surfacePointers = (Blah_Model_Surface**)Blah_List_createPointerstring(&model->newModel->surfaces);
 
 	while (chunk->currentOffset < chunk->dataLength-1) { //While end of data not reached
@@ -560,7 +560,7 @@ static unsigned long Blah_Model_Lightwave_readFacesChunk(Blah_Model_Lightwave *m
 		Blah_IFF_Chunk_readInt16(chunk, &surfaceIndex);
 		//Read surface index from file
 		if (surfaceIndex < 0)
-			Blah_Debug_Log_message(blah_model_lightwave_log,"negative surface index - detail polygons\n");
+			Blah_Debug_Log_message(&blah_model_lightwave_log,"negative surface index - detail polygons\n");
 
 		tempFace->surface = surfaceIndex;
 
@@ -571,7 +571,7 @@ static unsigned long Blah_Model_Lightwave_readFacesChunk(Blah_Model_Lightwave *m
 
 	free(surfacePointers);
 	sprintf(tempString, "Faces found:%d",model->newModel->faces.length);
-	Blah_Debug_Log_message(blah_model_lightwave_log, tempString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, tempString);
 
 	return chunk->chunkLength; //return length of chunk read
 }
@@ -582,15 +582,15 @@ static unsigned long Blah_Model_Lightwave_readSurfacelistChunk(Blah_Model_Lightw
 	char *tempString, debugString[200];
 	Blah_Model_Surface *newSurface;
 
-	Blah_Debug_Log_message(blah_model_lightwave_log, "Reading surfaces list");
+	Blah_Debug_Log_message(&blah_model_lightwave_log, "Reading surfaces list");
 	sprintf(debugString, "Length of surface list chunk:%u",chunk->chunkLength);
-	Blah_Debug_Log_message(blah_model_lightwave_log, debugString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, debugString);
 
 	while (chunk->currentOffset < chunk->dataLength -1) {
 		//While end of chunk data not reached
 		tempString = Blah_IFF_Chunk_readString(chunk);
 		sprintf(debugString, "Surface name read:%s",tempString);
-		Blah_Debug_Log_message(blah_model_lightwave_log, debugString);
+		Blah_Debug_Log_message(&blah_model_lightwave_log, debugString);
 		newSurface = Blah_Model_Surface_new(tempString);
 		Blah_Model_addSurface(model->newModel, newSurface);
 		//Add the new surface to the list of surfaces in new model
@@ -622,21 +622,21 @@ static unsigned long Blah_Model_Lightwave_readSurfaceChunk(Blah_Model_Lightwave 
 	memset(&tempSurface, 0, sizeof(Blah_Model_Lightwave_Surface));
 	memset(&tempTexture, 0, sizeof(Blah_Model_Lightwave_Surface_Texture));
 
-	Blah_Debug_Log_message(blah_model_lightwave_log, "Reading surface chunk");
+	Blah_Debug_Log_message(&blah_model_lightwave_log, "Reading surface chunk");
 	sprintf(tempString, "Length of surface chunk:%u",chunk->chunkLength);
-	Blah_Debug_Log_message(blah_model_lightwave_log, tempString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, tempString);
 
 	surfaceName = Blah_IFF_Chunk_readString(chunk); //Read surface name from chunk
 	sprintf(tempString, "Read surface name:%s",surfaceName);
-	Blah_Debug_Log_message(blah_model_lightwave_log, tempString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, tempString);
 
-	Blah_Debug_Log_message(blah_model_lightwave_log, "Searching for a surface matching name");
+	Blah_Debug_Log_message(&blah_model_lightwave_log, "Searching for a surface matching name");
 	currentSurface = Blah_Tree_findElement(&model->surfacesTree, surfaceName)->data;
 
 	if (currentSurface)
-		Blah_Debug_Log_message(blah_model_lightwave_log, "Found a surface matching name");
+		Blah_Debug_Log_message(&blah_model_lightwave_log, "Found a surface matching name");
 	else
-		Blah_Debug_Log_message(blah_model_lightwave_log, "No matching surface found");
+		Blah_Debug_Log_message(&blah_model_lightwave_log, "No matching surface found");
 
 	while (chunk->currentOffset < chunk->dataLength-1) {
 		//While end of chunk not reached
@@ -645,7 +645,7 @@ static unsigned long Blah_Model_Lightwave_readSurfaceChunk(Blah_Model_Lightwave 
 			((unsigned char*)&tempSubchunk.idTag)[0], ((unsigned char*)&tempSubchunk.idTag)[1],
 			((unsigned char*)&tempSubchunk.idTag)[2], ((unsigned char*)&tempSubchunk.idTag)[3]);
 
-		Blah_Debug_Log_message(blah_model_lightwave_log, tempString);
+		Blah_Debug_Log_message(&blah_model_lightwave_log, tempString);
 
 		switch (tempSubchunk.idTag) { //Switch depending apon sub chunk type
 			case BLAH_MODEL_LIGHTWAVE_SURFACE_COLOUR :
@@ -704,14 +704,13 @@ static unsigned long Blah_Model_Lightwave_readSurfaceChunk(Blah_Model_Lightwave 
 				break;
 
 			default: //Skip unhandled sub chunk
-				Blah_Debug_Log_message(blah_model_lightwave_log, "Skipping Subchunk");
+				Blah_Debug_Log_message(&blah_model_lightwave_log, "Skipping Subchunk");
 				Blah_Model_Lightwave_skipSubchunk(&tempSubchunk);
 				break;
 		}
-
 	}
 
-	Blah_Debug_Log_message(blah_model_lightwave_log, tempString);
+	Blah_Debug_Log_message(&blah_model_lightwave_log, tempString);
 
 	if (chunk->padBytePresent)
 		Blah_IFF_Chunk_seek(chunk, 1);	//If length is odd, then skip pad byte
@@ -764,8 +763,8 @@ Blah_Model *Blah_Model_Lightwave_load(char *filename, FILE *fileStream) {
 	lightwaveTemp.newModel = Blah_Model_new(filename);
 	//Create new model inside lightwave temp structure
 
-	blah_model_lightwave_log = Blah_Debug_Log_new("blah_lightwave"); //Blah_Debug_Log_init(&blah_model_lightwave_log, "blah_lightwave");
-	Blah_Debug_Log_message(blah_model_lightwave_log, "Begin reading lightwave file");
+	Blah_Debug_Log_init(&blah_model_lightwave_log, "blah_lightwave"); //Blah_Debug_Log_init(&blah_model_lightwave_log, "blah_lightwave");
+	Blah_Debug_Log_message(&blah_model_lightwave_log, "Begin reading lightwave file");
 
 	bytesRemaining = lwobLength = Blah_Model_Lightwave_getSize(fileStream);
 
@@ -774,7 +773,7 @@ Blah_Model *Blah_Model_Lightwave_load(char *filename, FILE *fileStream) {
 		sprintf(tempString, "Chunk format:%c%c%c%c",
 			((unsigned char*)&dataChunk.idTag)[0], ((unsigned char*)&dataChunk.idTag)[1],
 			((unsigned char*)&dataChunk.idTag)[2], ((unsigned char*)&dataChunk.idTag)[3]);
-		Blah_Debug_Log_message(blah_model_lightwave_log, tempString);
+		Blah_Debug_Log_message(&blah_model_lightwave_log, tempString);
 
 		switch (dataChunk.idTag) {  //Switch depending apon chunk type
 			case BLAH_MODEL_LIGHTWAVE_POINTLIST : //Load point list
@@ -790,7 +789,7 @@ Blah_Model *Blah_Model_Lightwave_load(char *filename, FILE *fileStream) {
 				bytesRead = Blah_Model_Lightwave_readSurfaceChunk(&lightwaveTemp, &dataChunk);
 				break;
 			default: //Skip unhandled chunk
-				Blah_Debug_Log_message(blah_model_lightwave_log, "Skipping Chunk");
+				Blah_Debug_Log_message(&blah_model_lightwave_log, "Skipping Chunk");
 				bytesRead = Blah_Model_Lightwave_skipChunk(&dataChunk);
 				break;
 		}
@@ -801,11 +800,11 @@ Blah_Model *Blah_Model_Lightwave_load(char *filename, FILE *fileStream) {
 			bytesRemaining -= bytesRead;
 
 		sprintf(tempString, "Bytes remaining %lu", bytesRemaining);
-		Blah_Debug_Log_message(blah_model_lightwave_log, tempString);
+		Blah_Debug_Log_message(&blah_model_lightwave_log, tempString);
 	}
 
 	Blah_Tree_removeAll(&lightwaveTemp.surfacesTree);
 
-	Blah_Debug_Log_destroy(blah_model_lightwave_log); //Blah_Debug_Log_close(&blah_model_lightwave_log);
+	Blah_Debug_Log_disable(&blah_model_lightwave_log); //Blah_Debug_Log_close(&blah_model_lightwave_log);
 	return lightwaveTemp.newModel; //Return pointer whether it be null or valid model
 }

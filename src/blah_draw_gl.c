@@ -38,9 +38,9 @@ Blah_Matrix blah_draw_gl_drawportMatrix;
 
 Blah_Matrix blah_draw_gl_2dProjectionMatrix;
 
-Blah_Debug_Log *blah_draw_gl_log = NULL;
+static Blah_Debug_Log blah_draw_gl_log = { .filePointer = NULL };
 
-int blah_draw_gl_activeLights=0;
+int blah_draw_gl_activeLights = 0;
 GLenum blah_draw_gl_lightSymbols[8] = {GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3,	GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, GL_LIGHT7};
 
 /* Static Function Prototypes */
@@ -55,7 +55,7 @@ static void blah_draw_gl_resetLights();
 
 void blah_draw_gl_exit()
 {	//Exit the opengl drawing engine component.  Deallocates resources
-	Blah_Debug_Log_destroy(blah_draw_gl_log);
+	Blah_Debug_Log_disable(&blah_draw_gl_log);
 }
 
 void blah_draw_gl_image2d(Blah_Image *image, int screenX, int screenY)
@@ -86,16 +86,16 @@ void blah_draw_gl_init()
 {	//Initialise and configure OpenGL
 	//FIXME - Need to research OpenGL initialisation a bit more.  This stuff seems to crash if called before context is created
 	//FIXME - This stuff needs to be moved to an area where it is called after the opengl mode has been set
-	blah_draw_gl_log = Blah_Debug_Log_new("blah_draw_gl");
-	Blah_Debug_Log_message(blah_draw_gl_log,"Entering blah_draw_gl_init\n");
+	Blah_Debug_Log_init(&blah_draw_gl_log, "blah_draw_gl");
+	Blah_Debug_Log_message(&blah_draw_gl_log, "Entering blah_draw_gl_init\n");
 
-	Blah_Debug_Log_message(blah_draw_gl_log,"Enabling lighting\n");
+	Blah_Debug_Log_message(&blah_draw_gl_log, "Enabling lighting\n");
 	glEnable(GL_LIGHTING);
 
 	//glEnable(GL_COLOR_MATERIAL);
 	//glColorMaterial(GL_FRONT, GL_AMBIENT);
-	Blah_Debug_Log_message(blah_draw_gl_log,"Configuring Depth\n");
-	Blah_Debug_Log_message(blah_draw_gl_log,"Enabling Depth Test\n");
+	Blah_Debug_Log_message(&blah_draw_gl_log, "Configuring Depth\n");
+	Blah_Debug_Log_message(&blah_draw_gl_log, "Enabling Depth Test\n");
 	glEnable(GL_DEPTH_TEST);
 
 	glShadeModel(GL_SMOOTH);
@@ -103,13 +103,13 @@ void blah_draw_gl_init()
   	glDepthFunc(GL_LESS);				// The Type Of Depth Test To Do
 
 	/* Texturing */
-	Blah_Debug_Log_message(blah_draw_gl_log,"Enabling texturing 2D\n");
+	Blah_Debug_Log_message(&blah_draw_gl_log, "Enabling texturing 2D\n");
 	glEnable(GL_TEXTURE_2D);
 
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 	/* Blending */
-	Blah_Debug_Log_message(blah_draw_gl_log,"Enabling blending\n");
+	Blah_Debug_Log_message(&blah_draw_gl_log, "Enabling blending\n");
 	//glEnable(GL_ALPHA_TEST);
 	//glAlphaFunc(GL_GREATER,0);
 	glEnable(GL_BLEND);
@@ -118,17 +118,17 @@ void blah_draw_gl_init()
 	//glBlendFunc(GL_ONE, GL_ONE);
 
 	/* Line antialiasing */
-	Blah_Debug_Log_message(blah_draw_gl_log,"Enabling antialiasing\n");
+	Blah_Debug_Log_message(&blah_draw_gl_log, "Enabling antialiasing\n");
 	glEnable(GL_LINE_SMOOTH);
 	//glEnable(GL_POLYGON_SMOOTH);
 	glLineWidth(2);
 
 	//Set initial states
-	Blah_Debug_Log_message(blah_draw_gl_log,"Setting initial states\n");
+	Blah_Debug_Log_message(&blah_draw_gl_log, "Setting initial states\n");
 	blah_draw_gl_currentMaterial = NULL; blah_draw_gl_currentTexture = NULL;
 	Blah_Matrix_setIdentity(&blah_draw_gl_drawportMatrix);
 
-	Blah_Debug_Log_message(blah_draw_gl_log,"Exiting blah_draw_gl_init\n");
+	Blah_Debug_Log_message(&blah_draw_gl_log, "Exiting blah_draw_gl_init\n");
 }
 
 void blah_draw_gl_line(Blah_Point *point1, Blah_Point *point2, Blah_Material *material) {

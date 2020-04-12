@@ -41,28 +41,27 @@ Blah_Region blah_draw_drawport;
 Blah_Stack blah_draw_drawportStack;
 	//An internal stack for push pops
 
-Blah_Debug_Log *blah_draw_log = NULL;
+static Blah_Debug_Log blah_draw_log = { .filePointer = NULL };
 
 /* Function Declarations */
 
 void blah_draw_exit()
-{	//This function is called when the engine exits and deallocates resources used
-	//by the drawing engine component
-	Blah_Debug_Log_message(blah_draw_log,"Called blah_draw_exit\n");
+{	// This function is called when the engine exits and deallocates resources used
+	// by the drawing engine component
+	Blah_Debug_Log_message(&blah_draw_log, "Called blah_draw_exit\n");
 	Blah_Stack_destroyBuffer(&blah_draw_drawportStack);
 	blah_draw_gl_exit();
-	Blah_Debug_Log_destroy(blah_draw_log);
+	Blah_Debug_Log_disable(&blah_draw_log);
 }
 
 bool blah_draw_init()
-{	//Initialise drawing engine component
-	blah_draw_log = Blah_Debug_Log_new("blah_draw");
+{	// Initialise drawing engine component
+	Blah_Debug_Log_init(&blah_draw_log, "blah_draw");
 
-	//Determine drawing capabilities
-	//FIXME blah_draw_getCapabilities(&blah_draw_current_capabilities);
+	// Determine drawing capabilities
+	// FIXME blah_draw_getCapabilities(&blah_draw_current_capabilities);
 
-
-	//set default viewing parameters
+	// set default viewing parameters
 	Blah_Point_set(&blah_draw_currentParameters.focalPoint, 0,0,1);
 	Blah_Point_set(&blah_draw_currentParameters.viewpoint, 0,0,0);
 	Blah_Vector_set(&blah_draw_currentParameters.viewNormal, 0,1,0);
@@ -76,7 +75,7 @@ bool blah_draw_init()
 
 	//Set default material properties
 	//FIXME - Reinstate this call once the gl_init functionis changed.  blah_draw_gl_init(); //Use OpenGL API for now...and for quite some time
-	Blah_Debug_Log_message(blah_draw_log,"Called blah_draw_init\n");
+	Blah_Debug_Log_message(&blah_draw_log, "Called blah_draw_init\n");
 	return true;
 }
 

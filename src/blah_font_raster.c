@@ -33,13 +33,12 @@ bool Blah_Font_Raster_init(Blah_Font_Raster *rasterFont, char *fontName, Blah_Im
 	unsigned int charsHigh, charsWide, charsNum, mapIndex;
 	unsigned int charRow, charCol, charSize, charCount;
 	void *rasterPointer = rasterFont->rasterData = malloc(source->width * source->height * (source->pixelDepth>>3));;
-	Blah_Debug_Log *fontLog;
+	Blah_Debug_Log fontLog = { .filePointer = NULL};
 	char tempString[100];
 	bool success = false; //This argument will return the success of the oepration.  Default to false until succeeded.
 
-	fontLog = Blah_Debug_Log_new("blah_font_new");
-
-	Blah_Debug_Log_message(fontLog, "creating font from image");
+	Blah_Debug_Log_init(&fontLog, "blah_font_new");
+	Blah_Debug_Log_message(&fontLog, "creating font from image");
 
 	if (rasterPointer) //Ensure that allocation of raster data buffer succeeded before continuing
 	{
@@ -64,7 +63,7 @@ bool Blah_Font_Raster_init(Blah_Font_Raster *rasterFont, char *fontName, Blah_Im
 		for (charCount = 0; charCount < 256; charCount++) {
 			mapIndex = charMap[charCount];
 			sprintf(tempString, "ascii '%c' mapped to char %d",charCount, mapIndex);
-			Blah_Debug_Log_message(fontLog, tempString);
+			Blah_Debug_Log_message(&fontLog, tempString);
 			if (!mapIndex || mapIndex > charsNum) { //if map index is 0 or beyond actual number of characters
 				rasterFont->charIndices[charCount] = NULL; //set raster pointer to NULL
 			} else {
@@ -76,10 +75,10 @@ bool Blah_Font_Raster_init(Blah_Font_Raster *rasterFont, char *fontName, Blah_Im
 	}
 	else
 	{
-		Blah_Debug_Log_message(fontLog, "Failed to allocate buffer for raster font data");
+		Blah_Debug_Log_message(&fontLog, "Failed to allocate buffer for raster font data");
 	}
 
-	Blah_Debug_Log_destroy(fontLog);
+	Blah_Debug_Log_disable(&fontLog);
 
 	return success;
 }

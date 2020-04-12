@@ -1,12 +1,18 @@
 TODO LIST for Blah.
 
+- Proper error handling.  Many functions return false on error, or NULL handles when allocation fails but the callers are not checking the return values!
+
 - Fix the Blah_image_targa_load* functions.
+
+- Use tmpfile function from C11.
 
 - Use fixed width integer types from C99.
 
 - All externally used structures need to appear opaque to external projects linking to Blah, and should be referred to by 'handles', which will just be object pointers within the Blah memory space.  They cannot be used directly by foreign code in external projects.  This will allow Blah to be used by other languages that do not understand C, for example Rust.
 
-- All internally used structures should have an ..._init() function so that statically declared structures can still be initialised properly.
+- External headers should not expose init functions.
+
+- All internally used structures should have a private ..._init() function so that statically declared structures can still be initialised properly.
 
 - All ..._new() functions should dynamically allocate and then call corresponding init() function.
 
@@ -16,9 +22,9 @@ TODO LIST for Blah.
 
 - Any objects created dynamically should only be destroyed from the same scope in which they were created.
 
-- The free(obj) function should never be called on any object with redefinable function pointers.  Infact it really shouldn't be called on any Blah object.
-
-The above will allow Blahoo to define classes which statically encapsulate the basic structures in Blah, and initialise/disable them properly without the need for additional code.  Blahoo uses 'new' keyword with constructors and 'delete' keyword with destructors that call init() and disable() funcs appropriately.
+- The free(obj) function should never be called on any object with redefinable function pointers.
+  Infact it really shouldn't be called on any Blah object.
+  This will allow Blahoo to define classes which statically encapsulate the basic structures in Blah, and initialise/disable them properly without the need for additional code.
 
 - Change the naming of structs to not use under scores.  Struct functions should be named StructName_functionName().  Underscores should be used only as separator characters.
 
@@ -27,8 +33,6 @@ The above will allow Blahoo to define classes which statically encapsulate the b
 - For all functions that can be redefined via function pointers, there should be a default function and the init() function should always set the pointer to refer to this default function.  This way, there is no need to check if the function pointer has been redefined, but rather just call it anyway wih no regard for what it is.
 
 - All redefinable call back functions need an associated data pointer.  External projects can use this to provide an object reference.
-
-- Debug Log objects should be static.  They are small and it's a waste of resources to allocate them.
 
 - Add lots of error checking for malloc failures etc.
 
@@ -41,3 +45,5 @@ The above will allow Blahoo to define classes which statically encapsulate the b
 - Remove the C++ directives from all internal headers because they will only be compiled with standard C/
 
 - Use struct initialisation.
+
+- Change log message function to use variable args.
