@@ -122,13 +122,13 @@ blah_bool blah_video_sdl_setMode(Blah_Video_Mode *mode) {
 	//Set SDL video settings based apon ptr_video_settings
 	//This function exists because basically SDL has no way of controlling individual settings
 	Uint32 sdlFlags = SDL_OPENGL;
-	int width, height, bpp, sdlBpp;
+	int sdlBpp;
 	char tempString[100];
 
 	//Calculate size based apon full screen attribute and size settings
-	width = mode->width;
-	height = mode->height;
-	bpp = mode->colourDepth;
+	const int width = mode->width;
+	const int height = mode->height;
+	const int bpp = mode->colourDepth;
 
 	if (mode->fullScreen) {
 		//Calculate flags to send to SDL init
@@ -145,6 +145,7 @@ blah_bool blah_video_sdl_setMode(Blah_Video_Mode *mode) {
 	sprintf(tempString, "Setting video to %dx%dx%d\n", width, height, bpp);
 	Blah_Debug_Log_message(blah_video_sdl_log, tempString);
 	sdlBpp = SDL_VideoModeOK(width, height, bpp, sdlFlags);
+	sprintf(tempString, "SDL bpp is %d", sdlBpp);
 	sprintf(tempString, "Suggested bpp for %dx%d is %d", width, height, bpp);
 	Blah_Debug_Log_message(blah_video_sdl_log, tempString);
 	if (SDL_SetVideoMode(width, height, bpp, sdlFlags)) {
