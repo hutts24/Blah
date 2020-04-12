@@ -40,8 +40,191 @@
 				</Linker>
 			</Target>
 		</Build>
-		<Unit filename="main.cpp" />
-		<Unit filename="main.h" />
+		<Linker>
+			<Add library="opengl32" />
+			<Add library="SDL" />
+			<Add library="glu32" />
+		</Linker>
+		<Unit filename="../src/blah.h" />
+		<Unit filename="../src/blah_colour.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_colour.h" />
+		<Unit filename="../src/blah_debug.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_debug.h" />
+		<Unit filename="../src/blah_draw.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_draw.h" />
+		<Unit filename="../src/blah_draw_gl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_draw_gl.h" />
+		<Unit filename="../src/blah_engine.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_engine.h" />
+		<Unit filename="../src/blah_entity.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_entity.h" />
+		<Unit filename="../src/blah_entity_object.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_entity_object.h" />
+		<Unit filename="../src/blah_file.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_file.h" />
+		<Unit filename="../src/blah_font.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_font.h" />
+		<Unit filename="../src/blah_font_raster.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_font_raster.h" />
+		<Unit filename="../src/blah_font_texture.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_font_texture.h" />
+		<Unit filename="../src/blah_iff.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_iff.h" />
+		<Unit filename="../src/blah_image.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_image.h" />
+		<Unit filename="../src/blah_image_targa.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_image_targa.h" />
+		<Unit filename="../src/blah_input.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_input.h" />
+		<Unit filename="../src/blah_input_keyboard.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_input_keyboard.h" />
+		<Unit filename="../src/blah_input_keyboard_glut.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_input_keyboard_glut.h" />
+		<Unit filename="../src/blah_input_keyboard_sdl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_input_keyboard_sdl.h" />
+		<Unit filename="../src/blah_light.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_light.h" />
+		<Unit filename="../src/blah_list.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_list.h" />
+		<Unit filename="../src/blah_macros.h" />
+		<Unit filename="../src/blah_material.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_material.h" />
+		<Unit filename="../src/blah_matrix.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_matrix.h" />
+		<Unit filename="../src/blah_model.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_model.h" />
+		<Unit filename="../src/blah_model_lightwave.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_model_lightwave.h" />
+		<Unit filename="../src/blah_object.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_object.h" />
+		<Unit filename="../src/blah_overlay.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_overlay.h" />
+		<Unit filename="../src/blah_overlay_text.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_overlay_text.h" />
+		<Unit filename="../src/blah_point.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_point.h" />
+		<Unit filename="../src/blah_pointerstring.h" />
+		<Unit filename="../src/blah_primitive.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_primitive.h" />
+		<Unit filename="../src/blah_quaternion.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_quaternion.h" />
+		<Unit filename="../src/blah_region.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_region.h" />
+		<Unit filename="../src/blah_scene.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_scene.h" />
+		<Unit filename="../src/blah_scene_object.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_scene_object.h" />
+		<Unit filename="../src/blah_stack.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_stack.h" />
+		<Unit filename="../src/blah_text_2d.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_text_2d.h" />
+		<Unit filename="../src/blah_texture.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_texture.h" />
+		<Unit filename="../src/blah_texture_gl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_texture_gl.h" />
+		<Unit filename="../src/blah_tree.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_tree.h" />
+		<Unit filename="../src/blah_types.h" />
+		<Unit filename="../src/blah_util.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_util.h" />
+		<Unit filename="../src/blah_vector.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_vector.h" />
+		<Unit filename="../src/blah_vertex.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_vertex.h" />
+		<Unit filename="../src/blah_video.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_video.h" />
+		<Unit filename="../src/blah_video_glut.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_video_glut.h" />
+		<Unit filename="../src/blah_video_sdl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_video_sdl.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
