@@ -14,9 +14,11 @@
 				<Option createDefFile="1" />
 				<Option createStaticLib="1" />
 				<Compiler>
+					<Add option="-Wextra" />
 					<Add option="-Wall" />
-					<Add option="-DBUILD_DLL" />
+					<Add option="-std=c11" />
 					<Add option="-g" />
+					<Add option="-DBUILD_DLL" />
 				</Compiler>
 				<Linker>
 					<Add library="user32" />
@@ -75,6 +77,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/blah_entity_object.h" />
+		<Unit filename="../src/blah_error.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="../src/blah_file.c">
 			<Option compilerVar="CC" />
 		</Unit>

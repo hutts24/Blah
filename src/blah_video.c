@@ -33,24 +33,17 @@ Blah_Video_API blah_video_SDL = {
 	.setModeFunction = blah_video_sdl_setMode
 };
 
+Blah_Video_Mode *blah_video_currentMode = NULL;	// A pointer to the current mode being used
+Blah_List blah_video_modes = { .name = "video_modes" }; //Binary tree of all usable video modes. Extern in blah_video_sdl.h
+
 #ifdef BLAH_USE_GLUT
 Blah_Video_API blah_video_GLUT = {"GLUT",blah_video_glut_init, blah_video_glut_exit,
 	blah_video_glut_swapBuffers, blah_video_sdl_clearBuffer, blah_video_glut_setFullScreen, NULL};
 #endif
 
-Blah_Video_API *blah_video_currentAPI = &blah_video_SDL;
-	//Pointer to current API structure
-
-Blah_Video_Mode *blah_video_currentMode = NULL;
-	//A pointer to the current mode being used
-
-Blah_List blah_video_modes;
-	//Binary tree of all usable video modes. Extern in blah_video_sdl.h
-
-Blah_Video_Settings blah_video_settings = {
-	false	//initialised flag
-};
-
+/* Private variables */
+static Blah_Video_API *blah_video_currentAPI = &blah_video_SDL; //Pointer to current API structure
+static Blah_Video_Settings blah_video_settings = { .initialised = false }; // initialised flag
 static Blah_Debug_Log blah_video_log = { .filePointer = NULL };
 
 /* Private static functions */
