@@ -1,2 +1,4 @@
 .svn
 obj
+/.cbp/*.layout
+/.cbp/*.depend
