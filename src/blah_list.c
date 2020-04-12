@@ -49,34 +49,31 @@ void Blah_List_init(Blah_List *list, const char *name)
 {	//Sets the name of the list, and all element pointers to NULL
 	list->first = NULL;
 	list->last = NULL;
-	list->length=0;
+	list->length = 0;
 	blah_util_strncpy(list->name, name, BLAH_LIST_NAME_LENGTH);  //set name property
 	list->destroyElementFunction = NULL;
 }
 
-Blah_List *Blah_List_new(char *name)
+Blah_List *Blah_List_new(const char *name)
 {	//Creates a new empty list given a name as a null terminated string in parameter 'name'.
 	//Function returns pointer to new list on success, or NULL pointer if error occurred.
 	Blah_List *newList = malloc(sizeof(Blah_List));
-
-	if (newList) //If structure creation succeeded,
-	{
-		Blah_List_init(newList, name); //Initialise new structure
-	}
-
+	// TODO - error handling
+	if (newList != NULL) { Blah_List_init(newList, name); }  //If structure creation succeeded, initialise new structure
 	return newList;
 }
 
-Blah_List_Element *Blah_List_findElement(Blah_List *list, void *data) { //finds and returns a pointer to the element structure holding data pointer
+Blah_List_Element *Blah_List_findElement(const Blah_List *list, const void *data) { //finds and returns a pointer to the element structure holding data pointer
 	Blah_List_Element *tempElement = list->first;
 	bool found = false;
 
 	while (tempElement!=NULL && !found) {
-		if (tempElement->data==data) { //check if data pointers match
+		if (tempElement->data == data) { //check if data pointers match
 			found = true;
 		}
-		else
+		else {
 			tempElement=tempElement->next;
+		}
 	}
 	return tempElement;
 }

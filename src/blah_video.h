@@ -105,50 +105,43 @@ bool blah_video_isFullScreen();
 	//Returns true if in full screen mode
 
 bool blah_video_isDoubleBuffered();
-	//Returns true if in full double buffering active
+	// Returns true if in full double buffering active
 
 bool blah_video_setMode(Blah_Video_Mode *mode);
-	//Sets the display device to the given mode.  Returns TRUE upon success, else false
+	// Sets the display device to the given mode.  Returns TRUE upon success, else false
 
-Blah_Video_Mode *blah_video_getCurrentMode();
-	//Returns a pointer to the video mode structure representing the current mode
+const Blah_Video_Mode *blah_video_getCurrentMode();
+	// Returns a pointer to the video mode structure representing the current mode
 
-Blah_Video_Mode *blah_video_getMode(int width, int height, int bppDepth);
-	//Searches for an available mode with the given attributes and returns handle
-	//to Blah_Video_Mode structure if one exists, otherwise NULL.  Note that this structure is
-	//internal to blah video and must not be altered in any way!
+const Blah_Video_Mode *blah_video_getMode(int width, int height, int bppDepth);
+	// Searches for an available mode with the given attributes and returns handle
+	// to Blah_Video_Mode structure if one exists, otherwise NULL.  Note that this structure is
+	// internal to blah video and must not be altered in any way!
 
-Blah_Video_Mode *blah_video_getIdealMode(unsigned int width, unsigned int height, unsigned int bppDepth);
-	//Searches for an available mode with the given attributes and returns handle
-	//to Blah_Video_Mode structure if one exists, otherwise the next best mode is
-	//returned.  Note that this structure is internal to blah video and must
-	//not be altered in any way!
+const Blah_Video_Mode *blah_video_getIdealMode(unsigned int width, unsigned int height, unsigned int bppDepth);
+	// Searches for an available mode with the given attributes and returns handle
+	// to Blah_Video_Mode structure if one exists, otherwise the next best mode is
+	// returned.  Note that this structure is internal to blah video and must
+	// not be altered in any way!
 
 
-Blah_Video_Mode *blah_video_getNextMode(Blah_Video_Mode *mode);
-	//Searches for a higher resolution mode than the given mode, using the same
-	//colour depth.  Returns a pointer to the new mode found or NULL if there is no
-	//higher resolution mode available with requested colour depth;
+const Blah_Video_Mode *blah_video_getNextMode(const Blah_Video_Mode *mode);
+	// Searches for a higher resolution mode than the given mode, using the same
+	// colour depth.  Returns a pointer to the new mode found or NULL if there is no
+	// higher resolution mode available with requested colour depth;
 
-Blah_Video_Mode *blah_video_getPrevMode(Blah_Video_Mode *mode);
-	//Searches for a lower resolution mode than the given mode, using the same
-	//colour depth.  Returns a pointer to the new mode found or NULL if there is no
-	//lower resolution mode available with requested colour depth;
+const Blah_Video_Mode *blah_video_getPrevMode(Blah_Video_Mode *mode);
+	// Searches for a lower resolution mode than the given mode, using the same
+	// colour depth.  Returns a pointer to the new mode found or NULL if there is no
+	// lower resolution mode available with requested colour depth;
 
-Blah_Video_Mode *blah_video_getLeastMode();
-	//Returns a pointer to the lowest resolution mode using the lowest
-	//available colour depth
+const Blah_Video_Mode *blah_video_getLeastMode();
+	// Returns a pointer to the lowest resolution mode using the lowest
+	// available colour depth
 
-Blah_Video_Mode *blah_video_getBestMode();
-	//Returns a pointer to the highest resolution mode using the highest
-	//available colour depth
-
-//Video Mode functions
-
-Blah_Video_Mode *Blah_Video_Mode_new(char *name, bool fullScreen,
-	bool doubleBuffered, int width, int height, int bppDepth);
-	//Creates a new video mode with given properties supplied in params.
-	//Allocates memory and returns new structure.
+const Blah_Video_Mode *blah_video_getBestMode();
+	// Returns a pointer to the highest resolution mode using the highest
+	// available colour depth
 
 #ifdef __cplusplus
 }

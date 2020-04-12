@@ -190,58 +190,56 @@ bool blah_video_setMode(Blah_Video_Mode *mode) {
 	}
 }
 
-Blah_Video_Mode *blah_video_getCurrentMode() {
+const Blah_Video_Mode* blah_video_getCurrentMode() {
 	//Returns a pointer to the video mode structure representing the current mode
 	return blah_video_currentMode;
 }
 
-Blah_Video_Mode *blah_video_getMode(int width, int height, int bppDepth) {
+const Blah_Video_Mode* blah_video_getMode(int width, int height, int bppDepth) {
 	//Searches for an available mode with the given attributes and returns handle
 	//to Blah_Video_Mode structure if one exists otherwise NULL.  Note that this structure is
 	//internal to blah video and must not be altered in any way!
-	char tempModeName[BLAH_VIDEO_MODE_NAME_LENGTH+1];
+	char tempModeName[BLAH_VIDEO_MODE_NAME_LENGTH + 1];
 	/* construct a mode name from given attributes and search mode tree for match */
 	sprintf(tempModeName, "%dx%dx%d", width, height, bppDepth);
-	return (Blah_Video_Mode*)Blah_List_search(&blah_video_modes,
-		(blah_list_search_func)blah_video_modeSearch, tempModeName);
+	return (Blah_Video_Mode*)Blah_List_search(&blah_video_modes, (blah_list_search_func)blah_video_modeSearch, tempModeName);
 }
 
-Blah_Video_Mode *blah_video_getIdealMode(unsigned int width, unsigned int height, unsigned int bppDepth) {
+const Blah_Video_Mode* blah_video_getIdealMode(unsigned int width, unsigned int height, unsigned int bppDepth) {
 	//Searches for an available mode with the given attributes and returns handle
 	//to Blah_Video_Mode structure if one exists, otherwise the next best mode is
 	//returned.  Note that this structure is internal to blah video and must
 	//not be altered in any way!
-	Blah_Video_Mode *idealMode=NULL;
-	Blah_Video_Mode *tempMode;
+	const Blah_Video_Mode *idealMode = NULL;
+	const Blah_Video_Mode* tempMode = blah_video_getLeastMode();
 	bool stopFlag = false;
-
-	tempMode = blah_video_getLeastMode();
 
 	while (!stopFlag && tempMode) {
 		if (tempMode->width <= width && tempMode->height <= height) {
 			idealMode = tempMode;
 			tempMode = blah_video_getNextMode(tempMode);
-		} else
+		} else {
 			stopFlag = true;
+		}
 	}
 	return idealMode;
 }
 
-Blah_Video_Mode *blah_video_getNextMode(Blah_Video_Mode *mode) {
-	//Searches for a higher resolution mode than the given mode, using the same
-	//colour depth.  Returns a pointer to the new mode found or NULL if there is no
-	//higher resolution mode available with requested colour depth;
-	Blah_List_Element *modeElement = Blah_List_findElement(&blah_video_modes, mode);
-	Blah_List_Element *nextElement = modeElement->next;
-	Blah_Video_Mode *nextMode;
-	if (nextElement) { //If there is a next mode in the list, continue
-		nextMode = (Blah_Video_Mode*)nextElement->data;
-		return mode->colourDepth == nextMode->colourDepth ? nextMode : NULL;
-	} else
-		return NULL;
+const Blah_Video_Mode *blah_video_getNextMode(const Blah_Video_Mode *mode) {
+	// Searches for a higher resolution mode than the given mode, using the same
+	// colour depth.  Returns a pointer to the new mode found or NULL if there is no
+	// higher resolution mode available with requested colour depth;
+	const Blah_Video_Mode *nextMode = NULL;
+	const Blah_List_Element* const modeElement = Blah_List_findElement(&blah_video_modes, mode);
+	const Blah_List_Element* const nextElement = modeElement->next;
+	if (nextElement != NULL) { //If there is a next mode in the list, continue
+		const Blah_Video_Mode* const peekMode = (Blah_Video_Mode*)nextElement->data;
+		if (mode->colourDepth == peekMode->colourDepth) { nextMode = peekMode; }
+	}
+	return nextMode;
 }
 
-Blah_Video_Mode *blah_video_getPrevMode(Blah_Video_Mode *mode) {
+const Blah_Video_Mode *blah_video_getPrevMode(Blah_Video_Mode *mode) {
 	//Searches for a lower resolution mode than the given mode, using the same
 	//colour depth.  Returns a pointer to the new mode found or NULL if there is no
 	//lower resolution mode available with requested colour depth;
@@ -252,18 +250,19 @@ Blah_Video_Mode *blah_video_getPrevMode(Blah_Video_Mode *mode) {
 	if (prevElement) { //If there is a prev mode in the list, continue
 		prevMode = (Blah_Video_Mode*)prevElement->data;
 		return mode->colourDepth == prevMode->colourDepth ? prevMode : NULL;
-	} else
+	} else {
 		return NULL;
+	}
 }
 
 
-Blah_Video_Mode *blah_video_getLeastMode() {
+const Blah_Video_Mode* blah_video_getLeastMode() {
 	//Returns a pointer to the lowest resolution mode using the lowest
 	//available colour depth
 	return blah_video_modes.first->data;
 }
 
-Blah_Video_Mode *blah_video_getBestMode() {
+const Blah_Video_Mode* blah_video_getBestMode() {
 	//Returns a pointer to the highest resolution mode using the highest
 	//available colour depth
 	return blah_video_modes.last->data;
@@ -271,7 +270,7 @@ Blah_Video_Mode *blah_video_getBestMode() {
 
 /* Video Mode Function Declarations */
 
-Blah_Video_Mode *Blah_Video_Mode_new(char *name, bool fullScreen,
+Blah_Video_Mode* Blah_Video_Mode_new(char *name, bool fullScreen,
 	bool doubleBuffered, int width, int height, int bppDepth) {
 	//Creates a new video mode with given properties supplied in params.
 	//Allocates memory and returns new structure.

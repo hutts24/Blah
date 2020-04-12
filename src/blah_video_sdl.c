@@ -13,9 +13,13 @@
 #include "blah_debug.h"
 #include "blah_types.h"
 
-/* Externally available variables */
+/* Externally available variables and functions that should not be exposed beyond this library */
 extern Blah_List blah_video_modes;
 extern Blah_Video_Mode *blah_video_currentMode;
+
+extern Blah_Video_Mode *Blah_Video_Mode_new(char *name, bool fullScreen, bool doubleBuffered, int width, int height, int bppDepth);
+    // Creates a new video mode with given properties supplied in params.
+    // Allocates memory and returns new structure.
 
 /* Globals */
 

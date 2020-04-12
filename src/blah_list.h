@@ -84,27 +84,27 @@ blah_pointerstring Blah_List_createPointerstring(Blah_List *list);
 	//is a NULL pointer to signify the end.
 
 void Blah_List_destroy(Blah_List *list);
-	//Clears all memory occupied by list and elements
+	// Clears all memory occupied by list and elements
 
 void Blah_List_destroyElements(Blah_List *list);
-	//clears all memory allocated for elements and data but does not destroy basic list header
+	// clears all memory allocated for elements and data but does not destroy basic list header
 
-Blah_List_Element *Blah_List_findElement(Blah_List *list, void *data);
-	//Finds list element with given data
+Blah_List_Element *Blah_List_findElement(const Blah_List *list, const void *data);
+	// Finds list element with given data
 
 void Blah_List_init(Blah_List *list, const char *name);
-	//Sets the name of the list, and all element pointers to NULL
+	// Sets the name of the list, and all element pointers to NULL
 
 void Blah_List_insertElement(Blah_List *list, void *data);
-	//Inserts a new element at the beginning of the list with given data ptr
+	// Inserts a new element at the beginning of the list with given data ptr
 
-Blah_List *Blah_List_new(char *name);
-	//Creates a new empty list given a name as a null terminated string in parameter 'name'.
-	//Function returns pointer to new list on success, or NULL pointer if error occurred.
+Blah_List *Blah_List_new(const char *name);
+	// Creates a new empty list given a name as a null terminated string in parameter 'name'.
+	// Function returns pointer to new list on success, or NULL pointer if error occurred.
 
 void *Blah_List_popElement(Blah_List *list);
-	//Function Blah_List_pop_element
-	//Removes first element from list and returns data pointer
+	// Function Blah_List_pop_element
+	// Removes first element from list and returns data pointer
 
 
 void Blah_List_removeAll(Blah_List *list);
