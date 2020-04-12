@@ -45,6 +45,7 @@
 			<Add library="SDL" />
 			<Add library="glu32" />
 		</Linker>
+		<Unit filename="../TODO.txt" />
 		<Unit filename="../src/blah.h" />
 		<Unit filename="../src/blah_colour.c">
 			<Option compilerVar="CC" />
