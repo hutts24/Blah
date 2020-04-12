@@ -44,7 +44,7 @@ Blah_Video_API *blah_video_currentAPI = &blah_video_SDL;
 Blah_Video_Mode *blah_video_currentMode = NULL;
 	//A pointer to the current mode being used
 
-Blah_List blah_video_modes = {"", NULL, NULL, 0};
+Blah_List blah_video_modes;
 	//Binary tree of all usable video modes. Extern in blah_video_sdl.h
 
 Blah_Video_Settings blah_video_settings = {
@@ -93,7 +93,7 @@ void blah_video_clearBuffer() {  //Clears current drawing buffer
 bool blah_video_init() {
 	//Initialises the video component and sets current parameters to basic mode
 	//Returns TRUE upon success, else false for error
-
+    Blah_List_init(&blah_video_modes, "blah_video_modes");
 	Blah_Debug_Log_init(&blah_video_log, "blah_video");
 
 	if (!blah_video_currentAPI) {//If there is no API selected, raise error
@@ -213,7 +213,7 @@ Blah_Video_Mode *blah_video_getMode(int width, int height, int bppDepth) {
 		(blah_list_search_func)blah_video_modeSearch, tempModeName);
 }
 
-Blah_Video_Mode *blah_video_getIdealMode(int width, int height, int bppDepth) {
+Blah_Video_Mode *blah_video_getIdealMode(unsigned int width, unsigned int height, unsigned int bppDepth) {
 	//Searches for an available mode with the given attributes and returns handle
 	//to Blah_Video_Mode structure if one exists, otherwise the next best mode is
 	//returned.  Note that this structure is internal to blah video and must

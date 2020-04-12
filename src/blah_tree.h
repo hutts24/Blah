@@ -94,11 +94,11 @@ bool Blah_Tree_insertElement(Blah_Tree *tree, char *key, void *data);
 	// Function Blah_Tree_insert_element:
 	//Inserts a new element into the tree, with given key and data pointer
 
-void Blah_Tree_callFunction(Blah_Tree *tree, void *function);
-	//Function Blah_Tree_call_function:
-	//Calls function for each element, using data pointer as argument to given function
+void Blah_Tree_callFunction(Blah_Tree *tree, blah_tree_element_func function);
+	// Function Blah_Tree_call_function:
+	// Calls function for each element, using data pointer as argument to given function
 
-void Blah_Tree_callWithArg(Blah_Tree *tree, void *function, void *arg);
+void Blah_Tree_callWithArg(Blah_Tree *tree, blah_tree_element_func_1arg function, void *arg);
 	// Function Blah_Tree_call_with_arg: Calls function for each element, using data pointer as argument to given function
 
 //FIXME: Add destroy element function as parameter to init routine

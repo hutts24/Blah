@@ -5,7 +5,7 @@
 
 #define _BLAH_LIST
 
-#define BLAH_LIST_NAME_LENGTH	7  //number of characters allowed for name property
+#define BLAH_LIST_NAME_LENGTH 20  //number of characters allowed for name property
 
 #include "blah_types.h"
 
@@ -92,7 +92,7 @@ void Blah_List_destroyElements(Blah_List *list);
 Blah_List_Element *Blah_List_findElement(Blah_List *list, void *data);
 	//Finds list element with given data
 
-void Blah_List_init(Blah_List *list,  char *name);
+void Blah_List_init(Blah_List *list, const char *name);
 	//Sets the name of the list, and all element pointers to NULL
 
 void Blah_List_insertElement(Blah_List *list, void *data);

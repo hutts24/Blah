@@ -12,7 +12,10 @@
 #include "blah_file.h"
 
 /* Static Globals - Private to blah_debug.c */
-Blah_List logList = {"", NULL, NULL, (blah_list_element_dest_func)Blah_Debug_Log_destroy};  //List of all entities, defaults to empty
+static Blah_List logList = {
+    .name = "debug_logs",
+    .destroyElementFunction = (blah_list_element_dest_func)Blah_Debug_Log_destroy,  // List of all entities, defaults to empty
+};
 
 /* Private Function Declarations */
 
@@ -62,8 +65,8 @@ void Blah_Debug_Log_disable(Blah_Debug_Log *log)
 }
 
 void Blah_Debug_Log_init(Blah_Debug_Log *log, const char *logName)
-{	//Initialises a given log data structure as a new log with new open file pointer
-	//to a log file on the file system with the same name as the given log name.
+{	// Initialises a given log data structure as a new log with new open file pointer
+	// to a log file on the file system with the same name as the given log name.
 	log->filePointer = NULL;
 	log->numEntries = 0;
 	blah_util_strncpy(log->name, logName, BLAH_DEBUG_LOG_NAME_LENGTH); //Copy name string

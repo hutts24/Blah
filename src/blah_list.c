@@ -45,7 +45,7 @@ bool Blah_List_Element_callArgReturnBool(Blah_List_Element *element, blah_list_e
 
 /* List Function Definitions */
 
-void Blah_List_init(Blah_List *list, char *name)
+void Blah_List_init(Blah_List *list, const char *name)
 {	//Sets the name of the list, and all element pointers to NULL
 	list->first = NULL;
 	list->last = NULL;
@@ -136,8 +136,7 @@ void Blah_List_removeAll(Blah_List *list) {
 void Blah_List_destroyElements(Blah_List *list) {
 	//clears all memory allocated for elements and data but does not destroy basic list header
 	Blah_List_Element *tempElement = list->first, *destElement;
-	blah_list_element_dest_func destFunc = list->destroyElementFunction ?
-		list->destroyElementFunction : free;
+	blah_list_element_dest_func destFunc = list->destroyElementFunction ? list->destroyElementFunction : free;
 	//If there is a valid destory function, we will use it, else we will just use free()
 
 	while (tempElement!=NULL) {

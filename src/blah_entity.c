@@ -20,7 +20,11 @@
 
 /* Static Globals - Private to entity.c */
 
-Blah_List blah_entity_list = {"", NULL, NULL, (blah_list_element_dest_func)Blah_Entity_destroy};  //List of those entities which were dynamically allocated, defaults to empty
+// List of those entities which were dynamically allocated, defaults to empty
+Blah_List blah_entity_list = {
+    .name = "entities",
+    .destroyElementFunction = (blah_list_element_dest_func)Blah_Entity_destroy,
+};
 
 /* Static Prototypes */
 
@@ -57,14 +61,14 @@ void blah_entity_main()
 
 void blah_entity_processAll()
 {
-	//fprintf(stderr, "blah_entity_process_all()\n");
+	// fprintf(stderr, "blah_entity_process_all()\n");
 	Blah_List_callFunction(&blah_entity_list, (blah_list_element_func)Blah_Entity_process);
 }
 
 /* Entity Function Definitions */
 
 Blah_Entity_Object *Blah_Entity_addObject(Blah_Entity *entity, Blah_Object *object)
-{	//Adds an object to an entity's list of composing objects
+{	// Adds an object to an entity's list of composing objects
 	Blah_Entity_Object *newEntObj = Blah_Entity_Object_new("an object",object);
 	newEntObj->entity = entity;
 	Blah_List_appendElement(&entity->objects, newEntObj);
@@ -72,43 +76,43 @@ Blah_Entity_Object *Blah_Entity_addObject(Blah_Entity *entity, Blah_Object *obje
 }
 
 static void Blah_Entity_checkCollision(Blah_Entity *entity)
-{	//Checks if given entity is colliding against all other entities
-	Blah_List_Element *currentElement;
-	Blah_Entity *currentEntity;
-	Blah_Point impact;
-
-	currentElement = blah_entity_list.first;
+{	// Checks if given entity is colliding against all other entities.
+    // If a collision is detected with another entity, call the collision handling function
+	Blah_List_Element* currentElement = blah_entity_list.first;
 
 	while (currentElement) {
-		currentEntity = (Blah_Entity*)currentElement->data;
-		if (currentEntity != entity && currentEntity->activeCollision) //Don't process entity against itself
-			if (Blah_Entity_checkCollisionEntity(entity, currentEntity, &impact))
-				if (currentEntity->collisionFunction)  //call collision handler for recipient object
-					currentEntity->collisionFunction(currentEntity, entity); //, entity->collisionFunctionData);
+        Blah_Point impact;
+        Blah_Entity* currentEntity = (Blah_Entity*)currentElement->data;
+        if (currentEntity == entity) { continue; } // Don't check collision with itself!
+		blah_entity_collision_func colFunc = currentEntity->collisionFunction;
+		if (colFunc != NULL && currentEntity->activeCollision && Blah_Entity_checkCollisionEntity(entity, currentEntity, &impact)) {
+            colFunc(currentEntity, entity); // call collision handler for recipient object
+        }
 		currentElement = currentElement->next;
 	}
 
 }
 
 bool Blah_Entity_checkCollisionEntity(Blah_Entity *entity1, Blah_Entity *entity2, Blah_Point *impact)
-{	//Returns true if entity_1 is colliding with entity_2
-
+{
+    // Returns true if entity_1 is colliding with entity_2
+    // TODO - return impact point
 	Blah_List_Element *entity1Obj = entity1->objects.first;
-	Blah_List_Element *entity2Obj = entity2->objects.first; //Get the first object in list of each entity
-	bool collision = false;  //assume no collision yet
+	Blah_List_Element *entity2Obj = entity2->objects.first; // Get the first object in list of each entity
+	bool collision = false; // assume no collision yet
 	Blah_Point collisionPoint1, collisionPoint2;
 
 	while (entity1Obj && !collision) {
 		while (entity2Obj && !collision) {
 			if (Blah_Entity_Object_checkCollision((Blah_Entity_Object*)entity1Obj->data,
-				(Blah_Entity_Object*)entity2Obj->data, &collisionPoint1, &collisionPoint2))
+				(Blah_Entity_Object*)entity2Obj->data, &collisionPoint1, &collisionPoint2)) {
 				collision = true;
-			else
-				entity2Obj = entity2Obj->next;  //go through all ent2 objects
+			} else {
+				entity2Obj = entity2Obj->next;  // go through all ent2 objects
+			}
 		}
-		entity2Obj = entity2->objects.first; //rewind to start of object list for ent2
-
-		entity1Obj = entity1Obj->next;  //advance to next object for ent1
+		entity2Obj = entity2->objects.first; // rewind to start of object list for ent2
+		entity1Obj = entity1Obj->next;  // advance to next object for ent1
 	}
 
 	return collision;
@@ -116,15 +120,15 @@ bool Blah_Entity_checkCollisionEntity(Blah_Entity *entity1, Blah_Entity *entity2
 
 void Blah_Entity_destroy(Blah_Entity *entity)
 {	//standard destroy routine for entity
-	fprintf(stderr,"Blah_Entity_destroy %p\n", entity);
-	if (entity->destroyFunction) //call custom destroy function if there is one defined
+	fprintf(stderr, "Blah_Entity_destroy %p\n", entity);
+	if (entity->destroyFunction) {//call custom destroy function if there is one defined
 		entity->destroyFunction(entity); //, entity->destroyFunctionData);
-	else {
+	} else {
 		Blah_List_removeElement(&blah_entity_list, entity);  //Remove from list of entities
-		fprintf(stderr,"removed entity from main list\n");
+		fprintf(stderr, "removed entity from main list\n");
 		Blah_Entity_disable(entity);
 		free(entity);
-		fprintf(stderr,"freed entity\n");
+		fprintf(stderr, "freed entity\n");
 	}
 }
 
@@ -242,21 +246,19 @@ void Blah_Entity_process(Blah_Entity *entity)
 	fflush(stderr); */
 
 	if (entity->moveFunction) {
-		entity->moveFunction(entity);	//If a movement control function is defined, call it
+		entity->moveFunction(entity);	// If a movement control function is defined, call it
 		//fprintf(stderr, "Blah_Entity_process: called move function\n");
 		fflush(stderr);
 	}
-	Blah_Entity_animate(entity);	//Animate the entity
-	if (entity->activeCollision)
-		Blah_Entity_checkCollision(entity);  //If entity is actively colliding, check collisions
+	Blah_Entity_animate(entity);	// Animate the entity
+	if (entity->activeCollision) { Blah_Entity_checkCollision(entity); } //If entity is actively colliding, check collisions
 
 	temp_event = (Blah_Entity_Event*)Blah_List_popElement(&entity->events);
 	while (temp_event && cont) {//Take care of all pending events
 		//fprintf(stderr,"calling event function\n");
 		cont = Blah_Entity_processEvent(entity,temp_event); //process next event_data
 		//fprintf(stderr,"result is:%d",cont);
-		if (cont) //If it is ok to keep processing events,
-			temp_event = Blah_List_popElement(&entity->events); //Get the next one
+		if (cont) { temp_event = Blah_List_popElement(&entity->events); } // If it is ok to keep processing events, get the next one
 	}
 	//fprintf(stderr,"Finished processing entity\n");
 }

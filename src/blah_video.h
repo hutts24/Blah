@@ -118,7 +118,7 @@ Blah_Video_Mode *blah_video_getMode(int width, int height, int bppDepth);
 	//to Blah_Video_Mode structure if one exists, otherwise NULL.  Note that this structure is
 	//internal to blah video and must not be altered in any way!
 
-Blah_Video_Mode *blah_video_getIdealMode(int width, int height, int bppDepth);
+Blah_Video_Mode *blah_video_getIdealMode(unsigned int width, unsigned int height, unsigned int bppDepth);
 	//Searches for an available mode with the given attributes and returns handle
 	//to Blah_Video_Mode structure if one exists, otherwise the next best mode is
 	//returned.  Note that this structure is internal to blah video and must

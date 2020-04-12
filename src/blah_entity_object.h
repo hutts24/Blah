@@ -67,7 +67,7 @@ float Blah_Entity_Object_distanceObject(Blah_Entity_Object *entityObject1, Blah_
 void Blah_Entity_Object_draw(Blah_Entity_Object *entityObject);
 	//Draw structure in scene
 
-void Blah_Entity_Object_init(Blah_Entity_Object *entityObject, char *name, Blah_Object *objectPtr);
+void Blah_Entity_Object_init(Blah_Entity_Object *entityObject, const char *name, Blah_Object *objectPtr);
 	//Initialise an entity structure using supplied name and object pointer.
 
 bool Blah_Entity_Object_isVisible(Blah_Entity_Object *entityObject);

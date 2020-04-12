@@ -35,7 +35,7 @@ void Blah_Font_destroy(Blah_Font *font)
 			break;
 		default : free(font); break;
 	}
-	
+
 	Blah_Tree_removeElement(&blah_font_tree, font->name);
 }
 
@@ -55,9 +55,9 @@ void Blah_Font_init(blah_font_type type, Blah_Font *font, char *fontName, Blah_I
 }
 
 Blah_Font *Blah_Font_load(char *filename)
-{	//creates new font structure from a font datafile and returns pointer
-	//Return NULL if error
-
+{	// creates new font structure from a font datafile and returns pointer
+	// Return NULL if error
+    // TODO - complete me
 	return NULL;
 }
 
@@ -68,12 +68,12 @@ Blah_Font *Blah_Font_new(blah_font_type type, char *fontName, Blah_Image *source
 	//map begins with first character at position 1.  0 is ignored.
 	//Implictly adds to the internal font tree.  Returns NULL on error.
 	Blah_Font *newFont = NULL;
-				
+
 	if (!(source->width % charWidth) && !(source->height % charHeight)) {
 		//continue if source width and height divisible by char width and height
-		
+
 		//fprintf(stderr,"font source image is %d x %d chars\n",chars_wide,chars_high);
-		
+
 		switch (type) {
 			case BLAH_FONT_RASTER :
 				newFont = (Blah_Font*)Blah_Font_Raster_new(fontName, source, charMap, charWidth, charHeight);
@@ -83,7 +83,7 @@ Blah_Font *Blah_Font_new(blah_font_type type, char *fontName, Blah_Image *source
 				break;
 			default : newFont = NULL; break;
 		}
-		
+
 		Blah_Tree_insertElement(&blah_font_tree, fontName, newFont);
 	}
 	return newFont;
@@ -109,16 +109,16 @@ void Blah_Font_printString2d(Blah_Font *font, char *text, int x, int y)
 	char *charPointer = text;
 	char tempChar = *charPointer;  //get first character in string
 	int xPos = x;
-	
+
 	//fprintf(stderr,"begin font_print_string\n");
-	
+
 	while (tempChar) {  //loop until NULL char encountered
 		//fprintf(stderr,"printing character '%c'\n",temp_char);
 		if (tempChar == '\n') { //if current character is a new line,
 			xPos = x; y -= font->height;
 		} else {
 			Blah_Font_printChar2d(font, tempChar, xPos, y);
-			
+
 			/* switch (font->type) {
 				case BLAH_FONT_RASTER :
 					Blah_Font_Raster_print_char_2d((Blah_Font_Raster*)font,
@@ -130,7 +130,7 @@ void Blah_Font_printString2d(Blah_Font *font, char *text, int x, int y)
 					break;
 				default : break;
 			} */
-				
+
 			xPos+=font->width; //advance to position for next character
 		}
 		charPointer++;

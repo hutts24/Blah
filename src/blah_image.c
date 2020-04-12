@@ -33,22 +33,20 @@ void Blah_Image_copyImage(Blah_Image *dest, unsigned int destX, unsigned int des
 
 void Blah_Image_copyRasterData(Blah_Image *source, void *destination, unsigned int left, unsigned int bottom,
  unsigned int width, unsigned int height, unsigned int rowSkip)
-{	//Copies image raster data from a region (width * height) within the source
-	//image, origin defined by left,bottom to destination pointer.  Destination
-	//pointer will skip an additional 'row_skip' bytes after each row is copied.
-	int rowCount;
-	void *sourcePtr;
-	int pixelBytes = source->pixelDepth >> 3; //bytes per pixel in raster data
-	int sourceRowBytes = source->width * pixelBytes; //bytes in a row of the dest
-	int destRowBytes = width * pixelBytes; //bytes in a row of the source
+{	// Copies image raster data from a region (width * height) within the source
+	// image, origin defined by left,bottom to destination pointer.  Destination
+	// pointer will skip an additional 'row_skip' bytes after each row is copied.
+	const int pixelBytes = source->pixelDepth >> 3; // bytes per pixel in raster data
+	const int sourceRowBytes = source->width * pixelBytes; // bytes in a row of the dest
+	const int destRowBytes = width * pixelBytes; // bytes in a row of the source
 
-	sourcePtr = source->pixelData + (sourceRowBytes * bottom) + (left * pixelBytes);
-	//set pointer to beginning of copy region
+	void* sourcePtr = source->pixelData + (sourceRowBytes * bottom) + (left * pixelBytes);
+	// set pointer to beginning of copy region
 
-	for (rowCount = 0; rowCount < height; rowCount++) {
+	for (unsigned int rowCount = 0; rowCount < height; rowCount++) {
 		memcpy(destination, sourcePtr, destRowBytes);
-		destination+=destRowBytes+rowSkip;
-		sourcePtr+=sourceRowBytes;
+		destination += destRowBytes + rowSkip;
+		sourcePtr += sourceRowBytes;
 	}
 }
 

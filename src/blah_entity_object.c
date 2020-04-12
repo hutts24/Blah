@@ -8,6 +8,7 @@
 #include "blah_types.h"
 #include "blah_draw.h"
 #include "blah_macros.h"
+#include "blah_util.h"
 
 /* Entity Object Function Declarations */
 
@@ -72,8 +73,9 @@ void Blah_Entity_Object_draw(Blah_Entity_Object *entityObject)
 	}
 }
 
-void Blah_Entity_Object_init(Blah_Entity_Object *entityObject, char *name, Blah_Object *objectPtr)
+void Blah_Entity_Object_init(Blah_Entity_Object *entityObject, const char *name, Blah_Object *objectPtr)
 {	//Initialise an entity structure using supplied name and object pointer.
+	blah_util_strncpy(entityObject->name, name, sizeof(entityObject->name));
 	entityObject->entity = NULL; //Set parent entity pointer to NULL
 	entityObject->object = objectPtr;
 	entityObject->drawFunction = NULL;

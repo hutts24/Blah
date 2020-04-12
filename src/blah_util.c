@@ -73,13 +73,12 @@ int blah_util_randRangeInt(int min, int max) { //returns a random integer in the
 
 
 bool blah_util_stringReplaceChar(char *string, char replaceMe, char with) {
-	//Replaces all occurences in string of 'replace_me' with 'with'
-	bool success = false;  //assume none found
+	// Replaces all occurences in string of 'replace_me' with 'with'
 	char *pos = strchr(string, replaceMe);
-	if (pos) success = true;
+	bool success = pos != NULL;
 
-	while (pos)	{ //while a character has been found
-		*pos = with;	//Place new char in place of old one
+	while (pos != NULL) { // while a character has been found
+		*pos = with; // Place new char in place of old one
 		pos = strchr(pos+1, replaceMe);  //look for char again, starting at next position in memory
 	}
 
@@ -87,10 +86,10 @@ bool blah_util_stringReplaceChar(char *string, char replaceMe, char with) {
 }
 
 char *blah_util_strncpy(char *to, const char *from, size_t count)
-{	//Behaves like standard C strncpy, but always appends an extra NULL char in addition
-	//to the size_t count bytes.  Therefore, if the source contains atleast (count) bytes,
-	//then the destination array must have a capacity of (count) + 1 bytes, and the last byte
-	//of the destination array will be a NULL.
+{	// Behaves like standard C strncpy, but always appends an extra NULL char in addition
+	// to the size_t count bytes.  Therefore, if the source contains atleast (count) bytes,
+	// then the destination array must have a capacity of (count) + 1 bytes, and the last byte
+	// of the destination array will be a NULL.
 	char *returnPointer = strncpy(to, from, count); //Copy name string
 	to[count] = '\0'; //Append null character to end of name string
 

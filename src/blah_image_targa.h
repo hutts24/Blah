@@ -1,9 +1,9 @@
 /* blah_image_targa.h
 	Header file for blah_image_targa.c
 	Defines image structures and functions for manipulating images
-	All images are stored in raw pixel data	raster format 
+	All images are stored in raw pixel data	raster format
 	top left through to bottom right */
-	
+
 #ifndef _BLAH_IMAGE_TARGA
 
 #define _BLAH_IMAGE_TARGA
@@ -42,7 +42,7 @@ typedef struct Blah_Image_Targa_Header { //Represents a raw data image in raster
 	extern "C" {
 #endif //__cplusplus
 
-Blah_Image *Blah_Image_Targa_fromFile(char *filename, FILE *fileStream); 
+Blah_Image *Blah_Image_Targa_fromFile(const char *filename, FILE *fileStream);
 	//Creates a new Image structure from file 'filename'.  Memory is allocated etc
 
 void Blah_Image_Targa_printInfo(Blah_Image_Targa_Header *header);
@@ -51,5 +51,5 @@ void Blah_Image_Targa_printInfo(Blah_Image_Targa_Header *header);
 #ifdef __cplusplus
 	}
 #endif //__cplusplus
-		
+
 #endif

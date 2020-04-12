@@ -187,16 +187,22 @@ void Blah_Font_Texture_printChar2d(Blah_Font_Texture *font, char singleChar, int
 }
 
 void Blah_Font_Texture_printString2d(Blah_Font *font, char *text, int x, int y)
-{	//Prints a text string using the given font at supplied screen coordinates,
+{
+    // TODO
+    //Prints a text string using the given font at supplied screen coordinates,
 	//in 2D mode.  Text is not rendered in 3D mode.
 }
 
 void Blah_Font_Texture_printChar3d(Blah_Font *font, char singleChar, Blah_Matrix *matrix)
-{	//Prints a single text character using the given font with orientation and position
+{
+    // TODO
+    //Prints a single text character using the given font with orientation and position
 	//denoted by 'matrix' in 3D space.
 }
 
 void Blah_Font_Texture_printString3d(Blah_Font *font, char *text, float x, float y, float z)
-{	//Prints a text string using the given font with orientation and position
+{
+    // TODO
+    //Prints a text string using the given font with orientation and position
 	//denoted by 'matrix' in 3D space.
 }

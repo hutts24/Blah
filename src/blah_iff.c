@@ -63,18 +63,21 @@ Blah_IFF_Chunk *Blah_IFF_Chunk_new(FILE *file)
 }
 
 bool Blah_IFF_Chunk_readInt16(Blah_IFF_Chunk *chunk, blah_int16 *dest)
-{	//Reads a 16bit signed integer value from IFF Chunk into 'dest'
+{
+    //Reads a 16bit signed integer value from IFF Chunk into 'dest'
 	//Returns true on success, false on error
 	chunk->currentOffset+=2; //Increment offset by 2 bytes (16bits)
 	return blah_file_readInt16(chunk->filePointer, dest);
 }
 
 bool Blah_IFF_Chunk_readUnsigned8(Blah_IFF_Chunk *chunk, blah_unsigned8 *dest)
-{	//Reads a 8bit unsigned integer value from IFF Chunk into 'dest'
-	//Returns true on success, false on error
-	chunk->currentOffset++; //Increment offset by 2 bytes (16bits)
-	*dest = fgetc(chunk->filePointer);
-	return *dest != EOF;
+{
+    // Reads a 8bit unsigned integer value from IFF Chunk into 'dest'
+	// Returns true on success, false on error
+	chunk->currentOffset++; // Increment offset by 1 bytes (8bits)
+	int newChar = fgetc(chunk->filePointer);
+	*dest = newChar;
+	return newChar != EOF;
 }
 
 bool Blah_IFF_Chunk_readUnsigned16(Blah_IFF_Chunk *chunk, blah_unsigned16 *dest)
@@ -182,7 +185,7 @@ Blah_IFF_Subchunk *Blah_IFF_Subchunk_new(Blah_IFF_Chunk *chunk)
 bool Blah_IFF_Subchunk_readUnsigned8(Blah_IFF_Subchunk *subchunk, blah_unsigned8 *dest)
 {	//Reads a 8bit unsigned integer value from IFF subchunk into 'dest'
 	//Returns true on success, false on error
-	subchunk->currentOffset++; //Increment offset by 2 bytes (16bits)
+	subchunk->currentOffset++; //Increment offset by 1 byte (8bits)
 	return Blah_IFF_Chunk_readUnsigned8(subchunk->parentChunk, dest);
 }
 

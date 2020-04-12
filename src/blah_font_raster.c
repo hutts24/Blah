@@ -30,40 +30,37 @@ bool Blah_Font_Raster_init(Blah_Font_Raster *rasterFont, char *fontName, Blah_Im
 {	//Given a pointer to a simple unitialised raster font structure, this function initialises all important
 	//variables within the structure, allocates font data and performs all other tasks necessary to make
 	//the font usable.  Function returns true on success, or false on error.
-	unsigned int charsHigh, charsWide, charsNum, mapIndex;
-	unsigned int charRow, charCol, charSize, charCount;
-	void *rasterPointer = rasterFont->rasterData = malloc(source->width * source->height * (source->pixelDepth>>3));;
 	Blah_Debug_Log fontLog = { .filePointer = NULL};
-	char tempString[100];
 	bool success = false; //This argument will return the success of the oepration.  Default to false until succeeded.
 
 	Blah_Debug_Log_init(&fontLog, "blah_font_new");
 	Blah_Debug_Log_message(&fontLog, "creating font from image");
 
+	void *rasterPointer = rasterFont->rasterData = malloc(source->width * source->height * (source->pixelDepth>>3));;
+
 	if (rasterPointer) //Ensure that allocation of raster data buffer succeeded before continuing
 	{
-		//determine how many characters are represented in the source image
-		charsWide = source->width / charWidth;
-		charsHigh = source->height / charHeight;
-		charsNum = charsHigh * charsWide;
-		charSize = charWidth * charHeight * (source->pixelDepth >> 3);
-
-		//Call common basic init routine for all font structures
+	    //Call common basic init routine for all font structures
 		Blah_Font_init(BLAH_FONT_RASTER, &rasterFont->fontBase, fontName, source, charWidth, charHeight);
 
+	    //determine how many characters are represented in the source image
+		const unsigned int charsWide = source->width / charWidth;
+		const unsigned int charsHigh = source->height / charHeight;
+		const unsigned int charsNum = charsHigh * charsWide;
+		const unsigned int charSize = charWidth * charHeight * (source->pixelDepth >> 3);
+
 		//copy characters from source image one block at a time
-		for (charRow = 0; charRow < charsHigh; charRow++) {
-			for (charCol = 0; charCol < charsWide; charCol++) {
+		for (unsigned int charRow = 0; charRow < charsHigh; charRow++) {
+			for (unsigned int charCol = 0; charCol < charsWide; charCol++) {
 				Blah_Image_copyRasterData(source, rasterPointer, charCol * charWidth, charRow * charHeight, charWidth, charHeight, 0);
-				rasterPointer+=charSize;
+				rasterPointer += charSize;
 			}
 		}
 
 		// Setup the character mapping
-		for (charCount = 0; charCount < 256; charCount++) {
-			mapIndex = charMap[charCount];
-			sprintf(tempString, "ascii '%c' mapped to char %d",charCount, mapIndex);
-			Blah_Debug_Log_message(&fontLog, tempString);
+		for (unsigned int charCount = 0; charCount < 256; charCount++) {
+			unsigned int mapIndex = charMap[charCount];
+			Blah_Debug_Log_message(&fontLog, "ascii '%c' mapped to char %d", charCount, mapIndex);
 			if (!mapIndex || mapIndex > charsNum) { //if map index is 0 or beyond actual number of characters
 				rasterFont->charIndices[charCount] = NULL; //set raster pointer to NULL
 			} else {
@@ -140,11 +137,15 @@ void Blah_Font_Raster_printString2d(Blah_Font_Raster *font, char *text, int x, i
 }
 
 void Blah_Font_Raster_printChar3d(Blah_Font_Raster *font, char singleChar, float x, float y, float z)
-{	//Prints a single text character using the given font at supplied world
-	//coordinates, in 3D space.
+{
+    // TODO
+    // Prints a single text character using the given font at supplied world
+	// coordinates, in 3D space.
 }
 
 void Blah_Font_Raster_printString3d(Blah_Font_Raster *font, char *text, float x, float y, float z)
-{	//Prints a text string using the given font at supplied world coordinates,
-	//in 3D space.
+{
+    // TODO
+    // Prints a text string using the given font at supplied world coordinates,
+	// in 3D space.
 }

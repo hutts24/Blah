@@ -40,9 +40,11 @@ void Blah_Image_Targa_print_info(Blah_Image_Targa_Header *header)
 	fprintf(stderr,"targa image descriptor:%d\n",header->imageDescriptor);
 }
 
-Blah_Image *Blah_Image_Targa_fromFile(char *filename, FILE *fileStream)
-{	//Creates a new Image structure.  Memory is allocated etc
-	Blah_Image *newImage = NULL;		//Pointer for new Image structure
+Blah_Image *Blah_Image_Targa_fromFile(const char *filename, FILE *fileStream)
+{
+    // TODO
+    // Creates a new Image structure.  Memory is allocated etc
+	Blah_Image *newImage = NULL; //Pointer for new Image structure
 
 
 	return newImage; //Return pointer whether it be null or valid image
