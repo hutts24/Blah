@@ -22,8 +22,8 @@ Blah_Scene_Object *Blah_Scene_Object_new(char *name, Blah_Object *objectPtr) {
 	if (newSceneObject != NULL) // Ensure memory allocation succeeded
 		Blah_Scene_Object_init(newSceneObject, name, objectPtr);
 	return newSceneObject;
-}	
-	
+}
+
 void Blah_Scene_Object_setPosition(Blah_Scene_Object *sceneObject, float x, float y, float z) {
 	//set scene object's position indicated by 3 coordinates
 	Blah_Point_set(&sceneObject->position, x,y,z);
@@ -47,7 +47,7 @@ void Blah_Scene_Object_draw(Blah_Scene_Object *sceneObject) {
 		if (sceneObject->drawFunction)
 			sceneObject->drawFunction(sceneObject);
 		else //Just use the standard object draw function
-			Blah_Object_draw(sceneObject->object);		
+			Blah_Object_draw(sceneObject->object);
 		blah_draw_popMatrix();
 	}
 }
@@ -61,21 +61,21 @@ void Blah_Scene_Object_init(Blah_Scene_Object *sceneObject, char *name, Blah_Obj
 	Blah_Vector_set(&sceneObject->axisY, 0,0,0);
 	Blah_Vector_set(&sceneObject->axisZ, 0,0,0);
 	sceneObject->drawFunction = NULL;
-	sceneObject->visible = BLAH_TRUE; //visible by default
+	sceneObject->visible = true; //visible by default
 }
-	
+
 void Blah_Scene_Object_setDrawFunction(Blah_Scene_Object *sceneObject, blah_scene_object_draw_func *function) {
 	//set pointer for draw function
 	sceneObject->drawFunction = function;
 }
 
-void Blah_Scene_Object_setVisible(Blah_Scene_Object *sceneObject, blah_bool visFlag) {
+void Blah_Scene_Object_setVisible(Blah_Scene_Object *sceneObject, bool visFlag) {
 	//Sets the visibility flag of the scene_object to the value given by vis_flag
 	//True will make the scene_object visible and drawn, FALSE will make it invisible
 	sceneObject->visible = visFlag;
 }
-	
-blah_bool Blah_Scene_Object_isVisible(Blah_Scene_Object *sceneObject) {
+
+bool Blah_Scene_Object_isVisible(Blah_Scene_Object *sceneObject) {
 	//Returns TRUE if the scene_object is visible, else FALSE
 	return sceneObject->visible;
 }

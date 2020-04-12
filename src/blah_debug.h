@@ -31,7 +31,7 @@ typedef struct Blah_Debug_Log
 	extern "C" {
 #endif //__cplusplus
 
-blah_bool Blah_Debug_Log_close(Blah_Debug_Log *log);
+bool Blah_Debug_Log_close(Blah_Debug_Log *log);
 	//Closes the file attached to the log.
 	//Returns true apon success
 
@@ -48,14 +48,14 @@ void Blah_Debug_Log_init(Blah_Debug_Log *log, char *log_name);
 	//Initialises a given log data structure as a new log with new open file pointer
 	//to a log file on the file system with the same name as the given log name.
 
-blah_bool Blah_Debug_Log_message(Blah_Debug_Log *log, char *message);
+bool Blah_Debug_Log_message(Blah_Debug_Log *log, char *message);
 	//Append the given string to the specified log.  Returns TRUE if success
 
 Blah_Debug_Log *Blah_Debug_Log_new(char *log_name);
 	//Creates a new debugging log with given name and attached file
 	//Memory is allocated and pointer returned
 
-blah_bool Blah_Debug_Log_open(Blah_Debug_Log *log);
+bool Blah_Debug_Log_open(Blah_Debug_Log *log);
 	//Attaches a new file to the log.  Implicitly closes the previously associated file
 	//if still currently open. Returns true apon success, else false
 

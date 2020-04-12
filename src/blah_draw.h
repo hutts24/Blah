@@ -50,7 +50,7 @@ typedef struct Blah_Draw_Parameters {
 } Blah_Draw_Parameters;
 
 typedef struct Blah_Draw_Capabilities { //Represents drawing system/hardware capabilities.
-	blah_bool lighting; //This flag indicates whether the drawing system supports Lighting
+	bool lighting; //This flag indicates whether the drawing system supports Lighting
 } Blah_Draw_Capabilities;
 
 /* Function Prototypes */
@@ -63,8 +63,8 @@ void blah_draw_exit();
 	//This function is called when the engine exits and deallocates resources used
 	//by the drawing engine component.  Exits video mode etc
 
-blah_bool blah_draw_init();
-	//Initialise drawing engine component.  Returns BLAH_TRUE on success.
+bool blah_draw_init();
+	//Initialise drawing engine component.  Returns true on success.
 
 void blah_draw_main();
 	//Main drawing routine.  Sets perspective and draws enitites/objects
@@ -93,7 +93,7 @@ void blah_draw_updatePerspective();
 void blah_draw_setAmbientLight(float red, float green, float blue, float alpha);
 	//Sets the properties of the ambient light used to render current drawing
 
-blah_bool blah_draw_setLight(Blah_Point *location, Blah_Colour *diffuse, Blah_Colour *ambient,	Blah_Vector *direction, float intensity, float spread);
+bool blah_draw_setLight(Blah_Point *location, Blah_Colour *diffuse, Blah_Colour *ambient,	Blah_Vector *direction, float intensity, float spread);
 	//Enables a light source at specified location in 3D space, with given qualities
 
 /* Drawport related functions */
@@ -102,10 +102,10 @@ void blah_draw_getDrawport(unsigned int *left, unsigned int *bottom, unsigned in
 	//Gets the active coordinates of the drawport and stores them
 	//in the memory locations as indicated by supplied parameters
 
-blah_bool blah_draw_popDrawport();
+bool blah_draw_popDrawport();
 	//Pushes current drawport data onto internal stack to preserve it
 
-blah_bool blah_draw_pushDrawport();
+bool blah_draw_pushDrawport();
 	//Pushes current drawport data onto internal stack to preserve it
 
 void blah_draw_setDrawport(unsigned int left, unsigned int bottom, unsigned int right, unsigned int top);

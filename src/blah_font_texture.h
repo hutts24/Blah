@@ -9,10 +9,10 @@
 #include "blah_font.h"
 #include "blah_matrix.h"
 #include "blah_texture.h"
-	
-	
-/* Symbol Definitions */	
-	
+
+
+/* Symbol Definitions */
+
 
 /* Type Definitions */
 
@@ -37,8 +37,8 @@ void Blah_Font_Texture_disable(Blah_Font_Texture *font);
 	//This function deallocates all internal memory allocated for the texture font.
 	//Specifically, the character mappings and texture are deallocated.
 	//This function expects that all unused texture mappings for each character are marked as NULL.
-	
-blah_bool Blah_Font_Texture_init(Blah_Font_Texture *font, char *fontName, Blah_Image *source,
+
+bool Blah_Font_Texture_init(Blah_Font_Texture *font, char *fontName, Blah_Image *source,
  unsigned int charMap[256], int charWidth, int charHeight);
 	//Initialisesd a new textured font structure from source image using index char map
 	//and given width and height of each character.  Width and height of source

@@ -67,7 +67,7 @@ Blah_Texture *Blah_Texture_new(const char* name, unsigned int width, unsigned in
 
 // Texture Map functions
 
-blah_bool Blah_Texture_Map_init(Blah_Texture_Map *map, Blah_Texture *texture, Blah_Point *mapping[]);
+bool Blah_Texture_Map_init(Blah_Texture_Map *map, Blah_Texture *texture, Blah_Point *mapping[]);
 	//Allocate copy of mapping coordinates and assign to given texture
 
 Blah_Texture_Map *Blah_Texture_Map_new(Blah_Texture *texture, Blah_Point *mapping[]);

@@ -112,7 +112,7 @@ Blah_Texture_Map *Blah_Texture_Map_new(Blah_Texture *texture, Blah_Point *mappin
 	return newMap;
 }
 
-blah_bool Blah_Texture_Map_init(Blah_Texture_Map *map, Blah_Texture *texture, Blah_Point *mapping[]) {
+bool Blah_Texture_Map_init(Blah_Texture_Map *map, Blah_Texture *texture, Blah_Point *mapping[]) {
 	int coordCount = 0, coordIndex;
 
 	while (mapping[coordCount])
@@ -124,9 +124,9 @@ blah_bool Blah_Texture_Map_init(Blah_Texture_Map *map, Blah_Texture *texture, Bl
 		for (coordIndex = 0;coordIndex < coordCount; coordIndex++)
 			memcpy(&map->mapping[coordIndex], mapping[coordIndex], sizeof(Blah_Point));
 		map->texture = texture; //assign texture pointer
-		return BLAH_TRUE;
+		return true;
 	} else
-		return BLAH_FALSE;
+		return false;
 }
 
 void Blah_Texture_Map_destroy(Blah_Texture_Map *map) {

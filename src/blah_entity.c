@@ -7,7 +7,7 @@
 
 #ifdef BLAH_USE_GLUT
 #include <GL/glut.h>
-#endif 
+#endif
 
 #include <string.h>
 
@@ -30,9 +30,9 @@ static void Blah_Entity_animate(Blah_Entity *entity);
 static void Blah_Entity_checkCollision(Blah_Entity *entity);
 	//Checks if given entity is colliding against all other entities
 
-static blah_bool Blah_Entity_processEvent(Blah_Entity *entity, Blah_Entity_Event *event); 
+static bool Blah_Entity_processEvent(Blah_Entity *entity, Blah_Entity_Event *event);
 	//Deals with pending event
-	
+
 
 /* Main Entity Functions */
 
@@ -40,7 +40,7 @@ static void Blah_Entity_animate(Blah_Entity *entity)
 {	//Alters entity's location and orientation
 	//translate current position by velocity vector
 	Blah_Point_translateByVector(&entity->location, &entity->velocity);
-	
+
 	//Calculate entity's orientation and update in private matrix
 	Blah_Entity_rotateEuler(entity, entity->rotationAxisX, entity->rotationAxisY, entity->rotationAxisZ);
 }
@@ -76,7 +76,7 @@ static void Blah_Entity_checkCollision(Blah_Entity *entity)
 	Blah_List_Element *currentElement;
 	Blah_Entity *currentEntity;
 	Blah_Point impact;
-	
+
 	currentElement = blah_entity_list.first;
 
 	while (currentElement) {
@@ -86,31 +86,31 @@ static void Blah_Entity_checkCollision(Blah_Entity *entity)
 				if (currentEntity->collisionFunction)  //call collision handler for recipient object
 					currentEntity->collisionFunction(currentEntity, entity); //, entity->collisionFunctionData);
 		currentElement = currentElement->next;
-	}			
+	}
 
 }
-	
-blah_bool Blah_Entity_checkCollisionEntity(Blah_Entity *entity1, Blah_Entity *entity2, Blah_Point *impact)
+
+bool Blah_Entity_checkCollisionEntity(Blah_Entity *entity1, Blah_Entity *entity2, Blah_Point *impact)
 {	//Returns true if entity_1 is colliding with entity_2
-	
-	Blah_List_Element *entity1Obj = entity1->objects.first; 
+
+	Blah_List_Element *entity1Obj = entity1->objects.first;
 	Blah_List_Element *entity2Obj = entity2->objects.first; //Get the first object in list of each entity
-	blah_bool collision = BLAH_FALSE;  //assume no collision yet
+	bool collision = false;  //assume no collision yet
 	Blah_Point collisionPoint1, collisionPoint2;
-	
+
 	while (entity1Obj && !collision) {
 		while (entity2Obj && !collision) {
 			if (Blah_Entity_Object_checkCollision((Blah_Entity_Object*)entity1Obj->data,
 				(Blah_Entity_Object*)entity2Obj->data, &collisionPoint1, &collisionPoint2))
-				collision = BLAH_TRUE;
+				collision = true;
 			else
 				entity2Obj = entity2Obj->next;  //go through all ent2 objects
 		}
 		entity2Obj = entity2->objects.first; //rewind to start of object list for ent2
-		
+
 		entity1Obj = entity1Obj->next;  //advance to next object for ent1
-	}		
-	
+	}
+
 	return collision;
 }
 
@@ -148,9 +148,9 @@ float Blah_Entity_distanceEntity(Blah_Entity *entity1, Blah_Entity *entity2)
 void Blah_Entity_draw(Blah_Entity *entity)
 {
 	//fprintf(stderr,"Blah_Entity_draw");
-	
+
 	//fprintf(stderr,"Entity name is %s\n",entity->name);
-	
+
 	if (entity->drawFunction) {
 		//fprintf(stderr,"custom draw func:%p\n",entity->draw_function);
 		entity->drawFunction(entity); //, entity->drawFunctionData); //Call custom draw function if it exists for entity
@@ -162,7 +162,7 @@ void Blah_Entity_draw(Blah_Entity *entity)
 		Blah_List_callFunction(&entity->objects, (blah_list_element_func)Blah_Entity_Object_draw); //call Object_draw for all entity objects
 		blah_draw_popMatrix();
 	}
-	
+
 }
 
 void *Blah_Entity_getData(Blah_Entity *entity)
@@ -183,7 +183,7 @@ int Blah_Entity_getType(Blah_Entity *entity)
 
 void Blah_Entity_getVelocity(Blah_Entity *entity, Blah_Vector *v)
 {
-	//Gets entity's velocity in 3 vector float values 
+	//Gets entity's velocity in 3 vector float values
 	Blah_Vector_set(v,entity->velocity.x,entity->velocity.y,entity->velocity.z);
 }
 
@@ -193,7 +193,7 @@ void Blah_Entity_init(Blah_Entity *newEntity, char *name, int type, size_t dataS
 		newEntity->entityData = malloc(dataSize);
 	else
 		newEntity->entityData = NULL;	//Assign Entity data pointer
-	
+
 	//fprintf(stderr,"Init new entity struct");
 	blah_util_strncpy(newEntity->name,name,BLAH_ENTITY_NAME_LENGTH); //copy name
 	newEntity->type = type;	//Set new entity type
@@ -201,8 +201,8 @@ void Blah_Entity_init(Blah_Entity *newEntity, char *name, int type, size_t dataS
 	Blah_List_init(&newEntity->events,"Events");
 	//FIXME - change this direct assignment of destroyElementFunction member
 	newEntity->objects.destroyElementFunction = (blah_list_element_dest_func)Blah_Entity_Object_destroy;
-	newEntity->activeCollision = BLAH_FALSE;
-	
+	newEntity->activeCollision = false;
+
 	Blah_Entity_setLocation(newEntity,0,0,0); //set location to origin
 	Blah_Entity_setVelocity(newEntity,0,0,0); //going nowhere
 	Blah_Vector_set(&newEntity->axisX, 1, 0, 0);
@@ -220,36 +220,36 @@ void Blah_Entity_init(Blah_Entity *newEntity, char *name, int type, size_t dataS
 Blah_Entity *Blah_Entity_new(char *name, int type, size_t dataSize)
 {	//constructs a new plain entity without objects, positioned at origin
 	Blah_Entity *newEntity = (Blah_Entity*)malloc(sizeof(Blah_Entity));
-	
+
 	if (newEntity) {
 		Blah_Entity_init(newEntity, name, type, dataSize);
 		Blah_List_appendElement(&blah_entity_list, newEntity);  //Add to list of entities
 	}
 	else
 		fprintf(stderr,"Blah_Entity_new - Failed to allocate memory for entity\n");  //FIXME - add proper log debugging
-	
+
 	return newEntity;
 }
 
 void Blah_Entity_process(Blah_Entity *entity)
 {	//process entity, update position etc
 	Blah_Entity_Event *temp_event;
-	blah_bool cont = BLAH_TRUE;
+	bool cont = true;
 
 	/* fprintf(stderr,"Blah_Entity_process()\n");
-	
+
 	fprintf(stderr,"Blah_Entity_process - processing entity:%s\n",entity->name);
 	fflush(stderr); */
-	
+
 	if (entity->moveFunction) {
 		entity->moveFunction(entity);	//If a movement control function is defined, call it
 		//fprintf(stderr, "Blah_Entity_process: called move function\n");
 		fflush(stderr);
 	}
 	Blah_Entity_animate(entity);	//Animate the entity
-	if (entity->activeCollision) 
+	if (entity->activeCollision)
 		Blah_Entity_checkCollision(entity);  //If entity is actively colliding, check collisions
-		
+
 	temp_event = (Blah_Entity_Event*)Blah_List_popElement(&entity->events);
 	while (temp_event && cont) {//Take care of all pending events
 		//fprintf(stderr,"calling event function\n");
@@ -264,7 +264,7 @@ void Blah_Entity_process(Blah_Entity *entity)
 void Blah_Entity_rotateEuler(Blah_Entity *entity, float x, float y, float z)
 {
 	Blah_Quaternion tempQuat;
-		
+
 	//Form a quaternion to represent all 3 euler rotations
 	Blah_Quaternion_formatEuler(&tempQuat, x, y, z);
 	//Multiply entity's current quaternion by new quaternion
@@ -273,7 +273,7 @@ void Blah_Entity_rotateEuler(Blah_Entity *entity, float x, float y, float z)
 	Blah_Matrix_setRotationQuat(&entity->fakeMatrix, &entity->orientation);
 }
 
-void Blah_Entity_setActiveCollision(Blah_Entity *entity,blah_bool flag)
+void Blah_Entity_setActiveCollision(Blah_Entity *entity,bool flag)
 {
 	//Sets active collision flag
 	entity->activeCollision = flag;
@@ -305,7 +305,7 @@ void Blah_Entity_setCollisionFunction(Blah_Entity *entity, blah_entity_collision
 {
 	entity->collisionFunction = function;
 	//entity->collisionFunctionData = externData;
-}	
+}
 
 void Blah_Entity_setDestroyFunction(Blah_Entity *entity, blah_entity_destroy_func function)
 {
@@ -367,15 +367,15 @@ Blah_Entity_Event *Blah_Entity_Event_new(char *name, Blah_Entity *sender, blah_e
 	Blah_Entity_Event *newEvent = malloc(sizeof(Blah_Entity_Event));
 	if (newEvent)
 		Blah_Entity_Event_init(newEvent, name, sender, function, dataSize);
-	
+
 	return newEvent;
 }
 
 
 
-static blah_bool Blah_Entity_processEvent(Blah_Entity *entity,  Blah_Entity_Event *event) {
+static bool Blah_Entity_processEvent(Blah_Entity *entity,  Blah_Entity_Event *event) {
 	//Deals with pending event
-	blah_bool result=BLAH_FALSE;
+	bool result=false;
 	//fprintf(stderr,"processing event:%s for entity %s\n",event->name, entity->name);
 	if (event->eventFunction)
 		result = event->eventFunction(entity, event);

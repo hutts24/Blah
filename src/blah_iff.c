@@ -19,7 +19,7 @@ void Blah_IFF_Chunk_destroy(Blah_IFF_Chunk *chunk)
 	free(chunk);
 }
 
-blah_bool Blah_IFF_Chunk_get(Blah_IFF_Chunk *chunk, FILE *file)
+bool Blah_IFF_Chunk_get(Blah_IFF_Chunk *chunk, FILE *file)
 {	//Discards current settings of given chunk object and connects it to the specified
 	//file pointer.  Returns 0/false on error, 1/true on success
 
@@ -30,7 +30,7 @@ blah_bool Blah_IFF_Chunk_get(Blah_IFF_Chunk *chunk, FILE *file)
 
 	chunk->idTag = chunkId;
 	chunk->dataLength = dataLength;
-	chunk->padBytePresent = dataLength & 1 ? BLAH_TRUE : BLAH_FALSE;
+	chunk->padBytePresent = dataLength & 1 ? true : false;
 	//If data length is uneven, we need a pad byte
 	chunk->chunkLength = BLAH_IFF_CHUNK_HEADER_LENGTH + dataLength +
 		(chunk->padBytePresent ? 1 : 0); //Assign total chunk length
@@ -38,10 +38,10 @@ blah_bool Blah_IFF_Chunk_get(Blah_IFF_Chunk *chunk, FILE *file)
 	chunk->filePointer = file;
 	chunk->currentOffset = 0;
 
-	return BLAH_TRUE;
+	return true;
 }
 
-blah_bool Blah_IFF_Chunk_init(Blah_IFF_Chunk *chunk, FILE *file)
+bool Blah_IFF_Chunk_init(Blah_IFF_Chunk *chunk, FILE *file)
 {	//Initialises an IFF chunk structure from given file_pointer
 	//All it really does is call Blah_IFF_Chunk_get()
 	//Returns TRUE on success on FALSE on error.
@@ -62,7 +62,7 @@ Blah_IFF_Chunk *Blah_IFF_Chunk_new(FILE *file)
 	return newChunk;
 }
 
-blah_bool Blah_IFF_Chunk_readInt16(Blah_IFF_Chunk *chunk, blah_int16 *dest)
+bool Blah_IFF_Chunk_readInt16(Blah_IFF_Chunk *chunk, blah_int16 *dest)
 {	//Reads a 16bit signed integer value from IFF Chunk into 'dest'
 	//Returns true on success, false on error
 	chunk->currentOffset+=2; //Increment offset by 2 bytes (16bits)
@@ -77,14 +77,14 @@ bool Blah_IFF_Chunk_readUnsigned8(Blah_IFF_Chunk *chunk, blah_unsigned8 *dest)
 	return *dest != EOF;
 }
 
-blah_bool Blah_IFF_Chunk_readUnsigned16(Blah_IFF_Chunk *chunk, blah_unsigned16 *dest)
+bool Blah_IFF_Chunk_readUnsigned16(Blah_IFF_Chunk *chunk, blah_unsigned16 *dest)
 {	//Reads a 16bit unsigned integer value from IFF Chunk into 'dest'
 	//Returns true on success, false on error
 	chunk->currentOffset+=2; //Increment offset by 2 bytes (16bits)
 	return blah_file_readUnsigned16(chunk->filePointer, dest);
 }
 
-blah_bool Blah_IFF_Chunk_readUnsigned32(Blah_IFF_Chunk *chunk, blah_unsigned32 *dest)
+bool Blah_IFF_Chunk_readUnsigned32(Blah_IFF_Chunk *chunk, blah_unsigned32 *dest)
 {	//Reads a 32bit unsigned integer value from IFF chunk into 'dest'
 	//Returns true on success, false on error
 	chunk->currentOffset+=4; //Increment offset by 4 bytes (32bits)
@@ -98,7 +98,7 @@ size_t Blah_IFF_Chunk_read(Blah_IFF_Chunk *chunk, void *dest, size_t numBytes)
 	return fread(dest, numBytes, 1, chunk->filePointer);
 }
 
-blah_bool Blah_IFF_Chunk_readFloat32(Blah_IFF_Chunk *chunk, blah_float32 *dest)
+bool Blah_IFF_Chunk_readFloat32(Blah_IFF_Chunk *chunk, blah_float32 *dest)
 {	//Reads a 32bit floating point value from IFF chunk into 'dest'
 	//Returns true on success, false on error
 	chunk->currentOffset+=4; //Increment offset by 4 bytes (32bits)
@@ -135,7 +135,7 @@ void Blah_IFF_Subchunk_destroy(Blah_IFF_Subchunk *subchunk)
 	free(subchunk);
 }
 
-blah_bool Blah_IFF_Subchunk_get(Blah_IFF_Subchunk *subchunk, Blah_IFF_Chunk *chunk)
+bool Blah_IFF_Subchunk_get(Blah_IFF_Subchunk *subchunk, Blah_IFF_Chunk *chunk)
 {	//Discards current settings of given subchunk object and connects it to the specified
 	//file pointer
 	blah_unsigned32 subchunkId;
@@ -147,7 +147,7 @@ blah_bool Blah_IFF_Subchunk_get(Blah_IFF_Subchunk *subchunk, Blah_IFF_Chunk *chu
 
 	subchunk->idTag = subchunkId;
 	subchunk->dataLength = dataLength;
-	subchunk->padBytePresent = dataLength & 1 ? BLAH_TRUE : BLAH_FALSE;
+	subchunk->padBytePresent = dataLength & 1 ? true : false;
 	//If data length is uneven, we need a pad byte
 	subchunk->subchunkLength = BLAH_IFF_SUBCHUNK_HEADER_LENGTH + dataLength +
 		(subchunk->padBytePresent ? 1 : 0); //Assign total chunk length
@@ -155,10 +155,10 @@ blah_bool Blah_IFF_Subchunk_get(Blah_IFF_Subchunk *subchunk, Blah_IFF_Chunk *chu
 	subchunk->parentChunk = chunk;
 	subchunk->currentOffset = 0;
 
-	return BLAH_TRUE;
+	return true;
 }
 
-blah_bool Blah_IFF_Subchunk_init(Blah_IFF_Subchunk *subchunk, Blah_IFF_Chunk *chunk)
+bool Blah_IFF_Subchunk_init(Blah_IFF_Subchunk *subchunk, Blah_IFF_Chunk *chunk)
 {	//Intialises a subchunk structure, given parent chunk structure.
 	//All it does is call Blah_IFF_Subchunk_get()
 	return Blah_IFF_Subchunk_get(subchunk, chunk);
@@ -179,34 +179,34 @@ Blah_IFF_Subchunk *Blah_IFF_Subchunk_new(Blah_IFF_Chunk *chunk)
 	return newSubchunk;
 }
 
-blah_bool Blah_IFF_Subchunk_readUnsigned8(Blah_IFF_Subchunk *subchunk, blah_unsigned8 *dest)
+bool Blah_IFF_Subchunk_readUnsigned8(Blah_IFF_Subchunk *subchunk, blah_unsigned8 *dest)
 {	//Reads a 8bit unsigned integer value from IFF subchunk into 'dest'
 	//Returns true on success, false on error
 	subchunk->currentOffset++; //Increment offset by 2 bytes (16bits)
 	return Blah_IFF_Chunk_readUnsigned8(subchunk->parentChunk, dest);
 }
 
-blah_bool Blah_IFF_Subchunk_readInt16(Blah_IFF_Subchunk *subchunk, blah_int16 *dest)
+bool Blah_IFF_Subchunk_readInt16(Blah_IFF_Subchunk *subchunk, blah_int16 *dest)
 {	//Reads a 16bit signed integer value from IFF subchunk into 'dest'
 	//Returns true on success, false on error
 	subchunk->currentOffset+=2; //Increment offset by 2 bytes (16bits)
 	return Blah_IFF_Chunk_readInt16(subchunk->parentChunk, dest);
 }
 
-blah_bool Blah_IFF_Subchunk_readUnsigned16(Blah_IFF_Subchunk *subchunk, blah_unsigned16 *dest)
+bool Blah_IFF_Subchunk_readUnsigned16(Blah_IFF_Subchunk *subchunk, blah_unsigned16 *dest)
 {	//Reads a 16bit unsigned integer value from IFF subchunk into 'dest'
 	subchunk->currentOffset+=2; //Increment offset by 2 bytes (16bits)
 	return Blah_IFF_Chunk_readUnsigned16(subchunk->parentChunk, dest);
 }
 
-blah_bool Blah_IFF_Subchunk_readUnsigned32(Blah_IFF_Subchunk *subchunk, blah_unsigned32 *dest)
+bool Blah_IFF_Subchunk_readUnsigned32(Blah_IFF_Subchunk *subchunk, blah_unsigned32 *dest)
 {	//Reads a 32bit unsigned integer value from IFF subchunk into 'dest'
 	//Returns true on success, false on error
 	subchunk->currentOffset+=4; //Increment offset by 4 bytes (32bits)
 	return Blah_IFF_Chunk_readUnsigned32(subchunk->parentChunk, dest);
 }
 
-blah_bool Blah_IFF_Subchunk_readFloat32(Blah_IFF_Subchunk *subchunk, blah_float32 *dest)
+bool Blah_IFF_Subchunk_readFloat32(Blah_IFF_Subchunk *subchunk, blah_float32 *dest)
 {	//Reads a 32bit floating point value from IFF subchunk into 'dest'
 	//Returns true on success, false on error
 	subchunk->currentOffset+=4; //Increment offset by 4 bytes (32bits)

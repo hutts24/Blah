@@ -83,13 +83,13 @@ static Blah_Tree_Element **Blah_Tree_Element_findPosition(Blah_Tree_Element **be
 	//Returns address of pointer where element should be located in tree
 	Blah_Tree_Element *tempElement = *(Blah_Tree_Element **)beginAddr;
 	Blah_Tree_Element **positionAddr = beginAddr;
-	blah_bool found = BLAH_FALSE;
+	bool found = false;
 	int stringComp;
 
 	while (tempElement && !found) {
 		stringComp = strcmp(key, tempElement->keystring);
 		if (!stringComp) { //check if key strings match
-			found = BLAH_TRUE;  //set found flag to true
+			found = true;  //set found flag to true
 		}
 		else {
 			if (stringComp < 0) { //if element should go left of current element
@@ -116,7 +116,7 @@ void Blah_Tree_Element_callWithArg(Blah_Tree_Element *element, blah_tree_element
 	function(element->data, arg);
 }
 
-blah_bool Blah_Tree_Element_callArgReturnBool(Blah_Tree_Element *element, blah_tree_element_bool_func_1arg function, void *arg) {
+bool Blah_Tree_Element_callArgReturnBool(Blah_Tree_Element *element, blah_tree_element_bool_func_1arg function, void *arg) {
 	//call function for with data pointer of element
 	return function(element->data, arg);
 }
@@ -126,7 +126,7 @@ void *Blah_Tree_Element_search(Blah_Tree_Element *treeElement,
 	//Performs a linear recursive search from location of given element in tree.
 	//Calls search_function for each element of the tree in sort order, using the
 	//element's data as the argument and 'arg' as a second argument.  Returns the data
-	//pointer of the first element for which search_function returns BLAH_TRUE, or
+	//pointer of the first element for which search_function returns true, or
 	//NULL if no match;
 	if (treeElement->left)
 		return Blah_Tree_Element_search(treeElement->left, searchFunction, arg);
@@ -166,14 +166,14 @@ Blah_Tree_Element *Blah_Tree_findElement(Blah_Tree *tree, const char *key) {
 void *Blah_Tree_search(Blah_Tree *tree, blah_tree_search_func *searchFunction, void *arg) {
 	//Calls search_function for each element of the tree in sort order, using the
 	//element's data as the argument.  Returns the data pointer of the first element
-	//for which search_function returns BLAH_TRUE, or NULL if no match;
+	//for which search_function returns true, or NULL if no match;
 
 	/* Simply return value from recursive element search function */
 	return Blah_Tree_Element_search(tree->first, searchFunction, arg);
 }
 
 
-blah_bool Blah_Tree_removeElement(Blah_Tree *tree, char *key) {
+bool Blah_Tree_removeElement(Blah_Tree *tree, char *key) {
 	//remove given tree element from tree.  Does not destroy data
 	Blah_Tree_Element **elementPtrAddr;
 	Blah_Tree_Element *removeMe;
@@ -193,9 +193,9 @@ blah_bool Blah_Tree_removeElement(Blah_Tree *tree, char *key) {
 			*newPtrAddr = removeMe->right;	//Insert right element at appropriate position
 		}
 		tree->count--;
-		return BLAH_TRUE;
+		return true;
 	} else
-		return BLAH_FALSE; //return false because remove failed
+		return false; //return false because remove failed
 }
 
 void Blah_Tree_removeAll(Blah_Tree *tree) {
@@ -223,17 +223,17 @@ void Blah_Tree_destroy(Blah_Tree *tree) {
 	free(tree);	//clear the tree itself
 }
 
-blah_bool Blah_Tree_insertElement(Blah_Tree *tree, char *key, void *data) {
+bool Blah_Tree_insertElement(Blah_Tree *tree, char *key, void *data) {
 	//inserts a new element with given key and data pointer
 	//Returns TRUE on success, or FALSE if an element with same key already exists
 
 	Blah_Tree_Element **newPtrAddr = Blah_Tree_Element_findPosition(&tree->first, key);
 	if (*newPtrAddr) //If search found existing element,
-		return BLAH_FALSE;
+		return false;
 	else {
 		*newPtrAddr = Blah_Tree_Element_new(key, data);
 		tree->count++;  //Create new tree element structure and insert into pointer
-		return BLAH_TRUE;
+		return true;
 	}
 }
 

@@ -54,7 +54,7 @@ void blah_draw_exit()
 	Blah_Debug_Log_destroy(blah_draw_log);
 }
 
-blah_bool blah_draw_init()
+bool blah_draw_init()
 {	//Initialise drawing engine component
 	blah_draw_log = Blah_Debug_Log_new("blah_draw");
 
@@ -77,7 +77,7 @@ blah_bool blah_draw_init()
 	//Set default material properties
 	//FIXME - Reinstate this call once the gl_init functionis changed.  blah_draw_gl_init(); //Use OpenGL API for now...and for quite some time
 	Blah_Debug_Log_message(blah_draw_log,"Called blah_draw_init\n");
-	return BLAH_TRUE;
+	return true;
 }
 
 void blah_draw_main()
@@ -122,7 +122,7 @@ void blah_draw_setAmbientLight(float red, float green, float blue, float alpha)
 	blah_draw_gl_setAmbientLight(red, green, blue, alpha);
 }
 
-blah_bool blah_draw_setLight(Blah_Point *location, Blah_Colour *diffuse, Blah_Colour *ambient, Blah_Vector *direction, float intensity, float spread)
+bool blah_draw_setLight(Blah_Point *location, Blah_Colour *diffuse, Blah_Colour *ambient, Blah_Vector *direction, float intensity, float spread)
 {	//Enables a light source at specified location in 3D space, with given qualities
 	return blah_draw_gl_setLight(location, diffuse, ambient, direction, intensity, spread);
 }
@@ -138,17 +138,17 @@ void blah_draw_getDrawport(unsigned int *left, unsigned int *bottom, unsigned in
 	*top = blah_draw_drawport.top;
 }
 
-blah_bool blah_draw_popDrawport()
+bool blah_draw_popDrawport()
 {	//Pushes current drawport data onto internal stack to preserve it
 	if (Blah_Stack_pop(&blah_draw_drawportStack, &blah_draw_drawport,sizeof(Blah_Region))) {
 		blah_draw_gl_setDrawport(blah_draw_drawport.left, blah_draw_drawport.bottom,
 			blah_draw_drawport.right, blah_draw_drawport.top);
-		return BLAH_TRUE;
+		return true;
 	} else
-		return BLAH_FALSE;
+		return false;
 }
 
-blah_bool blah_draw_pushDrawport()
+bool blah_draw_pushDrawport()
 {	//Pushes current drawport data onto internal stack to preserve it
 	return Blah_Stack_push(&blah_draw_drawportStack, &blah_draw_drawport, sizeof(Blah_Region));
 }

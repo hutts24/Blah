@@ -1,6 +1,6 @@
-/* blah_draw_gl 
+/* blah_draw_gl
 	OpenGL specific routines for drawing video */
-	
+
 #ifndef _BLAH_DRAW_GL
 
 #define _BLAH_DRAW_GL
@@ -28,7 +28,7 @@ void blah_draw_gl_image2d(Blah_Image *image, int screenX, int screenY);
 	//Draw the given image in 2D mode at the position specified by
 	//given physical screen coordinates.
 
-void blah_draw_gl_init(); 
+void blah_draw_gl_init();
 	//Initialise and configure OpenGL
 
 void blah_draw_gl_line(Blah_Point *point1, Blah_Point *point2, Blah_Material *material);
@@ -38,7 +38,7 @@ void blah_draw_gl_lines(Blah_Vertex *points[], Blah_Material *material);
 
 void blah_draw_gl_lineStrip(Blah_Vertex *points[], Blah_Material *material);
 
-void blah_draw_gl_multMatrix(Blah_Matrix *matrix); 
+void blah_draw_gl_multMatrix(Blah_Matrix *matrix);
  	//Multiply current matrix by supplied matrix
 
 void blah_draw_gl_pixels2d(void *source, blah_pixel_format format, unsigned int width, unsigned int height, int screenX, int screenY);
@@ -57,18 +57,18 @@ void blah_draw_gl_polygon(Blah_Vertex *vertices[], Blah_Texture_Map *textureMap,
 
 void blah_draw_gl_polygon2d(Blah_Vertex *vertices[], Blah_Texture_Map *textureMap, Blah_Material *material);
 	//Draw a polygon in 2d mode with vertices specified by array of points.
-	//Vertex coordinates are rendered relative to current drawport.			
+	//Vertex coordinates are rendered relative to current drawport.
 
-void blah_draw_gl_popMatrix();	
+void blah_draw_gl_popMatrix();
 	//Pop OpenGL matrix and restore previous state
 
 void blah_draw_gl_printError();
 	//Print information about current GL error to standard error out
 
-void blah_draw_gl_pushMatrix();	
+void blah_draw_gl_pushMatrix();
 	//Push OpenGL matrix and save video state
 
-void blah_draw_gl_resetMatrix();  
+void blah_draw_gl_resetMatrix();
 	//Set the current matrix to the identity matrix
 
 void blah_draw_gl_setAmbientLight(float red, float green, float blue, float alpha);
@@ -78,7 +78,7 @@ void blah_draw_gl_setDrawport(unsigned int left, unsigned int bottom, unsigned i
 	//Updates the local GL specific 2D drawport matrix
 	//2D drawport matrix is identity matrix with simple translation
 
-blah_bool blah_draw_gl_setLight(Blah_Point *location, Blah_Colour *diffuse, Blah_Colour *ambient, Blah_Vector *direction, float intensity, float spread);
+bool blah_draw_gl_setLight(Blah_Point *location, Blah_Colour *diffuse, Blah_Colour *ambient, Blah_Vector *direction, float intensity, float spread);
 	//Enables a light source at specified location in 3D space, with given qualities
 
 void blah_draw_gl_setViewport(unsigned int left, unsigned int bottom, unsigned int right, unsigned int top);
@@ -92,7 +92,7 @@ void blah_draw_gl_solidSphere(float radius, int slices, int stacks, Blah_Materia
 
 void blah_draw_gl_triangle(Blah_Vertex *points[], Blah_Texture_Map *textureMap, Blah_Material *material);
 	//Draws a trianlge with points specified by points
-	
+
 void blah_draw_gl_triangleStrip(Blah_Vertex *points[], Blah_Texture_Map *textureMap, Blah_Material *material);
 	//Draws a trianlge strip with points specified by points
 

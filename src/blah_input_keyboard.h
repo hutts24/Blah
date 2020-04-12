@@ -51,11 +51,11 @@ typedef void blah_input_api_kb_exit_func();
 
 typedef struct Blah_Input_Key {
 	blah_input_key_symbol key; 		//Which key this is exactly (e.g. BLAH_INPUT_KEY_UP)
-	blah_bool depressed;  		//BLAH_TRUE if key is currently pressed down
-	blah_bool oldDepressed;		//Old value used to compare if button state has changed
+	bool depressed;  		// true if key is currently pressed down
+	bool oldDepressed;		//Old value used to compare if button state has changed
 								//Used during keyboard inspection in input_keyboard_main()
 								//Don't mess with this!
-	blah_bool monitored;  //If flag is false, then input for this key will be ignored
+	bool monitored;  //If flag is false, then input for this key will be ignored
 	blah_input_key_depress_func *depressFunction; //Function to invoke (only once) when key is pressed
 	blah_input_key_release_func *releaseFunction; //Function to invoke when key is released
 	blah_input_key_hold_func *holdFunction;	//Function to invoke when key is held down

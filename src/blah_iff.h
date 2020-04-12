@@ -22,7 +22,7 @@ typedef struct Blah_IFF_Chunk {
 	blah_unsigned32 dataLength;	//length of the data in the chunk (in bytes)
 	blah_unsigned32 chunkLength;	//Total length of chunk (including header tag and pad byte if present)
 	FILE *filePointer;				//file pointer holds chunk data, after the header
-	blah_bool padBytePresent;		//Signifies if a pad byte of data is required to make even data length
+	bool padBytePresent;		//Signifies if a pad byte of data is required to make even data length
 	blah_unsigned32 currentOffset; //current read position within data (offset into chunk data)
 } Blah_IFF_Chunk;
 
@@ -31,7 +31,7 @@ typedef struct Blah_IFF_Subchunk {
 	blah_unsigned16 dataLength;	//length of the data in the subchunk (in bytes)
 	blah_unsigned32 subchunkLength;	//Total length of subchunk (including header tag and pad byte if present)
 	Blah_IFF_Chunk *parentChunk;	//Parent chunk that holds chunk data
-	blah_bool padBytePresent;		//Signifies if a pad byte of data is required to make even data length
+	bool padBytePresent;		//Signifies if a pad byte of data is required to make even data length
 	blah_unsigned32 currentOffset; //current read position (offset into subchunk data)
 } Blah_IFF_Subchunk;
 
@@ -44,11 +44,11 @@ typedef struct Blah_IFF_Subchunk {
 void Blah_IFF_Chunk_destroy(Blah_IFF_Chunk *chunk);
 	//Destroys chunk structure pointed to by chunk
 
-blah_bool Blah_IFF_Chunk_get(Blah_IFF_Chunk *chunk, FILE *file);
+bool Blah_IFF_Chunk_get(Blah_IFF_Chunk *chunk, FILE *file);
 	//Discards current settings of given chunk object and connects it to the specified
 	//file pointer
 
-blah_bool Blah_IFF_Chunk_init(Blah_IFF_Chunk *chunk, FILE *file);
+bool Blah_IFF_Chunk_init(Blah_IFF_Chunk *chunk, FILE *file);
 	//Initialises an IFF chunk structure from given file_pointer
 	//All it really does is call Blah_IFF_Chunk_get()
 	//Returns TRUE on success on FALSE on error.
@@ -57,7 +57,7 @@ Blah_IFF_Chunk *Blah_IFF_Chunk_new(FILE *file);
 	//Creates a IFF chunk structure from given file_pointer
 	//Returns NULL on error
 
-blah_bool Blah_IFF_Chunk_readFloat32(Blah_IFF_Chunk *chunk, blah_float32 *dest);
+bool Blah_IFF_Chunk_readFloat32(Blah_IFF_Chunk *chunk, blah_float32 *dest);
 	//Reads a 32bit floating point value from IFF chunk into 'dest'
 	//Returns true on success, false on error
 
@@ -65,15 +65,15 @@ bool Blah_IFF_Chunk_readUnsigned8(Blah_IFF_Chunk *chunk, blah_unsigned8 *dest);
 	//Reads a 8bit unsigned integer value from IFF Chunk into 'dest'
 	//Returns true on success, false on error
 
-blah_bool Blah_IFF_Chunk_readInt16(Blah_IFF_Chunk *chunk, blah_int16 *dest);
+bool Blah_IFF_Chunk_readInt16(Blah_IFF_Chunk *chunk, blah_int16 *dest);
 	//Reads a 16bit signed integer value from IFF Chunk into 'dest'
 	//Returns true on success, false on error
 
-blah_bool Blah_IFF_Chunk_readUnsigned16(Blah_IFF_Chunk *chunk,
+bool Blah_IFF_Chunk_readUnsigned16(Blah_IFF_Chunk *chunk,
 	blah_unsigned16 *dest);
 	//Reads a 16bit unsigned integer value from IFF Chunk into 'dest'
 
-blah_bool Blah_IFF_Chunk_readUnsigned32(Blah_IFF_Chunk *chunk,
+bool Blah_IFF_Chunk_readUnsigned32(Blah_IFF_Chunk *chunk,
 	blah_unsigned32 *dest);
 	//Reads a 32bit unsigned integer value from IFF chunk into 'dest'
 	//Returns true on success, false on error
@@ -99,32 +99,32 @@ Blah_IFF_Subchunk *Blah_IFF_Subchunk_new(Blah_IFF_Chunk *chunk);
 void Blah_IFF_Subchunk_destroy(Blah_IFF_Subchunk *subchunk);
 	//Destroys chunk structure pointed to by subchunk
 
-blah_bool Blah_IFF_Subchunk_get(Blah_IFF_Subchunk *subchunk, Blah_IFF_Chunk *chunk);
+bool Blah_IFF_Subchunk_get(Blah_IFF_Subchunk *subchunk, Blah_IFF_Chunk *chunk);
 	//Discards current settings of given subchunk object and connects it to the specified
 	//chunk pointer
 
-blah_bool Blah_IFF_Subchunk_init(Blah_IFF_Subchunk *subchunk, Blah_IFF_Chunk *chunk);
+bool Blah_IFF_Subchunk_init(Blah_IFF_Subchunk *subchunk, Blah_IFF_Chunk *chunk);
 	//Intialises a subchunk structure, given parent chunk structure.
 	//All it does is call Blah_IFF_Subchunk_get()
 
-blah_bool Blah_IFF_Subchunk_readUnsigned8(Blah_IFF_Subchunk *subchunk, blah_unsigned8 *dest);
+bool Blah_IFF_Subchunk_readUnsigned8(Blah_IFF_Subchunk *subchunk, blah_unsigned8 *dest);
 	//Reads a 8bit unsigned integer value from IFF subchunk into 'dest'
 	//Returns true on success, false on error
 
-blah_bool Blah_IFF_Subchunk_readInt16(Blah_IFF_Subchunk *subchunk, blah_int16 *dest);
+bool Blah_IFF_Subchunk_readInt16(Blah_IFF_Subchunk *subchunk, blah_int16 *dest);
 	//Reads a 16bit signed integer value from IFF subchunk into 'dest'
 	//Returns true on success, false on error
 
-blah_bool Blah_IFF_Subchunk_readUnsigned16(Blah_IFF_Subchunk *subchunk,
+bool Blah_IFF_Subchunk_readUnsigned16(Blah_IFF_Subchunk *subchunk,
 	blah_unsigned16 *dest);
 	//Reads a 16bit unsigned integer value from IFF subchunk into 'dest'
 
-blah_bool Blah_IFF_Subchunk_readUnsigned32(Blah_IFF_Subchunk *subchunk,
+bool Blah_IFF_Subchunk_readUnsigned32(Blah_IFF_Subchunk *subchunk,
 	blah_unsigned32 *dest);
 	//Reads a 32bit unsigned integer value from IFF subchunk into 'dest'
 	//Returns true on success, false on error
 
-blah_bool Blah_IFF_Subchunk_readFloat32(Blah_IFF_Subchunk *subchunk, blah_float32 *dest);
+bool Blah_IFF_Subchunk_readFloat32(Blah_IFF_Subchunk *subchunk, blah_float32 *dest);
 	//Reads a 32bit floating point value from IFF subchunk into 'dest'
 	//Returns true on success, false on error
 

@@ -11,7 +11,7 @@
 
 /* Function Type Definitions */
 
-typedef blah_bool blah_tree_search_func(void *element_data, void *param);
+typedef bool blah_tree_search_func(void *element_data, void *param);
 	//This type function type should perform a check on element_data, with given
 	//parameter supplied, and return TRUE if check passes
 
@@ -26,7 +26,7 @@ typedef void blah_tree_element_func_1arg(void *element_data, void *param);
 	//This type of function will perform some sort of non destructive operation
 	//using the object pointed to by element_data with supplied argument
 
-typedef blah_bool blah_tree_element_bool_func_1arg(void *element_data, void *param);
+typedef bool blah_tree_element_bool_func_1arg(void *element_data, void *param);
 	//This type of function will perform some sort of non destructive operation
 	//using the object pointed to by element_data and supplied argument, returning a
 	//boolean result
@@ -70,7 +70,7 @@ void Blah_Tree_Element_callFunction(Blah_Tree_Element *element, blah_tree_elemen
 void Blah_Tree_Element_callWithArg(Blah_Tree_Element *element, blah_tree_element_func_1arg *function, void *arg);
 	//call function with data pointer of element and single void pointer arg
 
-blah_bool Blah_Tree_Element_callArgReturnBool(Blah_Tree_Element *element, blah_tree_element_bool_func_1arg *function, void *arg);
+bool Blah_Tree_Element_callArgReturnBool(Blah_Tree_Element *element, blah_tree_element_bool_func_1arg *function, void *arg);
 	//call function for with data pointer of element
 
 void *Blah_Tree_Element_search(Blah_Tree_Element *treeElement,
@@ -78,19 +78,19 @@ void *Blah_Tree_Element_search(Blah_Tree_Element *treeElement,
 	//Performs a linear recursive search from location of given element in tree.
 	//Calls search_function for each element of the tree in sort order, using the
 	//element's data as the argument and 'arg' as a second argument.  Returns the data
-	//pointer of the first element for which search_function returns BLAH_TRUE, or
+	//pointer of the first element for which search_function returns true, or
 	//NULL if no match;
 
 /* Tree Function Prototypes */
 
 Blah_Tree *Blah_Tree_new(char *name);	//creates new empty tree with given name
 
-blah_bool Blah_Tree_removeElement(Blah_Tree *tree, char *key);
+bool Blah_Tree_removeElement(Blah_Tree *tree, char *key);
 	// Function Blah_Tree_remove_element:
 	//Removes element with given key from tree.  Does not free data pointed to by tree element.
 	//Returns zero if error
 
-blah_bool Blah_Tree_insertElement(Blah_Tree *tree, char *key, void *data);
+bool Blah_Tree_insertElement(Blah_Tree *tree, char *key, void *data);
 	// Function Blah_Tree_insert_element:
 	//Inserts a new element into the tree, with given key and data pointer
 
@@ -111,7 +111,7 @@ Blah_Tree_Element *Blah_Tree_findElement(Blah_Tree *tree, const char *key);
 void *Blah_Tree_search(Blah_Tree *tree, blah_tree_search_func *searchFunction, void *arg);
 	//Calls search_function for each element of the tree in sort order, using the
 	//element's data as the argument and 'arg' as second.  Returns the data pointer
-	//of the first element for which search_function returns BLAH_TRUE,
+	//of the first element for which search_function returns true,
 	//or NULL if no match;
 
 void Blah_Tree_destroy(Blah_Tree *tree);

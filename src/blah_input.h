@@ -15,14 +15,14 @@
 #endif //__cplusplus
 
 #include "blah_types.h"
-		
 
-blah_bool blah_input_init(); //initialises input component.  Returns true on success
+
+bool blah_input_init(); //initialises input component.  Returns true on success
 void blah_input_exit(); //shutdown input component
 void blah_input_main(); //updates current status of all monitored user input devices
 
 #ifdef __cplusplus
 	}
 #endif //__cplusplus
-		
+
 #endif

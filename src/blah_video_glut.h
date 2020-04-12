@@ -18,7 +18,7 @@ void blah_video_glut_init(); //Initialise GLUT video
 void blah_video_glut_exit(); //Shutdown GLUT video component
 void blah_video_glut_swapBuffers();  //Swap video buffer when double buffering
 void blah_video_glut_clearBuffer(); //Clears drawing buffer
-void blah_video_glut_setFullScreen(blah_bool fullFlag);
+void blah_video_glut_setFullScreen(bool fullFlag);
 	//If parameter is true, puts video into full screen mode, else windowed
 
 #ifdef __cplusplus

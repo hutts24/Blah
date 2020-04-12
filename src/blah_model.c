@@ -14,7 +14,7 @@
 
 /* External Function Prototypes */
 
-extern Blah_Model *Blah_Model_Lightwave_load(char *filename, FILE *fileStream); 
+extern Blah_Model *Blah_Model_Lightwave_load(char *filename, FILE *fileStream);
 	//Creates a new Image structure.  Memory is allocated etc
 
 /* Private internal globals */
@@ -42,13 +42,13 @@ void Blah_Model_destroy(Blah_Model *model) {
 	free(model);
 }
 
-blah_bool Blah_Model_init(Blah_Model *model, char *modelName) {
+bool Blah_Model_init(Blah_Model *model, char *modelName) {
 	blah_util_strncpy(model->name, modelName, BLAH_MODEL_NAME_LENGTH);
 	Blah_List_init(&model->vertices,"model vertices list");
 	Blah_List_init(&model->faces,"model faces list");
 	Blah_List_setDestroyElementFunction(&model->faces, (blah_list_element_dest_func)Blah_Model_Face_destroy);
 	Blah_List_init(&model->surfaces,"model surfaces list");
-	return BLAH_TRUE;
+	return true;
 }
 
 void Blah_Model_disable(Blah_Model *model) {
@@ -145,7 +145,7 @@ void Blah_Model_Surface_disable(Blah_Model_Surface *surface) {
 
 Blah_Model_Surface *Blah_Model_Surface_new(char *name) {
 	Blah_Model_Surface *newSurface = malloc(sizeof(Blah_Model_Surface));
-	if (newSurface != NULL) Blah_Model_Surface_init(newSurface, name); //Ensure memory allocation succeeded before initialising	
+	if (newSurface != NULL) Blah_Model_Surface_init(newSurface, name); //Ensure memory allocation succeeded before initialising
 	return newSurface;
 }
 

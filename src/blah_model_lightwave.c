@@ -134,22 +134,22 @@ static unsigned long Blah_Model_Lightwave_readTextureFlagsSubchunk(Blah_Model_Li
 	blah_unsigned16 textureFlags;
 
 	//clear the flags
-	texture->xAxis = texture->yAxis = texture->zAxis = BLAH_FALSE;
+	texture->xAxis = texture->yAxis = texture->zAxis = false;
 
 	//Read texture flags as a 16bit word
 	Blah_IFF_Subchunk_readUnsigned16(subchunk, &textureFlags);
 	//Now set the texture flags
 	if (textureFlags & BLAH_MODEL_LIGHTWAVE_TEXTURE_X_AXIS) {
 		Blah_Debug_Log_message(blah_model_lightwave_log, "Texture x axis");
-		texture->xAxis = BLAH_TRUE;
+		texture->xAxis = true;
 	}
 	if (textureFlags & BLAH_MODEL_LIGHTWAVE_TEXTURE_Y_AXIS) {
 		Blah_Debug_Log_message(blah_model_lightwave_log, "Texture y axis");
-		texture->yAxis = BLAH_TRUE;
+		texture->yAxis = true;
 	}
 	if (textureFlags & BLAH_MODEL_LIGHTWAVE_TEXTURE_Z_AXIS) {
 		Blah_Debug_Log_message(blah_model_lightwave_log, "Texture z axis");
-		texture->zAxis = BLAH_TRUE;
+		texture->zAxis = true;
 	}
 
 	return subchunk->subchunkLength;
@@ -346,17 +346,17 @@ static unsigned long Blah_Model_Lightwave_readSurfaceFlagsSubchunk(Blah_Model_Li
 	Blah_IFF_Subchunk_readUnsigned16(subchunk, &surfaceFlags);
 	//grab surface_flags as first 2 bytes of the sub chunk data
 
-	surface->luminosityFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_LUMINOUS ? BLAH_TRUE : BLAH_FALSE;
-	surface->outlineFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_OUTLINE ? BLAH_TRUE : BLAH_FALSE;
-	surface->smoothFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_SMOOTH ? BLAH_TRUE : BLAH_FALSE;
-	surface->colourHighlightsFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_COLOURHIGH ? BLAH_TRUE : BLAH_FALSE;
-	surface->colourFilterFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_COLOURFILTER ? BLAH_TRUE : BLAH_FALSE;
-	surface->opaqueEdgeFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_OPAQUEEDGE ? BLAH_TRUE : BLAH_FALSE;
-	surface->transparentEdgeFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_TRANSEDGE ? BLAH_TRUE : BLAH_FALSE;
-	surface->sharpTerminatorFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_SHARPTERM ? BLAH_TRUE : BLAH_FALSE;
-	surface->doubleSidedFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_DOUBLESIDED ? BLAH_TRUE : BLAH_FALSE;
-	surface->additiveFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_ADDITIVE ? BLAH_TRUE : BLAH_FALSE;
-	surface->shadowAlphaFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_SHADOWALPHA ? BLAH_TRUE : BLAH_FALSE;
+	surface->luminosityFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_LUMINOUS ? true : false;
+	surface->outlineFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_OUTLINE ? true : false;
+	surface->smoothFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_SMOOTH ? true : false;
+	surface->colourHighlightsFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_COLOURHIGH ? true : false;
+	surface->colourFilterFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_COLOURFILTER ? true : false;
+	surface->opaqueEdgeFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_OPAQUEEDGE ? true : false;
+	surface->transparentEdgeFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_TRANSEDGE ? true : false;
+	surface->sharpTerminatorFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_SHARPTERM ? true : false;
+	surface->doubleSidedFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_DOUBLESIDED ? true : false;
+	surface->additiveFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_ADDITIVE ? true : false;
+	surface->shadowAlphaFlag = surfaceFlags & BLAH_MODEL_LIGHTWAVE_SURFACE_FLAGS_SHADOWALPHA ? true : false;
 
 	return subchunk->subchunkLength; //Add two bytes for the sub chunk length
 }

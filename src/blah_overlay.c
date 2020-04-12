@@ -9,7 +9,7 @@
 #include "blah_overlay.h"
 #include "blah_colour.h"
 #include "blah_image.h"
-#include "blah_types.h"	
+#include "blah_types.h"
 #include "blah_util.h"
 
 /* Function Declarations */
@@ -22,7 +22,7 @@ void Blah_Overlay_init(Blah_Overlay *overlay, unsigned int layerNum, char *name,
 	overlay->layerNum = layerNum;
 	Blah_List_init(&overlay->textList, "overlay text list");
 	Blah_List_init(&overlay->imageList, "overlay image list");
-	overlay->visible = BLAH_TRUE;
+	overlay->visible = true;
 }
 
 Blah_Overlay *Blah_Overlay_new(unsigned int layerNum, char *name, unsigned int width, unsigned int height) {
@@ -31,7 +31,7 @@ Blah_Overlay *Blah_Overlay_new(unsigned int layerNum, char *name, unsigned int w
 	Blah_Overlay *newOverlay = malloc(sizeof(Blah_Overlay));
 	if (newOverlay != NULL) //Ensure memory allocation succeeded before initialising structure
 		Blah_Overlay_init(newOverlay, layerNum, name, width, height);
-		
+
 	return newOverlay;
 }
 
@@ -44,11 +44,11 @@ Blah_Overlay_Text *Blah_Overlay_addText(Blah_Overlay *overlay, char *name,
 	Blah_Overlay_Text_setText(newText, text);
 	Blah_Overlay_Text_setPosition(newText, posX, posY);
 	Blah_Overlay_addOverlayText(overlay,newText);
-	
+
 	return newText;
-} 
-		
-		
+}
+
+
 void Blah_Overlay_addOverlayText(Blah_Overlay *overlay, Blah_Overlay_Text *text) {
 	//Adds the overlay text object to the list of text in the given overlay
 	Blah_List_appendElement(&overlay->textList, text);
@@ -73,7 +73,7 @@ void Blah_Overlay_destroy(Blah_Overlay *overlay) {
 	free(overlay);
 }
 
-void Blah_Overlay_setVisible(Blah_Overlay *overlay, blah_bool vis) {
+void Blah_Overlay_setVisible(Blah_Overlay *overlay, bool vis) {
 	//Sets the visibility flag of the given overlay
 	overlay->visible = vis;
 }
@@ -85,7 +85,7 @@ void Blah_Overlay_setPosition(Blah_Overlay *overlay, unsigned int x, unsigned in
 }
 
 
-blah_bool Blah_Overlay_isVisible(Blah_Overlay *overlay) {
+bool Blah_Overlay_isVisible(Blah_Overlay *overlay) {
 	//Returns the visibility flag (TRUE or FALSE)
 	return overlay->visible;
 }

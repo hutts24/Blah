@@ -86,7 +86,7 @@ void Blah_Model_destroy(Blah_Model *model);
 void blah_model_destroyAll();
 	//Garbage cleanup function to destroy all models still in the tree in memory
 
-blah_bool Blah_Model_init(Blah_Model *model, char *modelName);
+bool Blah_Model_init(Blah_Model *model, char *modelName);
 	//Initialises given model with specified name, and clears the list of vertices,
 	//list of faces, and list of surfaces.
 
@@ -140,7 +140,7 @@ void Blah_Model_Face_disable(Blah_Model_Face *face);
 
 Blah_Model_Face *Blah_Model_Face_new();
 	//Construct a new face object without any vertex indices and return pointer.
-	
+
 void Blah_Model_Face_removeIndex(Blah_Model_Face *face, int index);
 	//Removes given point index fromt the face's list of indexes
 

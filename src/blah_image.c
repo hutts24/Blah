@@ -98,11 +98,11 @@ Blah_Image *Blah_Image_fromImage(Blah_Image *source, char *name, int left, int r
 	return copyImage;
 }
 
-blah_bool Blah_Image_init(Blah_Image *image, char *name, unsigned char pixelDepth, unsigned int width, unsigned int height, blah_pixel_format pixFormat) {
+bool Blah_Image_init(Blah_Image *image, char *name, unsigned char pixelDepth, unsigned int width, unsigned int height, blah_pixel_format pixFormat) {
 	//Initialisaes given image structure with given name, pixel depth, width, height and pixel format
 	//Returns pointer to new image structure with allocated raster buffer within.
 	//Function returns true if there were no errrors encountered
-	blah_bool result = BLAH_FALSE;
+	bool result = false;
 	void *pixelData = (void*)malloc(width * height * (pixelDepth >> 3)); //Attempt to allocate memory for pixel data
 
 	if (pixelData) { //Continue only if memory allocation succeeded
@@ -112,7 +112,7 @@ blah_bool Blah_Image_init(Blah_Image *image, char *name, unsigned char pixelDept
 		image->height = height;
 		image->pixelFormat = pixFormat;
 		image->pixelData = pixelData;
-		result = BLAH_TRUE;
+		result = true;
 	}
 
 	return result;

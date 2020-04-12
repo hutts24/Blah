@@ -9,8 +9,8 @@
 
 /* Function Declarations */
 
-blah_bool Blah_Primitive_init(Blah_Primitive *prim, blah_primitive_type newType, Blah_Vertex* vertexArray[], unsigned int vertexCount) {
-	blah_bool bSuccess = BLAH_TRUE;
+bool Blah_Primitive_init(Blah_Primitive *prim, blah_primitive_type newType, Blah_Vertex* vertexArray[], unsigned int vertexCount) {
+	bool bSuccess = true;
 	// int vertexCount = 0;
 	prim->type=newType;
 	if (vertexArray) {
@@ -23,30 +23,30 @@ blah_bool Blah_Primitive_init(Blah_Primitive *prim, blah_primitive_type newType,
 			newSequence[vertexCount] = NULL;
 			prim->sequence = newSequence;
 		} else
-			bSuccess = BLAH_FALSE;
+			bSuccess = false;
 	} else
 		prim->sequence = NULL;
-	
+
 	prim->textureMap = NULL; //Default no texture mapping coordinates
 	prim->material = NULL; //Default to no material, use default
 	return bSuccess;
 }
 
-Blah_Primitive *Blah_Primitive_new(blah_primitive_type newType, Blah_Vertex* vertexArray[], unsigned int vertexCount) {  
+Blah_Primitive *Blah_Primitive_new(blah_primitive_type newType, Blah_Vertex* vertexArray[], unsigned int vertexCount) {
 	//Creates a new primitive structure
 	Blah_Primitive *newPrim = (Blah_Primitive*)malloc(sizeof(Blah_Primitive));
 	if (newPrim != NULL) //Ensure memory allocation succeeded
-		if (Blah_Primitive_init(newPrim, newType, vertexArray, vertexCount) != BLAH_TRUE) {
+		if (Blah_Primitive_init(newPrim, newType, vertexArray, vertexCount) != true) {
 			//If init failed, then free memory and return NULL
 			free(newPrim);
 			newPrim = NULL;
 		}
-		
+
 	return newPrim;
 }
 
 void Blah_Primitive_draw(Blah_Primitive *prim) { //Draws a primitive using the current matrix
-	
+
 	if (prim->sequence) {
 		switch (prim->type) {
 			case BLAH_PRIMITIVE_POLYGON :
@@ -64,7 +64,7 @@ void Blah_Primitive_draw(Blah_Primitive *prim) { //Draws a primitive using the c
 			case BLAH_PRIMITIVE_TRIANLGE_STRIP :
 				blah_draw_triangleStrip(prim->sequence, prim->textureMap, prim->material);
 				break;
-			
+
 			default:
 				break;
 		}
@@ -89,12 +89,12 @@ void Blah_Primitive_mapTextureAuto(Blah_Primitive *prim, Blah_Texture *texture) 
 	Blah_Point **texCoordIndices;
 	Blah_Point topLeft = {0,1,0};Blah_Point topRight = {1,1,0};
 	Blah_Point bottomLeft = {0,0,0}; Blah_Point bottomRight = {1,0,1};
-	
+
 	while(prim->sequence[vertexCount])
 		vertexCount++;
-	
+
 	texCoordIndices = (Blah_Point**)malloc(sizeof(Blah_Point*)*(vertexCount+1));
-	
+
 	for (vertexIndex=0;vertexIndex < vertexCount;vertexIndex++) {
 		switch (vertexIndex & 3) {
 			case 0 : texCoordIndices[vertexIndex]=&topLeft;break;
@@ -115,7 +115,7 @@ void Blah_Primitive_mapTexture(Blah_Primitive *prim, Blah_Texture *texture, Blah
 	//Replaces current mapping if one already exists
 	if (prim->textureMap)
 		Blah_Texture_Map_destroy(prim->textureMap);
-	
+
 	prim->textureMap = Blah_Texture_Map_new(texture, mapping);
 }
 

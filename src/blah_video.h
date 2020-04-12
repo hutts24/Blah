@@ -19,13 +19,13 @@ struct Blah_Video_Mode;
 
 /* Function Type Declarations */
 
-typedef blah_bool blah_video_api_init_func(struct Blah_Video_Settings *settings);
+typedef bool blah_video_api_init_func(struct Blah_Video_Settings *settings);
 	//This type of function is called to initialise the video subsystem
 
 typedef void blah_video_api_main_func();
 	//This type of function is called as the main routine to control video management
 
-typedef blah_bool blah_video_api_exit_func();
+typedef bool blah_video_api_exit_func();
 	//This type of function is called to exit and shutdown the video subsystem
 
 typedef void blah_video_api_swap_func();
@@ -34,16 +34,16 @@ typedef void blah_video_api_swap_func();
 typedef void blah_video_api_clear_func();
 	//This type of function is called to clear the current drawing buffer of the video subsystem
 
-typedef void blah_video_api_fs_func();
+typedef void blah_video_api_fs_func(bool fullFlag);
 	//This type of function is called to set the video subsystem to full screen mode
 
 typedef void blah_video_api_update_func();
 	//This type of function is called to update changes to the video subsystem
 
-typedef void blah_video_api_db_func(blah_bool fullFlag);
+typedef void blah_video_api_db_func(bool fullFlag);
 	//This type of function is called to establish double buffering of video subsystem
 
-typedef blah_bool blah_video_api_mode_func(struct Blah_Video_Mode *mode);
+typedef bool blah_video_api_mode_func(struct Blah_Video_Mode *mode);
 	//This type of function is called to change the mode of the video subsystem
 
 /* Data Structures */
@@ -61,13 +61,13 @@ typedef struct Blah_Video_API { //Defines functions to use with a specific API
 } Blah_Video_API;
 
 typedef struct Blah_Video_Settings { //Stores all current configuration settings for video
-	blah_bool initialised;
+	bool initialised;
 } Blah_Video_Settings;
 
 typedef struct Blah_Video_Mode { 	//Represents a physical display video mode
 	char name[BLAH_VIDEO_MODE_NAME_LENGTH+1]; //name of video mode
-	blah_bool fullScreen;  		//Default to windowed video
-	blah_bool doubleBuffered;		//If using double buffering
+	bool fullScreen;  		//Default to windowed video
+	bool doubleBuffered;		//If using double buffering
 	unsigned int width;  			//Width of video mode in pixels
 	unsigned int height; 			//Height of video mode in pixels
 	unsigned int colourDepth;		//Pixel colour depth, in bits per pixel windowed
@@ -83,15 +83,15 @@ typedef struct Blah_Video_Mode { 	//Represents a physical display video mode
 
 void blah_video_swapBuffers(); //Swap video buffers
 void blah_video_clearBuffer();
-blah_bool blah_video_init();	//Initialise video.  Returns TRUE on success, else false
+bool blah_video_init();	//Initialise video.  Returns TRUE on success, else false
 void blah_video_main(); //Handles video buffer swapping and drawing
 void blah_video_exit(); //Exit video engine component
 
-void blah_video_setFullScreen(blah_bool fullFlag);
+void blah_video_setFullScreen(bool fullFlag);
 	//If parameter is true, puts video into full screen mode, else windowed
 	//Does nothing if display as not been set to a mode
 
-void blah_video_setDoubleBuffered(blah_bool flag);
+void blah_video_setDoubleBuffered(bool flag);
 	//Turns double buffering on/off depending on flag
 	//Does nothing if display as not been set to a mode
 
@@ -101,13 +101,13 @@ void blah_video_setSizeFullScreen(int width, int height);
 void blah_video_updateBuffer();
 	//Update all changes from drawing buffer into current buffer
 
-blah_bool blah_video_isFullScreen();
-	//Returns BLAH_TRUE if in full screen mode
+bool blah_video_isFullScreen();
+	//Returns true if in full screen mode
 
-blah_bool blah_video_isDoubleBuffered();
-	//Returns BLAH_TRUE if in full double buffering active
+bool blah_video_isDoubleBuffered();
+	//Returns true if in full double buffering active
 
-blah_bool blah_video_setMode(Blah_Video_Mode *mode);
+bool blah_video_setMode(Blah_Video_Mode *mode);
 	//Sets the display device to the given mode.  Returns TRUE upon success, else false
 
 Blah_Video_Mode *blah_video_getCurrentMode();
@@ -145,8 +145,8 @@ Blah_Video_Mode *blah_video_getBestMode();
 
 //Video Mode functions
 
-Blah_Video_Mode *Blah_Video_Mode_new(char *name, blah_bool fullScreen,
-	blah_bool doubleBuffered, int width, int height, int bppDepth);
+Blah_Video_Mode *Blah_Video_Mode_new(char *name, bool fullScreen,
+	bool doubleBuffered, int width, int height, int bppDepth);
 	//Creates a new video mode with given properties supplied in params.
 	//Allocates memory and returns new structure.
 

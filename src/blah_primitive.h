@@ -1,4 +1,4 @@
-/* blah_primitive.h 
+/* blah_primitive.h
 	Primitives are the very basic shape elements used to construct geometric
 	figures.  Types of primitives include lines, triangles, points etc */
 
@@ -33,16 +33,16 @@ typedef struct Blah_Primitive {
 	extern "C" {
 #endif //__cplusplus
 
-blah_bool Blah_Primitive_init(Blah_Primitive *prim, blah_primitive_type newType, Blah_Vertex* vertexArray[], unsigned int vertexCount);
+bool Blah_Primitive_init(Blah_Primitive *prim, blah_primitive_type newType, Blah_Vertex* vertexArray[], unsigned int vertexCount);
 	//Initialise primitive structure with given type and allocates memory for vertex sequence.
-	//Vertex data is copied from parameter 'vertexArray'. Function returns BLAH_FALSE in case of error.
+	//Vertex data is copied from parameter 'vertexArray'. Function returns false in case of error.
 
 Blah_Primitive *Blah_Primitive_new(blah_primitive_type newType, Blah_Vertex *vertexArray[], unsigned int vertexCount);  //Creates a new primitive structure
 
-void Blah_Primitive_destroy(Blah_Primitive *prim); 
+void Blah_Primitive_destroy(Blah_Primitive *prim);
 	//Destroys a primitive and frees all memory used by it
 
-void Blah_Primitive_draw(Blah_Primitive *prim); 
+void Blah_Primitive_draw(Blah_Primitive *prim);
 	//Draws a primitive using the current matrix
 
 void Blah_Primitive_setMaterial(Blah_Primitive *prim, Blah_Material *material);

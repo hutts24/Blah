@@ -72,11 +72,11 @@ int blah_util_randRangeInt(int min, int max) { //returns a random integer in the
 }
 
 
-blah_bool blah_util_stringReplaceChar(char *string, char replaceMe, char with) {
+bool blah_util_stringReplaceChar(char *string, char replaceMe, char with) {
 	//Replaces all occurences in string of 'replace_me' with 'with'
-	blah_bool success = BLAH_FALSE;  //assume none found
+	bool success = false;  //assume none found
 	char *pos = strchr(string, replaceMe);
-	if (pos) success = BLAH_TRUE;
+	if (pos) success = true;
 
 	while (pos)	{ //while a character has been found
 		*pos = with;	//Place new char in place of old one

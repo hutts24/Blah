@@ -21,9 +21,17 @@
 
 /* Globals Variables */
 
-Blah_Video_API blah_video_SDL = {"SDL",blah_video_sdl_init, blah_video_sdl_exit, blah_video_sdl_swapBuffers,
-	blah_video_sdl_clearBuffer, blah_video_sdl_setFullScreen, blah_video_sdl_updateBuffer,
-	blah_video_sdl_setDoubleBuffered, blah_video_sdl_setMode};
+Blah_Video_API blah_video_SDL = {
+    .name = "SDL",
+    .initFunction = blah_video_sdl_init,
+    .exitFunction = blah_video_sdl_exit,
+    .swapBuffersFunction = blah_video_sdl_swapBuffers,
+    .clearBufferFunction = blah_video_sdl_clearBuffer,
+    .setFullScreenFunction = blah_video_sdl_setFullScreen,
+    .updateBufferFunction = blah_video_sdl_updateBuffer,
+	.setDoubleBufferedFunction = blah_video_sdl_setDoubleBuffered,
+	.setModeFunction = blah_video_sdl_setMode
+};
 
 #ifdef BLAH_USE_GLUT
 Blah_Video_API blah_video_GLUT = {"GLUT",blah_video_glut_init, blah_video_glut_exit,
@@ -40,7 +48,7 @@ Blah_List blah_video_modes = {"", NULL, NULL, 0};
 	//Binary tree of all usable video modes. Extern in blah_video_sdl.h
 
 Blah_Video_Settings blah_video_settings = {
-	BLAH_FALSE	//initialised flag
+	false	//initialised flag
 };
 
 Blah_Debug_Log *blah_video_log = NULL;
@@ -71,9 +79,9 @@ static int blah_video_modeCompare(Blah_Video_Mode *mode1, Blah_Video_Mode *mode2
 }
 
 
-static blah_bool blah_video_modeSearch(Blah_Video_Mode *mode, char *modeName) {
-	//Returns BLAH_TRUE if the video mode name matches the given name to search
-	return !strcmp(mode->name, modeName) ? BLAH_TRUE : BLAH_FALSE;
+static bool blah_video_modeSearch(Blah_Video_Mode *mode, char *modeName) {
+	//Returns true if the video mode name matches the given name to search
+	return !strcmp(mode->name, modeName) ? true : false;
 }
 
 /* Video Function Declarations */
@@ -82,7 +90,7 @@ void blah_video_clearBuffer() {  //Clears current drawing buffer
 	blah_video_currentAPI->clearBufferFunction(NULL);
 }
 
-blah_bool blah_video_init() {
+bool blah_video_init() {
 	//Initialises the video component and sets current parameters to basic mode
 	//Returns TRUE upon success, else false for error
 
@@ -96,14 +104,14 @@ blah_bool blah_video_init() {
 		if (blah_video_currentAPI->initFunction(&blah_video_settings) ) {
 			//Sort video modes list
 			Blah_List_sort(&blah_video_modes, (blah_list_sort_func)blah_video_modeCompare);
-			blah_video_settings.initialised = BLAH_TRUE;
+			blah_video_settings.initialised = true;
 			Blah_Debug_Log_message(blah_video_log,"blah_video_init() successful.");
-			return BLAH_TRUE;
+			return true;
 		}
 	}
 	Blah_Debug_Log_destroy(blah_video_log);
 	blah_video_log = NULL; //Destroy video log and set pointer to NULL
-	return BLAH_FALSE;
+	return false;
 }
 
 void blah_video_main() { //Handles video buffer swapping and drawing
@@ -126,7 +134,7 @@ void blah_video_exit() { //Exit video engine component
 	else {
 		Blah_Debug_Log_message(blah_video_log,"blah_video_exit() called.");
 		blah_video_currentAPI->exitFunction(); //Call current API exit()
-		blah_video_settings.initialised = BLAH_FALSE;
+		blah_video_settings.initialised = false;
 		Blah_List_destroyElements(&blah_video_modes);
 		Blah_Debug_Log_destroy(blah_video_log);
 	}
@@ -142,35 +150,35 @@ void blah_video_swapBuffers() { //Calls the appropriate video function to swap b
 	//Call current API swap buffers
 }
 
-void blah_video_setFullScreen(blah_bool fullFlag) {
+void blah_video_setFullScreen(bool fullFlag) {
 	//If parameter is true, puts video into full screen mode, else windowed
 	//Does nothing if display as not been set to a mode
 
 	if (blah_video_currentMode) { //FIXME
 	/* 	if (full_flag && !(blah_video_current_mode->full_screen)) {
-			blah_video_current_mode->full_screen = BLAH_TRUE;
+			blah_video_current_mode->full_screen = true;
 			if (blah_video_settings.initialised) //Make the setting apply immediately if video initialised
-				blah_video_current_api->set_full_screen_function(BLAH_TRUE);
+				blah_video_current_api->set_full_screen_function(true);
 		} else if (!full_flag && blah_video_current_mode->full_screen) { //Don't change if not necessarry
-			blah_video_current_mode->full_screen = BLAH_FALSE;
+			blah_video_current_mode->full_screen = false;
 			if (blah_video_settings.initialised)
-				blah_video_current_api->set_full_screen_function(BLAH_FALSE);
+				blah_video_current_api->set_full_screen_function(false);
 		}  */
 	}
 }
 
-void blah_video_setDoubleBuffered(blah_bool flag) {
+void blah_video_setDoubleBuffered(bool flag) {
 	//Turns double buffering on/off depending on flag
 	//Does nothing if display as not been set to a mode
 	/* blah_video_current_mode->double_buffered = flag;
 	blah_video_current_api->set_double_buffered_function(flag); */
 }
 
-blah_bool blah_video_isFullScreen() { //Returns BLAH_TRUE if in full screen mode
+bool blah_video_isFullScreen() { //Returns true if in full screen mode
 	return blah_video_currentMode->fullScreen;
 }
 
-blah_bool blah_video_isDoubleBuffered() { //Returns BLAH_TRUE if in full double buffering active
+bool blah_video_isDoubleBuffered() { //Returns true if in full double buffering active
 	return blah_video_currentMode->doubleBuffered;
 }
 
@@ -178,15 +186,15 @@ void blah_video_setSizeWindowed(int width, int height) {;}
 
 void blah_video_setSizeFullScreen(int width, int height) {;}
 
-blah_bool blah_video_setMode(Blah_Video_Mode *mode) {
+bool blah_video_setMode(Blah_Video_Mode *mode) {
 	//Sets the display device to the given mode.  Returns TRUE upon success, else false
 	Blah_Debug_Log_message(blah_video_log,"Calling blah_video_sdl_set_mode()");
 	if (blah_video_sdl_setMode(mode)) {
 		blah_video_currentMode = mode;
 		blah_draw_setViewport(0,0,mode->width-1, mode->height-1);
-		return BLAH_TRUE;
+		return true;
 	} else
-		return BLAH_FALSE;
+		return false;
 }
 
 Blah_Video_Mode *blah_video_getCurrentMode() {
@@ -212,7 +220,7 @@ Blah_Video_Mode *blah_video_getIdealMode(int width, int height, int bppDepth) {
 	//not be altered in any way!
 	Blah_Video_Mode *idealMode=NULL;
 	Blah_Video_Mode *tempMode;
-	blah_bool stopFlag = BLAH_FALSE;
+	bool stopFlag = false;
 
 	tempMode = blah_video_getLeastMode();
 
@@ -221,7 +229,7 @@ Blah_Video_Mode *blah_video_getIdealMode(int width, int height, int bppDepth) {
 			idealMode = tempMode;
 			tempMode = blah_video_getNextMode(tempMode);
 		} else
-			stopFlag = BLAH_TRUE;
+			stopFlag = true;
 	}
 	return idealMode;
 }
@@ -270,8 +278,8 @@ Blah_Video_Mode *blah_video_getBestMode() {
 
 /* Video Mode Function Declarations */
 
-Blah_Video_Mode *Blah_Video_Mode_new(char *name, blah_bool fullScreen,
-	blah_bool doubleBuffered, int width, int height, int bppDepth) {
+Blah_Video_Mode *Blah_Video_Mode_new(char *name, bool fullScreen,
+	bool doubleBuffered, int width, int height, int bppDepth) {
 	//Creates a new video mode with given properties supplied in params.
 	//Allocates memory and returns new structure.
 	Blah_Video_Mode *newMode = (Blah_Video_Mode*)malloc(sizeof(Blah_Video_Mode));

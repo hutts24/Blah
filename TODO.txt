@@ -1,6 +1,8 @@
 TODO LIST for Blah.
 
-- Make use of C99 bool type in <stdbool.h>
+- Fix the Blah_image_targa_load* functions.
+
+- Use fixed width integer types from C99.
 
 - All externally used structures need to appear opaque to external projects linking to Blah, and should be referred to by 'handles', which will just be object pointers within the Blah memory space.  They cannot be used directly by foreign code in external projects.  This will allow Blah to be used by other languages that do not understand C, for example Rust.
 

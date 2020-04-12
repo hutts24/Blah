@@ -1,4 +1,4 @@
-/* blah_input_keyboard_glut.c 
+/* blah_input_keyboard_glut.c
 	GLUT Specific Keyboard functions.
 	Functions to handle keyboard input via GLUT */
 
@@ -17,7 +17,7 @@
 
 /* Globals */
 
-blah_bool blahInputKeyboardGLUTInitialised = BLAH_FALSE;  //state flag
+bool blahInputKeyboardGLUTInitialised = false;  //state flag
 
 blah_input_key_symbol blahInputKeyboardGLUTMap[BLAH_INPUT_KEYBOARD_GLUT_NUM_KEYSYMS];
 	//FIXME an array to map GLUT ascii key strokes to engine key syms
@@ -32,16 +32,16 @@ void blah_input_keyboard_glut_init () { //initialises GLUT keyboard input
 	int symCount;
 	int activeKeyIndex=0;
 	int glutActiveKeys[] = {27,BLAH_INPUT_KEY_ESCAPE, 'w',BLAH_INPUT_KEY_UP, ' ',BLAH_INPUT_KEY_SPACE, -1};
-	
+
 	fprintf(stderr,"Checking if GLUT video inited\n");
 	//GLUT Video is required for GLUT keyboard input.  (Window must catch events)
 	if (!blahVideoGLUTInitialised) //if SDL Video hasn't been initialised
 		blah_video_glut_init(); //Initialise SDL with video subsystem and we get keyboard also
-	
+
 	fprintf(stderr,"GLUT:initing key mappings\n");
 	//Set all mappings to -1, meaning not mapped to engine key symbols
 	for (symCount=0; symCount < BLAH_INPUT_KEYBOARD_GLUT_NUM_KEYSYMS; symCount++)
-		blahInputKeyboardGLUTMap[symCount] = -1;  
+		blahInputKeyboardGLUTMap[symCount] = -1;
 
 	fprintf(stderr,"GLUT:setting up key mappings\n");
 	//Set up active mappings
@@ -49,36 +49,36 @@ void blah_input_keyboard_glut_init () { //initialises GLUT keyboard input
 		blahInputKeyboardGLUTMap[glutActiveKeys[activeKeyIndex]] = glutActiveKeys[activeKeyIndex+1];
 		activeKeyIndex+=2;
 	}
-	
+
 	glutKeyboardFunc(blah_input_keyboard_glut_handler);
-	blahInputKeyboardGLUTInitialised = BLAH_TRUE;  //set state flag on
+	blahInputKeyboardGLUTInitialised = true;  //set state flag on
 }
 
 void blah_input_keyboard_glut_exit() { //shutdown SDL keyboard input component
 	glutKeyboardFunc(NULL); //Clear GLUT keyboard handler function pointer
-	blahInputKeyboardGLUTinitialised = BLAH_FALSE;  //set state flag off
-}	
+	blahInputKeyboardGLUTinitialised = false;  //set state flag off
+}
 
 static void blah_input_keyboard_glut_handler(unsigned char key, int x, int y) {
 	blah_input_key_symbol keySym;
 	//key pressed down
 	keySym = blahInputKeyboardGLUTMap[key];
 	if (keySym !=-1)  //if the GLUT key symbol is actively mapped
-		blahInputKeys[keySym].depressed = BLAH_TRUE;  //update key status
-	
+		blahInputKeys[keySym].depressed = true;  //update key status
+
 }
 
 void blah_input_keyboard_glut_main() {  //update keyboard status via SDL
 	blah_input_key_symbol keySym;
 
 	//NOTE: input_keyboard_glut_handler is responsible for acknowledging key presses
-		
+
 	//Clear depressed state of all keys, since GLUT sucks and only gives us notification when a key is pressed
 	//Wait for the glut handler to set flags to true (If it wants to)
 	for (keySym = 0; keySym < BLAH_INPUT_KEYBOARD_NUM_KEYS; keySym++) {
 		//input_keys[key_sym].old_depressed = input_keys[key_sym].depressed;
-		blahInputKeys[keySym].depressed = BLAH_FALSE; 
-	} 
+		blahInputKeys[keySym].depressed = false;
+	}
 }
 
 #endif

@@ -29,7 +29,7 @@ unsigned long blah_util_byteSwapUnsigned(unsigned long swapMe);
 blah_unsigned16 blah_util_byteSwapUnsigned16(blah_unsigned16 swapMe);
 	//Returns the given 16bit unsigned integer with byte order reversed
 
-blah_bool blah_util_stringReplaceChar(char *string, char replaceMe, char with);
+bool blah_util_stringReplaceChar(char *string, char replaceMe, char with);
 	//Replaces all occurences in string of 'replace_me' with 'with'
 
 unsigned int blah_util_ceilPowerOf2(unsigned int num);

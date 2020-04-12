@@ -1,6 +1,6 @@
 /* blah_debug.c
 	Defines routines for debugging */
-	
+
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
@@ -26,31 +26,31 @@ static FILE *Blah_Debug_Log_createFile(char *logName)
 {	//Creates a new log file with given log name and returns FILE handle
 	FILE *newFile;
 	char tempFileName[BLAH_DEBUG_LOG_NAME_LENGTH+4]; //Add 4 chars for ".log"
-	
+
 	strcpy(tempFileName, logName);
 	strcat(tempFileName, ".log");
 	newFile = fopen(tempFileName, "w");
-	
-	if (!newFile) 
+
+	if (!newFile)
 		fprintf(stderr,"Create log file failed\n");
-	
+
 	return newFile;  //If file creation failed, NULL pointer will be returned
 }
 
 /* Public Functions */
 
-blah_bool Blah_Debug_Log_close(Blah_Debug_Log *log)
+bool Blah_Debug_Log_close(Blah_Debug_Log *log)
 {	//Closes the file attached to the log.
 	if (log->filePointer) { //If there is a current file attached, close file
-		if (fclose(log->filePointer)) 
-			return BLAH_FALSE; //If file couldn't be closed return false
+		if (fclose(log->filePointer))
+			return false; //If file couldn't be closed return false
 		else {
 			log->filePointer = NULL;  //Set file pointer to NULL, indicating no open log file
-			return BLAH_TRUE;
+			return true;
 		}
 	}
 	else
-		return BLAH_FALSE; //Return false if no pointer to close
+		return false; //Return false if no pointer to close
 }
 
 void Blah_Debug_Log_destroy(Blah_Debug_Log *log)
@@ -75,43 +75,43 @@ void Blah_Debug_Log_init(Blah_Debug_Log *log, char *logName)
 	//to a log file on the file system with the same name as the given log name.
 	log->filePointer = NULL;
 	log->numEntries = 0;
-	blah_util_strncpy(log->name, logName, BLAH_DEBUG_LOG_NAME_LENGTH); //Copy name string	
+	blah_util_strncpy(log->name, logName, BLAH_DEBUG_LOG_NAME_LENGTH); //Copy name string
 	Blah_Debug_Log_open(log);
 }
-	
-blah_bool Blah_Debug_Log_message(Blah_Debug_Log *log, char *message)
+
+bool Blah_Debug_Log_message(Blah_Debug_Log *log, char *message)
 {	//Append the given string to the specified log with a following new line char
 	//Returns TRUE if success
 	if (log->filePointer) {  //If valid file pointer, attempt to write to log file
 		if (fprintf(log->filePointer, "%s\n", message) < 0) {
 			fprintf(stderr,"Failed to write to log:%s\n", log->name);
-			return BLAH_FALSE; //Negative return from printf means write failed
+			return false; //Negative return from printf means write failed
 		} else { //Success
 			fflush(log->filePointer);
 			log->numEntries++;	//Increment entry count
-			return BLAH_TRUE;
+			return true;
 		}
 	} else {
 		fprintf(stderr,"Failed to write to log:%s - FILE NOT OPEN\n", log->name);
-		return BLAH_FALSE;  //Return false by default if no file to write to
+		return false;  //Return false by default if no file to write to
 	}
 }
 
 Blah_Debug_Log *Blah_Debug_Log_new(char *logName)
 {	//Creates a new debugging log with given name
 	Blah_Debug_Log *newLog = malloc(sizeof(Blah_Debug_Log));  //Allocate memory for new log structure;
-	
+
 	if (newLog) { //If memory allocation ok
 		Blah_Debug_Log_init(newLog, logName);
 		Blah_List_appendElement(&logList, newLog); //Register log in resource list
-	} 
+	}
 	else
-		fprintf(stderr,"Memory allocation for new log failed\n");		
-		
+		fprintf(stderr,"Memory allocation for new log failed\n");
+
 	return newLog;
 }
 
-blah_bool Blah_Debug_Log_open(Blah_Debug_Log *log)
+bool Blah_Debug_Log_open(Blah_Debug_Log *log)
 {	//Attaches a new file to the log.  Implicitly closes the previously associated file
 	//if still currently open.
 	if (log->filePointer)
@@ -119,9 +119,9 @@ blah_bool Blah_Debug_Log_open(Blah_Debug_Log *log)
 
 	log->filePointer = Blah_Debug_Log_createFile(log->name);
 	log->numEntries = 0;
-	
+
 	if (log->filePointer)
-		return BLAH_TRUE;
+		return true;
 	else
-		return BLAH_FALSE; //Return TRUE if file creation was successful, else FALSE
+		return false; //Return TRUE if file creation was successful, else FALSE
 }

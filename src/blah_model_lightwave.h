@@ -2,7 +2,7 @@
 	Header file for blah_model_lightwave.c
 	Defines structures and functions for manipulating lightwave models
 */
-	
+
 #ifndef _BLAH_MODEL_LIGHTWAVE
 
 #define _BLAH_MODEL_LIGHTWAVE
@@ -104,17 +104,17 @@ typedef enum Blah_Model_Lightwave_Texture_Category {BLAH_MODEL_LIGHTWAVE_NOTEX =
 
 typedef enum Blah_Model_Lightwave_Texture_Wrap {BLAH_MODEL_LIGHTWAVE_WRAP_BLACK=0,
 	BLAH_MODEL_LIGHTWAVE_WRAP_CLAMP = 1, BLAH_MODEL_LIGHTWAVE_WRAP_TILE = 2,
-	BLAH_MODEL_LIGHTWAVE_WRAP_MIRROR = 3} blah_model_lightwave_texture_wrap;	
-	
+	BLAH_MODEL_LIGHTWAVE_WRAP_MIRROR = 3} blah_model_lightwave_texture_wrap;
+
 /* Structure Definitions */
-	
+
 typedef struct Blah_Model_Lightwave {
 	Blah_Tree surfacesTree;	//Binary Tree of surface names, index into model surfaces
 	Blah_Model *newModel;
 } Blah_Model_Lightwave;
 
 typedef struct Blah_Model_Lightwave_Surface {
-	char name[BLAH_MODEL_SURFACE_NAME_LENGTH+1]; 
+	char name[BLAH_MODEL_SURFACE_NAME_LENGTH+1];
 	Blah_Colour colour;
 	blah_float32 vluminosity;		//floating point luminosity of surface
 	blah_float32 vdiffuse;			//floating point surface diffuse property
@@ -128,22 +128,22 @@ typedef struct Blah_Model_Lightwave_Surface {
 	blah_int16 transparency;		//16bit integer surface transparency
 	unsigned int glossiness;	//surface glossiness
 	/* Surface Flags */
-	blah_bool luminosityFlag;
-	blah_bool outlineFlag;
-	blah_bool smoothFlag;
-	blah_bool colourHighlightsFlag;
-	blah_bool colourFilterFlag;
-	blah_bool opaqueEdgeFlag;
-	blah_bool transparentEdgeFlag;
-	blah_bool sharpTerminatorFlag;
-	blah_bool doubleSidedFlag;
-	blah_bool additiveFlag;
-	blah_bool shadowAlphaFlag;
-	
+	bool luminosityFlag;
+	bool outlineFlag;
+	bool smoothFlag;
+	bool colourHighlightsFlag;
+	bool colourFilterFlag;
+	bool opaqueEdgeFlag;
+	bool transparentEdgeFlag;
+	bool sharpTerminatorFlag;
+	bool doubleSidedFlag;
+	bool additiveFlag;
+	bool shadowAlphaFlag;
+
 } Blah_Model_Lightwave_Surface;
 
 typedef struct Blah_Model_Lightwave_Surface_Texture {
-	blah_model_lightwave_texture_category category;	
+	blah_model_lightwave_texture_category category;
 	//Texture category according to lightwave design
 	char type[BLAH_MODEL_LIGHTWAVE_TEXTURE_TYPE_LENGTH+1]; //Type of texture as per lightwave control panel
 	char name[BLAH_MODEL_LIGHTWAVE_TEXTURE_NAME_LENGTH+1];
@@ -155,13 +155,13 @@ typedef struct Blah_Model_Lightwave_Surface_Texture {
 	Blah_Texture *texture; //pointer to the texture used for this surface
 	Blah_Colour colour;
 	/* Texture flags */
-	blah_bool xAxis;
-	blah_bool yAxis;
-	blah_bool zAxis;
-	blah_bool worldCoords;
-	blah_bool negativeImage;
-	blah_bool pixelBlending;
-	blah_bool antialiasing;
+	bool xAxis;
+	bool yAxis;
+	bool zAxis;
+	bool worldCoords;
+	bool negativeImage;
+	bool pixelBlending;
+	bool antialiasing;
 	blah_model_texture_projection projectionMode;
 	blah_model_lightwave_texture_wrap widthWrap,heightWrap;
 } Blah_Model_Lightwave_Surface_Texture;

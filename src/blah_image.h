@@ -70,7 +70,7 @@ Blah_Image *Blah_Image_fromImage(Blah_Image *source, char *name, int left, int r
 	//Makes a new image by copying data from existing image.  Supplied coordinate
 	//values define area which is copied.
 
-blah_bool Blah_Image_init(Blah_Image *image, char *name, unsigned char pixelDepth,
+bool Blah_Image_init(Blah_Image *image, char *name, unsigned char pixelDepth,
  unsigned int width, unsigned int height, blah_pixel_format pixFormat);
 	//Initialises given image structure with given name, pixel depth, width, height and pixel format
 	//Returns pointer to new image structure with allocated raster buffer within.

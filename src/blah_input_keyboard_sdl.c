@@ -77,13 +77,13 @@ void blah_input_keyboard_sdl_main() {  //update keyboard status via SDL
 			case SDL_KEYDOWN:  //key pressed down
 				keySym = blahInputKeyboardSDLMap[sdlEvent.key.keysym.sym];
 				if (keySym !=-1)  //if the SDL key symbol is actively mapped
-					blahInputKeys[keySym].depressed = BLAH_TRUE;  //update key status
+					blahInputKeys[keySym].depressed = true;  //update key status
 				break;
 
 			case SDL_KEYUP:  //key pressed down
 				keySym = blahInputKeyboardSDLMap[sdlEvent.key.keysym.sym];
 				if (keySym !=-1)  //if the SDL key symbol is actively mapped
-					blahInputKeys[keySym].depressed = BLAH_FALSE;  //update key status
+					blahInputKeys[keySym].depressed = false;  //update key status
 				break;
 		}
 

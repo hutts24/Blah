@@ -2,22 +2,22 @@
 	Overlays can contain images and text.  Overlays have a position relative to
 	2D physical screen dimensions, increasing from bottom left corner.  Elements
 	are positioned within the overlay, using coordinates in the same manner. */
-	
+
 #ifndef _BLAH_OVERLAY
 
 #define _BLAH_OVERLAY
 
 #include "blah_colour.h"
 #include "blah_image.h"
-#include "blah_types.h"	
+#include "blah_types.h"
 #include "blah_list.h"
 #include "blah_types.h"
 #include "blah_font.h"
 #include "blah_overlay_text.h"
 
-/* Symbol Definitions */	
-	
-#define BLAH_OVERLAY_NAME_LENGTH	20  //number of characters allowed for name property	
+/* Symbol Definitions */
+
+#define BLAH_OVERLAY_NAME_LENGTH	20  //number of characters allowed for name property
 
 /* Type Definitions */
 
@@ -27,11 +27,11 @@ typedef struct Blah_Overlay {
 	char name[BLAH_OVERLAY_NAME_LENGTH+1];//name of font
 	unsigned int height;		//height of overlay in pixels
 	unsigned int width;			//width of overlay in pixels
-	unsigned int posX,posY;	//2D coordinates of overlay position 
+	unsigned int posX,posY;	//2D coordinates of overlay position
 	unsigned int layerNum; //Overlay layer number.  Level 0 is drawn first,then 1 over 0 and so on
 	Blah_List textList; //List of text objects within overlay
 	Blah_List imageList; //List of images within overlay
-	blah_bool visible;	//If TRUE, overlay is drawn
+	bool visible;	//If TRUE, overlay is drawn
 } Blah_Overlay;
 
 /* Font Function Prototypes */
@@ -60,18 +60,18 @@ void Blah_Overlay_draw(Blah_Overlay *overlay);
 void Blah_Overlay_init(Blah_Overlay *overlay, unsigned int layerNum, char *name, unsigned int width, unsigned int height);
 	//Initialise overlay structure with defaults.
 
-blah_bool Blah_Overlay_isVisible(Blah_Overlay *overlay);
+bool Blah_Overlay_isVisible(Blah_Overlay *overlay);
 	//Returns the visibility flag (TRUE or FALSE)
 
 Blah_Overlay *Blah_Overlay_new(unsigned int layerNum, char *name, unsigned int width, unsigned int height);
 	//Creates a new overlay structure with given name.
 	//Returns NULL on error.
-		
+
 void Blah_Overlay_setPosition(Blah_Overlay *overlay, unsigned int x, unsigned int y);
 	//Sets the position of the overlay given physical screen coordinates, relative
 	//to physical origin bottom left corner (0,0)
 
-void Blah_Overlay_setVisible(Blah_Overlay *overlay, blah_bool vis);
+void Blah_Overlay_setVisible(Blah_Overlay *overlay, bool vis);
 	//Sets the visibility flag of the given overlay
 
 #ifdef __cplusplus

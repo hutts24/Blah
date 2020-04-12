@@ -1,4 +1,4 @@
-/* blah_file.c 
+/* blah_file.c
 	Defines common functions on files, using standard FILE* */
 
 #include <stdio.h>
@@ -15,44 +15,44 @@ FILE *blah_file_open(char *filename, char *mode)
 {	//Simplifies opening files across different platforms.  Calls fopen()
 	//Parameters have same purpose as in fopen()
 	char osFilename[200];
-	
+
 	strcpy(osFilename, filename);
-	blah_util_stringReplaceChar(osFilename, '\\', '/'); 
+	blah_util_stringReplaceChar(osFilename, '\\', '/');
 	//change backslashes to forward slashes
 	return fopen(osFilename,mode);
 }
 
-blah_bool blah_file_readX86(FILE* fileStream, void *dest, int byteLength);
+bool blah_file_readX86(FILE* fileStream, void *dest, int byteLength);
 	//Reads a binary number of size 'byteLength' bytes into 'dest'
 	//and reverses it for x86 compatible registers.  Rrturns true on success, false error.
-	
+
 /* Private Function Definitions */
 
-blah_bool blah_file_readX86(FILE* fileStream, void *dest, int byteLength)
+bool blah_file_readX86(FILE* fileStream, void *dest, int byteLength)
 {	//Reads a binary number of size 'byteLength' bytes into 'dest'
 	//and reverses it for x86 compatible registers.  Rrturns true on success, false error.
 	if (fread(dest, byteLength, 1, fileStream)) { //Read binary value from file
 		blah_util_byteSwap(dest, byteLength);  //Put into Intel compatible format
-		return BLAH_TRUE;
+		return true;
 	} else
-		return BLAH_FALSE;
+		return false;
 }
 
 /* Public Function Declarations */
 
-blah_bool blah_file_readFloat32(FILE *file, blah_float32 *dest)
+bool blah_file_readFloat32(FILE *file, blah_float32 *dest)
 {	//Reads a 32bit floating point value from binary file_pointer into 'dest'
 	//Returns true on succes, false on error
 	return blah_file_readX86(file, dest, 4);
 }
 
-blah_bool blah_file_readInt16(FILE *file, blah_int16 *dest)
+bool blah_file_readInt16(FILE *file, blah_int16 *dest)
 {	//Reads a 16bit signed integer value from binary file_pointer into 'dest'
 	//Returns true on succes, false on error
 	return blah_file_readX86(file, dest, 2);
 }
 
-blah_bool blah_file_readInt32(FILE *file, blah_int32 *dest)
+bool blah_file_readInt32(FILE *file, blah_int32 *dest)
 {	//Reads a 32bit signed integer value from binary file_pointer into 'dest'
 	//Returns true on succes, false on error
 	return blah_file_readX86(file, dest, 4);
@@ -63,34 +63,34 @@ blah_bool blah_file_readInt32(FILE *file, blah_int32 *dest)
 char *blah_file_readString(FILE *file)
 {	//Reads a null terminated string from the give file pointer.
 	//Returns pointer to allocated string on success, null on error.
-	
+
 	unsigned long length = 0;
 	char *newString;
-	blah_bool nullFound = BLAH_FALSE;
-	
+	bool nullFound = false;
+
 	while (!(feof(file) || nullFound)) { //While a null char hasn't been found and not eof
 		length++;
 		if (fgetc(file) == '\0') //If next character from file stream is not null
-			nullFound = BLAH_TRUE;
+			nullFound = true;
 	}
-	
+
 	if (nullFound) { //If we have found a null termed string before eof
 		fseek(file, -length, SEEK_CUR);		//Rewind file pointer to original position
 		newString = (char*)malloc(length); //Allocate memory buffer for new string
 		fread(newString, length, 1, file);	//Read whole string including null char into buffer
 		return newString;
 	} else
-		return NULL; //If failure, return NULL pointer	
+		return NULL; //If failure, return NULL pointer
 }
 
 
-blah_bool blah_file_readUnsigned16(FILE *file, blah_unsigned16 *dest)
+bool blah_file_readUnsigned16(FILE *file, blah_unsigned16 *dest)
 {	//Reads a 16bit unsigned integer value from binary file_pointer into 'dest'
 	//Returns true on succes, false on error
 	return blah_file_readX86(file, dest, 2);
 }
 
-blah_bool blah_file_readUnsigned32(FILE *file, blah_unsigned32 *dest)
+bool blah_file_readUnsigned32(FILE *file, blah_unsigned32 *dest)
 {	//Reads a 32bit unsigned integer value from binary file_pointer into 'dest'
 	//Returns true on succes, false on error
 	return blah_file_readX86(file, dest, 4);

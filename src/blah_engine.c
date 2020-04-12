@@ -43,36 +43,36 @@ void blah_engine_exit()
 	blah_debug_log_destroyAll();	//Destroy all debugging logs
 }
 
-blah_bool blah_engine_init()
+bool blah_engine_init()
 {	//initialises all engine components
 	blah_engine_log = Blah_Debug_Log_new("blah_engine");
-	
+
 	Blah_Debug_Log_message(blah_engine_log,"Call to video init");
 	if (!blah_video_init()) {
 		Blah_Debug_Log_message(blah_engine_log,"Failed to initialise video");
 		Blah_Debug_Log_destroy(blah_engine_log);
-		return BLAH_FALSE;
+		return false;
 	}
 	Blah_Debug_Log_message(blah_engine_log,"Video init successful");
-	
+
 	Blah_Debug_Log_message(blah_engine_log,"Call to draw init");
 	if (!blah_draw_init()) {
 		Blah_Debug_Log_message(blah_engine_log,"Failed to initialise drawing");
 		Blah_Debug_Log_destroy(blah_engine_log);
-		return BLAH_FALSE;
+		return false;
 	}
 	Blah_Debug_Log_message(blah_engine_log,"Draw init successful");
-	
+
 	Blah_Debug_Log_message(blah_engine_log,"Call to input init");
 	if (!blah_input_init()) {
 		Blah_Debug_Log_message(blah_engine_log,"Failed to initialise input");
 		Blah_Debug_Log_destroy(blah_engine_log);
-		return BLAH_FALSE;
+		return false;
 	}
 	Blah_Debug_Log_message(blah_engine_log,"Input init successful");
-		
-	return BLAH_TRUE;
-	
+
+	return true;
+
 }
 
 void blah_engine_main()

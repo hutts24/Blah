@@ -46,11 +46,11 @@ void Blah_Overlay_Text_init(Blah_Overlay_Text *text, char *name, unsigned int si
 	strcpy(text->stringBuffer,""); //set string buffer to empty string
 	Blah_Point_set(&text->position, 0,0,0);
 	text->drawFunction = NULL;
-	text->visible = BLAH_TRUE; //visible by default
+	text->visible = true; //visible by default
 	text->fontStyle = fontStyle;
 }
 
-blah_bool Blah_Overlay_Text_isVisible(Blah_Overlay_Text *text) {
+bool Blah_Overlay_Text_isVisible(Blah_Overlay_Text *text) {
 	//Returns TRUE if the text is visible, else FALSE
 	return text->visible;
 }
@@ -79,7 +79,7 @@ void Blah_Overlay_Text_setText(Blah_Overlay_Text *text, char *string) {
 	blah_util_strncpy(text->stringBuffer,string, text->bufferSize);
 }
 
-void Blah_Overlay_Text_setVisible(Blah_Overlay_Text *text, blah_bool visFlag) {
+void Blah_Overlay_Text_setVisible(Blah_Overlay_Text *text, bool visFlag) {
 	//Sets the visibility flag of the overlay text to the value given by vis_flag
 	//True will make the text visible and drawn, FALSE will make it invisible
 	text->visible = visFlag;

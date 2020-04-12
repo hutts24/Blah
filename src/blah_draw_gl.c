@@ -380,7 +380,7 @@ void blah_draw_gl_setDrawport(unsigned int left, unsigned int bottom, unsigned i
 		(int)bottom - (int)(blah_video_currentMode->height >> 1), 0);
 }
 
-blah_bool blah_draw_gl_setLight(Blah_Point *location, Blah_Colour *diffuse, Blah_Colour *ambient, Blah_Vector *direction, float intensity, float spread)
+bool blah_draw_gl_setLight(Blah_Point *location, Blah_Colour *diffuse, Blah_Colour *ambient, Blah_Vector *direction, float intensity, float spread)
 {	//Enables a light source at specified location in 3D space, with given qualities
 	GLenum lightSymbol = blah_draw_gl_lightSymbols[blah_draw_gl_activeLights];
 
@@ -395,7 +395,7 @@ blah_bool blah_draw_gl_setLight(Blah_Point *location, Blah_Colour *diffuse, Blah
 
 	blah_draw_gl_activeLights++; //increment number of lights in use
 
-	return BLAH_TRUE;
+	return true;
 }
 
 void blah_draw_gl_setViewport(unsigned int left, unsigned int bottom, unsigned int right, unsigned int top)
