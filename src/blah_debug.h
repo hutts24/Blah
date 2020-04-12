@@ -32,32 +32,33 @@ typedef struct Blah_Debug_Log
 #endif //__cplusplus
 
 bool Blah_Debug_Log_close(Blah_Debug_Log *log);
-	//Closes the file attached to the log.
-	//Returns true apon success
+	// Closes the file attached to the log.
+	// Returns true apon success
 
 void Blah_Debug_Log_destroy(Blah_Debug_Log *log);
 	// Unregisters log from log list, frees memory and deallocates file resources
 
 void blah_debug_log_destroyAll();
-	//Cleanup routine to do garbage collection for logs on engine exit
+	// Cleanup routine to do garbage collection for logs on engine exit
 
 void Blah_Debug_Log_disable(Blah_Debug_Log *log);
-	//Disables Log.  Reverses initialisation.  Closes log.
+	// Disables Log.  Reverses initialisation.  Closes log.
 
 void Blah_Debug_Log_init(Blah_Debug_Log *log, const char *log_name);
-	//Initialises a given log data structure as a new log with new open file pointer
-	//to a log file on the file system with the same name as the given log name.
+	// Initialises a given log data structure as a new log with new open file pointer
+	// to a log file on the file system with the same name as the given log name.
 
-bool Blah_Debug_Log_message(Blah_Debug_Log *log, char *message);
-	//Append the given string to the specified log.  Returns TRUE if success
+bool Blah_Debug_Log_message(Blah_Debug_Log *log, const char *messageFormat, ...);
+	// Append the given string to the specified log.  Returns TRUE if success
+    // Uses printf style variable arguments
 
-Blah_Debug_Log *Blah_Debug_Log_new(char *log_name);
-	//Creates a new debugging log with given name and attached file
-	//Memory is allocated and pointer returned
+Blah_Debug_Log *Blah_Debug_Log_new(const char *log_name);
+	// Creates a new debugging log with given name and attached file
+	// Memory is allocated and pointer returned
 
 bool Blah_Debug_Log_open(Blah_Debug_Log *log);
-	//Attaches a new file to the log.  Implicitly closes the previously associated file
-	//if still currently open. Returns true apon success, else false
+	// Attaches a new file to the log.  Implicitly closes the previously associated file
+	// if still currently open. Returns true apon success, else false
 
 #ifdef __cplusplus
 	}

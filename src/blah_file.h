@@ -9,42 +9,45 @@
 
 #define _BLAH_FILE
 
+#define BLAH_FILE_MODE_OVERWRITE "w"
+
 #include "blah_types.h"
 #include <stdio.h>
-
-/* Function Prototypes */
 
 #ifdef __cplusplus
 	extern "C" {
 #endif //__cplusplus
 
+
+/* Function Prototypes */
+
 FILE *blah_file_open(char *name, char *mode);
-	//Simplifies opening files across different platforms.  Calls fopen()
-	//Parameters have same purpose as in fopen()
+	// Simplifies opening files across different platforms.  Calls fopen()
+	// Parameters have same purpose as in fopen()
 
 bool blah_file_readFloat32(FILE *file, blah_float32 *dest);
-	//Reads a 32bit floating point value from binary file pointer into 'dest'
-	//Returns true on success, false on error
+	// Reads a 32bit floating point value from binary file pointer into 'dest'
+	// Returns true on success, false on error
 
 bool blah_file_readInt16(FILE *file, blah_int16 *dest);
-	//Reads a 16bit signed integer value from binary file pointer into 'dest'
-	//Returns true on success, false on error
+	// Reads a 16bit signed integer value from binary file pointer into 'dest'
+	// Returns true on success, false on error
 
 bool blah_file_readInt32(FILE *file, blah_int32 *dest);
-	//Reads a 32bit signed integer value from binary file pointer into 'dest'
-	//Returns true on success, false on error
+	// Reads a 32bit signed integer value from binary file pointer into 'dest'
+	// Returns true on success, false on error
 
 bool blah_file_readUnsigned16(FILE *file, blah_unsigned16 *dest);
-	//Reads a 16bit unsigned integer value from binary file pointer into 'dest'
-	//Returns true on success, false on error
+	// Reads a 16bit unsigned integer value from binary file pointer into 'dest'
+	// Returns true on success, false on error
 
 bool blah_file_readUnsigned32(FILE *file, blah_unsigned32 *dest);
-	//Reads a 32bit unsigned integer value from binary file pointer into 'dest'
-	//Returns true on success, false on error
+	// Reads a 32bit unsigned integer value from binary file pointer into 'dest'
+	// Returns true on success, false on error
 
 char *blah_file_readString(FILE *file);
-	//Reads a null terminated string from the give file pointer.
-	//Returns pointer to allocated string on success, null on error.
+	// Reads a null terminated string from the give file pointer.
+	// Returns pointer to allocated string on success, null on error.
 
 
 #ifdef __cplusplus

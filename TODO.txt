@@ -1,6 +1,10 @@
 TODO LIST for Blah.
 
-- Proper error handling.  Many functions return false on error, or NULL handles when allocation fails but the callers are not checking the return values!
+- Put garbage collection etc into a function and register with atexit(C11).
+
+- Proper error handling.  Abort on serioud errors.  Many functions return false on error, or NULL handles when allocation fails but the callers are not checking the return values!
+
+- Add a C11 constraint violation handler for compilers that define it and use for bounds checking functions like sprintf_s, when compiled in DEBUG mode.
 
 - Fix the Blah_image_targa_load* functions.
 
