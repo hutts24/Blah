@@ -1,8 +1,8 @@
-/* blah_iff.h 
+/* blah_iff.h
 	Defines common functions for files that comply to the IFF
 	(interchangeable file format), 	*/
-	
-	
+
+
 #ifndef _BLAH_IFF
 
 #define _BLAH_IFF
@@ -17,23 +17,23 @@
 
 /* Data Structures */
 
-typedef struct Blah_IFF_Chunk { 
+typedef struct Blah_IFF_Chunk {
 	blah_unsigned32 idTag;			//sequence of four bytes, identifies chunk type
 	blah_unsigned32 dataLength;	//length of the data in the chunk (in bytes)
 	blah_unsigned32 chunkLength;	//Total length of chunk (including header tag and pad byte if present)
 	FILE *filePointer;				//file pointer holds chunk data, after the header
 	blah_bool padBytePresent;		//Signifies if a pad byte of data is required to make even data length
-	blah_unsigned32 currentOffset; //current read position within data (offset into chunk data) 
-} Blah_IFF_Chunk;	
+	blah_unsigned32 currentOffset; //current read position within data (offset into chunk data)
+} Blah_IFF_Chunk;
 
-typedef struct Blah_IFF_Subchunk { 
+typedef struct Blah_IFF_Subchunk {
 	blah_unsigned32 idTag;		//sequence of four bytes, identifies subchunk type
 	blah_unsigned16 dataLength;	//length of the data in the subchunk (in bytes)
 	blah_unsigned32 subchunkLength;	//Total length of subchunk (including header tag and pad byte if present)
 	Blah_IFF_Chunk *parentChunk;	//Parent chunk that holds chunk data
 	blah_bool padBytePresent;		//Signifies if a pad byte of data is required to make even data length
-	blah_unsigned32 currentOffset; //current read position (offset into subchunk data) 
-} Blah_IFF_Subchunk;	
+	blah_unsigned32 currentOffset; //current read position (offset into subchunk data)
+} Blah_IFF_Subchunk;
 
 /* Function Prototypes */
 
@@ -61,7 +61,7 @@ blah_bool Blah_IFF_Chunk_readFloat32(Blah_IFF_Chunk *chunk, blah_float32 *dest);
 	//Reads a 32bit floating point value from IFF chunk into 'dest'
 	//Returns true on success, false on error
 
-blah_bool Blah_IFF_Chunk_readUnsigned8(Blah_IFF_Chunk *chunk, blah_unsigned8 *dest);
+bool Blah_IFF_Chunk_readUnsigned8(Blah_IFF_Chunk *chunk, blah_unsigned8 *dest);
 	//Reads a 8bit unsigned integer value from IFF Chunk into 'dest'
 	//Returns true on success, false on error
 
@@ -72,20 +72,20 @@ blah_bool Blah_IFF_Chunk_readInt16(Blah_IFF_Chunk *chunk, blah_int16 *dest);
 blah_bool Blah_IFF_Chunk_readUnsigned16(Blah_IFF_Chunk *chunk,
 	blah_unsigned16 *dest);
 	//Reads a 16bit unsigned integer value from IFF Chunk into 'dest'
-	
+
 blah_bool Blah_IFF_Chunk_readUnsigned32(Blah_IFF_Chunk *chunk,
 	blah_unsigned32 *dest);
 	//Reads a 32bit unsigned integer value from IFF chunk into 'dest'
 	//Returns true on success, false on error
-	
+
 size_t Blah_IFF_Chunk_read(Blah_IFF_Chunk *chunk, void *dest, size_t numBytes);
 	//Reads num_bytes of information from chunk to dest
 	//Like fread, returns 0 on error or EOF.  Either way that's the end.
-	
+
 char *Blah_IFF_Chunk_readString(Blah_IFF_Chunk *chunk);
 	//Reads a null terminated character string from chunk
 	//Returns pointer to allocated string on success, NULL on error
-	
+
 int Blah_IFF_Chunk_seek(Blah_IFF_Chunk *chunk, long offset);
 	//Seeks into chunk file 'offset' number of points from current position
 	//Currently no error checking
@@ -118,12 +118,12 @@ blah_bool Blah_IFF_Subchunk_readInt16(Blah_IFF_Subchunk *subchunk, blah_int16 *d
 blah_bool Blah_IFF_Subchunk_readUnsigned16(Blah_IFF_Subchunk *subchunk,
 	blah_unsigned16 *dest);
 	//Reads a 16bit unsigned integer value from IFF subchunk into 'dest'
-	
+
 blah_bool Blah_IFF_Subchunk_readUnsigned32(Blah_IFF_Subchunk *subchunk,
 	blah_unsigned32 *dest);
 	//Reads a 32bit unsigned integer value from IFF subchunk into 'dest'
 	//Returns true on success, false on error
-	
+
 blah_bool Blah_IFF_Subchunk_readFloat32(Blah_IFF_Subchunk *subchunk, blah_float32 *dest);
 	//Reads a 32bit floating point value from IFF subchunk into 'dest'
 	//Returns true on success, false on error

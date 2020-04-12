@@ -51,7 +51,7 @@ void Blah_Overlay_Text_destroy(Blah_Overlay_Text *text);
 void Blah_Overlay_Text_draw(Blah_Overlay_Text *text);
 	//Draw text in 2D space within overlay region
 
-void Blah_Overlay_Text_init(Blah_Overlay_Text *text);
+// void Blah_Overlay_Text_init(Blah_Overlay_Text *text);
     //Initialise overlay text object.
 
 blah_bool Blah_Overlay_Text_isVisible(Blah_Overlay_Text *text);

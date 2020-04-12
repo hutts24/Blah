@@ -59,8 +59,8 @@ Blah_Overlay_Text *Blah_Overlay_Text_new(char *name, unsigned int size, Blah_Fon
 	//Create an overlay text object using supplied name, size and
 	//font style.  Alloc a new Structure and return pointer
 	Blah_Overlay_Text *newText = malloc(sizeof(Blah_Overlay_Text));
-    if (newText != NULL) { // Ensure memory allocation succeeded before attempting initialisation
-        Blah_Overlay_Text_init(newText, )
+    // Ensure memory allocation succeeded before attempting initialisation
+    if (newText != NULL) { Blah_Overlay_Text_init(newText, name, size, fontStyle); }
 	return newText;
 }
 

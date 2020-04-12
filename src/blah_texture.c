@@ -69,13 +69,13 @@ Blah_Texture *blah_texture_find(const char *name) {
 		return NULL;
 }
 
-Blah_Texture_init(Blah_Texture *texture, const char* name, unsigned int width, unsigned int height, blah_texture_handle handle,
+void Blah_Texture_init(Blah_Texture *texture, const char* name, unsigned int width, unsigned int height, blah_texture_handle handle,
  blah_pixel_format pixelFormat, unsigned char pixelDepth /*, unsigned char mipMapLevel */) {
     // Initialise texture object.
-    texture->pixelFormat = sourceImage->pixelFormat;
-    texture->pixelDepth = sourceImage->pixelDepth;
-    texture->width = sourceImage->width;
-    texture->height = sourceImage->height;
+    texture->pixelFormat = pixelFormat;
+    texture->pixelDepth = pixelDepth;
+    texture->width = width;
+    texture->height = height;
     blah_util_strncpy(texture->name, name, BLAH_TEXTURE_NAME_LENGTH);
     //Call API specific function to create a texture and return handle to it
     texture->handle = handle;

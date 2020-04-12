@@ -48,7 +48,7 @@ Blah_Image *Blah_Image_Targa_fromFile(char *filename, FILE *fileStream)
 	return newImage; //Return pointer whether it be null or valid image
 }
 
-blah_bool Blah_Image_Targa_load(Blah_Image* image, const char* filename, FILE* const fileStream) {
+/* blah_bool Blah_Image_Targa_load(Blah_Image* image, const char* filename, FILE* const fileStream) {
 	Blah_Image_Targa_Header header;		//Stores targa information
 	char tempHeader[18];	//Temporary storage to read header from file
 
@@ -92,7 +92,7 @@ blah_bool Blah_Image_Targa_load(Blah_Image* image, const char* filename, FILE* c
 		}
 	}
 	return BLAH_TRUE;
-}
+} */
 
 static void *Blah_Image_Targa_loadMapped(FILE *fileStream, Blah_Image_Targa_Header *header, char *imageName)
 {	//Subfunction to deal with uncompressed colour mapped targas

@@ -1,7 +1,7 @@
 /* blah_input_keyboard_sdl.h
-	
+
 	SDL specific functions to handle keyboard input */
-	
+
 #ifndef _BLAH_INPUT_KEYBOARD_SDL
 
 #define _BLAH_INPUT_KEYBOARD_SDL
@@ -29,5 +29,5 @@ void blah_input_keyboard_sdl_main();  //update keyboard status via SDL
 #ifdef __cplusplus
 	}
 #endif //__cplusplus
-		
+
 #endif

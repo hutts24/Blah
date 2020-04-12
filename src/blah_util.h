@@ -1,7 +1,7 @@
-/* blah_util.h 
+/* blah_util.h
 	Defines some useful functions */
-	
-	
+
+
 #ifndef _BLAH_UTIL
 
 #define _BLAH_UTIL
@@ -36,7 +36,7 @@ unsigned int blah_util_ceilPowerOf2(unsigned int num);
 	//Returns an integer which is a power of 2 and equal or greater than given
 	//integer 'num'
 
-char *blah_util_strncpy(char *to, char *from, size_t count);
+char *blah_util_strncpy(char *to, const char *from, size_t count);
 	//Behaves like standard C strncpy, but always appends an extra NULL char in addition
 	//to the size_t count bytes.  Therefore, if the source contains atleast (count) bytes,
 	//then the destination array must have a capacity of (count) + 1 bytes, and the last byte

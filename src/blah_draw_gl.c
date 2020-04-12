@@ -27,7 +27,7 @@ extern Blah_Video_Mode *blah_video_currentMode;
 
 //Since OpenGL is a state machine, we should avoid setting the same state repeatedly
 
-Blah_Texture *blah_draw_gl_currentTexture;
+const Blah_Texture *blah_draw_gl_currentTexture;
 	//Holds the pointer to the previously used texture
 
 Blah_Material *blah_draw_gl_currentMaterial;
@@ -236,7 +236,7 @@ static void blah_draw_gl_primitive(Blah_Vertex *vertices[], GLenum mode, Blah_Te
 
 	int vertexIndex = 0;
 	Blah_Point *mapping;
-	Blah_Texture *texture;
+	const Blah_Texture *texture;
 
 	//fprintf(stderr,"Enter blah_draw_gl_primitive\n");
 

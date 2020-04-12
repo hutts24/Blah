@@ -2,6 +2,8 @@
 	SDL Specific Keyboard functions.
 	Functions to handle keyboard input via SDL */
 
+#include <stdio.h>
+
 #include "blah_input_keyboard_sdl.h"
 #include "blah_input_keyboard.h"
 #include "blah_video_sdl.h"

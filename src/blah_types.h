@@ -1,11 +1,13 @@
-/* blah_types.h 
+/* blah_types.h
 	Defines some useful simple types, enums etc */
 
 #ifndef _BLAH_TYPES
 
 #define _BLAH_TYPES
 
-typedef enum Blah_Boolean {BLAH_FALSE = 0, BLAH_TRUE = 1} blah_bool;
+#include <stdbool.h>
+
+typedef enum Blah_Boolean {BLAH_FALSE = false, BLAH_TRUE = true} blah_bool;
 
 //typedef void (*blah_function)();
 

@@ -52,12 +52,12 @@ void Blah_Texture_destroy(Blah_Texture *texture);
 void Blah_Texture_disable(Blah_Texture *texture);
 	//free texture resources and remove texture from the tree
 
-Blah_Texture *blah_texture_find(char *name);
+Blah_Texture *blah_texture_find(const char *name);
 	//Attempts to find a texture with given name in the texture tree.  Texture names
 	//are used as keys in the binary tree.  Returns pointer to texture if successful
 	//match is found, else NULL.
 
-Blah_Texture_init(Blah_Texture *texture, const char* name, unsigned int width, unsigned int height, blah_texture_handle handle,
+void Blah_Texture_init(Blah_Texture *texture, const char* name, unsigned int width, unsigned int height, blah_texture_handle handle,
  blah_pixel_format pixelFormat, unsigned char pixelDepth /*, unsigned char mipMapLevel */);
     // Initialise texture object.
 
