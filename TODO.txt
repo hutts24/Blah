@@ -32,6 +32,10 @@ The above will allow Blahoo to define classes which statically encapsulate the b
 
 - implement Drawing capabilities (lighting etc).
 
-- Fix bug where glIsEnabled causes segmentation fault - suspected call before GL context is created is the cause
+- Fix bug where glIsEnabled causes segmentation fault - suspected call before GL context is created is the cause.
 
 ? Simplify API so that new() functions require arguments for properties which must be known before construction.
+
+- Remove the C++ directives from all internal headers because they will only be compiled with standard C/
+
+- Use struct initialisation.
