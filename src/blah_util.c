@@ -79,7 +79,7 @@ bool blah_util_stringReplaceChar(char *string, char replaceMe, char with) {
 
 	while (pos != NULL) { // while a character has been found
 		*pos = with; // Place new char in place of old one
-		pos = strchr(pos+1, replaceMe);  //look for char again, starting at next position in memory
+		pos = strchr(pos + 1, replaceMe);  //look for char again, starting at next position in memory
 	}
 
 	return success;
@@ -95,3 +95,4 @@ char *blah_util_strncpy(char *to, const char *from, size_t count)
 
 	return returnPointer;
 }
+
