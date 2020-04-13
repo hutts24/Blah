@@ -21,7 +21,7 @@
 
 /* Function Prototypes */
 
-FILE *blah_file_open(char *name, char *mode);
+FILE* blah_file_open(const char* name, const char* mode);
 	// Simplifies opening files across different platforms.  Calls fopen()
 	// Parameters have same purpose as in fopen()
 

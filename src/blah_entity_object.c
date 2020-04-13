@@ -92,19 +92,18 @@ bool Blah_Entity_Object_isVisible(Blah_Entity_Object *entityObject)
 	return entityObject->visible;
 }
 
-Blah_Entity_Object *Blah_Entity_Object_new(char *name, Blah_Object *objectPtr)
-{	//Create a new entity object using supplied name and object pointer.
-	//Alloc a new entity object data structure, initialise it and return pointer.
-	//Returns NULL on failure.
-	Blah_Entity_Object *newEntityObject = malloc(sizeof(Blah_Entity_Object));
-
-	if (newEntityObject)
-		Blah_Entity_Object_init(newEntityObject, name, objectPtr);  //Initialse new memory structure
-
+Blah_Entity_Object *Blah_Entity_Object_new(const char* name, Blah_Object* objectPtr)
+{
+    // Create a new entity object using supplied name and object pointer.
+	// Alloc a new entity object data structure, initialise it and return pointer.
+	// Returns NULL on failure.
+	// TODO - Error handling!
+	Blah_Entity_Object* newEntityObject = malloc(sizeof(Blah_Entity_Object));
+	if (newEntityObject) { Blah_Entity_Object_init(newEntityObject, name, objectPtr); } //Initialse new memory structure
 	return newEntityObject;
 }
 
-void Blah_Entity_Object_setDrawFunction(Blah_Entity_Object *entityObject, blah_entity_object_draw_func *function) {
+void Blah_Entity_Object_setDrawFunction(Blah_Entity_Object *entityObject, blah_entity_object_draw_func* function) {
 	//set pointer for draw function used by given entity object
 	entityObject->drawFunction = function;
 }

@@ -22,19 +22,19 @@ struct Blah_Overlay_Text;
 
 /* Function Type Definitions */
 
-typedef void blah_overlay_text_draw_func(struct Blah_Overlay_Text *text);
-	//This function type should draw the given given text within the overlay region
+typedef void blah_overlay_text_draw_func(struct Blah_Overlay_Text* text);
+	// This function type should draw the given given text within the overlay region
 
 /* Data Structure definitions */
 
-typedef struct Blah_Overlay_Text { //represents an scene object in the world
+typedef struct Blah_Overlay_Text { // represents an scene object in the world
 	char name[BLAH_OVERLAY_TEXT_NAME_LENGTH+1];
-	unsigned int bufferSize; //current size of text buffer (in characters)
-	Blah_Font *fontStyle; //Font used to draw this piece of text
-	char *stringBuffer; //pointer to storage buffer for text string
-	Blah_Point position; //object's position within the overlay, relative to overlay origin
-	blah_overlay_text_draw_func *drawFunction;
-	bool visible;	//Visibility flag; If TRUE, then text is drawn
+	unsigned int bufferSize; // current size of text buffer (in characters)
+	const Blah_Font* fontStyle; // Font used to draw this piece of text
+	char *stringBuffer; // pointer to storage buffer for text string
+	Blah_Point position; // object's position within the overlay, relative to overlay origin
+	blah_overlay_text_draw_func* drawFunction;
+	bool visible;	// Visibility flag; If TRUE, then text is drawn
 	struct Blah_Overlay *parent;
 } Blah_Overlay_Text;
 
@@ -57,11 +57,11 @@ void Blah_Overlay_Text_draw(Blah_Overlay_Text *text);
 bool Blah_Overlay_Text_isVisible(Blah_Overlay_Text *text);
 	//Returns TRUE if the text is visible, else FALSE
 
-Blah_Overlay_Text *Blah_Overlay_Text_new(char *name, unsigned int size, Blah_Font *fontStyle);
+Blah_Overlay_Text *Blah_Overlay_Text_new(const char *name, unsigned int size, const Blah_Font* fontStyle);
 	//Create an overlay text object using supplied name, size and
 	//font style.  Alloc a new Structure and return pointer
 
-void Blah_Overlay_Text_setDrawFunction(Blah_Overlay_Text *text, blah_overlay_text_draw_func *func);
+void Blah_Overlay_Text_setDrawFunction(Blah_Overlay_Text* text, blah_overlay_text_draw_func* func);
 	//set pointer for draw function
 
 void Blah_Overlay_Text_setPosition(Blah_Overlay_Text *text, float x, float y);

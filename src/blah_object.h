@@ -23,7 +23,7 @@ typedef void blah_object_draw_func(struct Blah_Object *object);
 /* Structure definitions */
 
 typedef struct Blah_Object { //represents a single object as a collection of primitives
-	blah_object_draw_func *drawFunction;
+	blah_object_draw_func* drawFunction;
 	Blah_Point frameTopLeftFront, frameBottomRightBack;
 	float boundRadius;
 	Blah_List primitives;	//List of primitives that compose object
@@ -37,20 +37,20 @@ typedef struct Blah_Object { //represents a single object as a collection of pri
 	extern "C" {
 #endif //__cplusplus
 
-void Blah_Object_draw(Blah_Object *object); 
+void Blah_Object_draw(Blah_Object *object);
 	//Draw object in space using the current drawing matrix
 
 void Blah_Object_init(Blah_Object *object);
 	//Initialise object structure with default values
-	
-Blah_Object *Blah_Object_new(); 
+
+Blah_Object *Blah_Object_new();
 	//Alloc a new Object structure and return pointer
 
 Blah_Object *Blah_Object_fromModel(Blah_Model *model);
 	//Produces an object with all the details of the supplied model
 	//The model is not altered from this process in any way
 
-void Blah_Object_setDrawFunction(Blah_Object *object, blah_object_draw_func *function); 
+void Blah_Object_setDrawFunction(Blah_Object* object, blah_object_draw_func* function);
 	//set pointer for draw function
 
 void Blah_Object_destroy(Blah_Object *object);
@@ -69,7 +69,7 @@ Blah_Vertex *Blah_Object_addVertex(Blah_Object *object, float x, float y, float 
 void Blah_Object_addVertices(Blah_Object *object, Blah_Point *vertices[]);
 	//Adds multiple vertices given a NULL pointer terminated array of *Blah_PointS */
 	//Memory is not duplicated; Do not free the supplied vertex structures
-	
+
 void Blah_Object_addPrimitive(Blah_Object *object, Blah_Primitive *prim);
 	//Adds a 3d primitive to an object's list of primitives
 

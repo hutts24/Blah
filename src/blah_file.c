@@ -11,24 +11,23 @@
 
 /* Private Function Prototypes */
 
-FILE *blah_file_open(char *filename, char *mode)
+FILE *blah_file_open(const char *filename, const char* mode)
 {	// Simplifies opening files across different platforms.  Calls fopen()
 	// Parameters have same purpose as in fopen()
 	char osFilename[200];
-
-	strcpy(osFilename, filename);
+    blah_util_strncpy(osFilename, filename, sizeof(osFilename));
 	blah_util_stringReplaceChar(osFilename, '\\', '/');
 	// change backslashes to forward slashes
 	return fopen(osFilename, mode);
 }
 
-bool blah_file_readX86(FILE* fileStream, void *dest, int byteLength);
+bool blah_file_readX86(FILE* fileStream, void* dest, int byteLength);
 	// Reads a binary number of size 'byteLength' bytes into 'dest'
 	// and reverses it for x86 compatible registers.  Returns true on success, false error.
 
 /* Private Function Definitions */
 
-bool blah_file_readX86(FILE* fileStream, void *dest, int byteLength)
+bool blah_file_readX86(FILE* fileStream, void* dest, int byteLength)
 {	// Reads a binary number of size 'byteLength' bytes into 'dest'
 	// and reverses it for x86 compatible registers.  Returns true on success, false error.
 	if (fread(dest, byteLength, 1, fileStream)) { //Read binary value from file

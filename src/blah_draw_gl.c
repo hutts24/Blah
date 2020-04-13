@@ -424,7 +424,7 @@ void blah_draw_gl_triangleStrip(Blah_Vertex *points[], Blah_Texture_Map *texture
 	blah_draw_gl_primitive(points, GL_TRIANGLE_STRIP, textureMap, material);
 }
 
-void blah_draw_gl_update2dProjection(Blah_Video_Mode *mode)
+void blah_draw_gl_update2dProjection(const Blah_Video_Mode* mode)
 {	//Calculates and updates the internal 2d projection matrix using physical
 	//dimensions of viewing area (video mode width/height)
 	//This function is called when the video mode is set and should not be called

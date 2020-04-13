@@ -14,7 +14,7 @@
 				<Option createDefFile="1" />
 				<Option createStaticLib="1" />
 				<Compiler>
-					<Add option="-Wextra" />
+					<Add option="-Wfatal-errors" />
 					<Add option="-Wall" />
 					<Add option="-std=c11" />
 					<Add option="-g" />
@@ -42,6 +42,13 @@
 				</Linker>
 			</Target>
 		</Build>
+		<Compiler>
+			<Add option="-Weffc++" />
+			<Add option="-Wfatal-errors" />
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="-std=c11" />
+		</Compiler>
 		<Linker>
 			<Add library="opengl32" />
 			<Add library="SDL" />

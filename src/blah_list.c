@@ -28,17 +28,17 @@ void Blah_List_Element_init(Blah_List_Element *element, void *data)
 	element->data=data;
 }
 
-void Blah_List_Element_callFunction(Blah_List_Element *element, blah_list_element_func function) {
+void Blah_List_Element_callFunction(Blah_List_Element* element, blah_list_element_func* function) {
 	//call function for with data pointer of element
 	function(element->data);
 }
 
-void Blah_List_Element_callWithArg(Blah_List_Element *element, blah_list_element_func_1arg function, void *arg) {
+void Blah_List_Element_callWithArg(Blah_List_Element* element, blah_list_element_func_1arg* function, void* arg) {
 	//call function for with data pointer of element
 	function(element->data,arg);
 }
 
-bool Blah_List_Element_callArgReturnBool(Blah_List_Element *element, blah_list_element_bool_func_1arg function, void *arg) {
+bool Blah_List_Element_callArgReturnBool(Blah_List_Element* element, blah_list_element_bool_func_1arg* function, void* arg) {
 	//call function for with data pointer of element
 	return function(element->data,arg);
 }
@@ -133,18 +133,16 @@ void Blah_List_removeAll(Blah_List *list) {
 void Blah_List_destroyElements(Blah_List *list) {
 	//clears all memory allocated for elements and data but does not destroy basic list header
 	Blah_List_Element *tempElement = list->first, *destElement;
-	blah_list_element_dest_func destFunc = list->destroyElementFunction ? list->destroyElementFunction : free;
+	blah_list_element_dest_func* destFunc = list->destroyElementFunction ? list->destroyElementFunction : free;
 	//If there is a valid destory function, we will use it, else we will just use free()
 
-	while (tempElement!=NULL) {
+	while (tempElement != NULL) {
 		destElement = tempElement;  //remember current pointer
 		tempElement = tempElement->next;  //prepare for next element
-
 		destFunc(destElement->data); //Call destroy function to free/destroy data
-
 		free(destElement);	//free current element
 	}
-	list->first=list->last=NULL;  //clear list to empty
+	list->first=list->last = NULL;  //clear list to empty
 	list->length = 0;
 }
 
@@ -181,7 +179,7 @@ void Blah_List_insertElement(Blah_List *list, void *data) { //inserts a new elem
 }
 
 
-void Blah_List_callFunction(Blah_List *list, blah_list_element_func function) {
+void Blah_List_callFunction(Blah_List* list, blah_list_element_func* function) {
 	//call function for with data pointer for every element
 	Blah_List_Element *currentElement=list->first, *nextElement;
 
@@ -193,7 +191,7 @@ void Blah_List_callFunction(Blah_List *list, blah_list_element_func function) {
 	}
 }
 
-void Blah_List_callWithArg(Blah_List *list, blah_list_element_func_1arg function, void *arg) {
+void Blah_List_callWithArg(Blah_List* list, blah_list_element_func_1arg* function, void* arg) {
 	//call function for with data pointer and single argument for every element
 	Blah_List_Element *currentElement=list->first, *nextElement;
 
@@ -205,7 +203,7 @@ void Blah_List_callWithArg(Blah_List *list, blah_list_element_func_1arg function
 	}
 }
 
-void *Blah_List_search(Blah_List *list, blah_list_search_func searchFunction, void *searchArg) {
+void *Blah_List_search(Blah_List* list, blah_list_search_func* searchFunction, void* searchArg) {
 	//Calls search_function for each element of the list, using the element's data
 	//as the first argument, and 'arg' as second argument.  Returns the data pointer
 	//of the first element for which search_function returns true, or NULL if no
@@ -226,7 +224,7 @@ void *Blah_List_search(Blah_List *list, blah_list_search_func searchFunction, vo
 	return match;
 }
 
-void Blah_List_sort(Blah_List *list, blah_list_sort_func compareFunction) {
+void Blah_List_sort(Blah_List* list, blah_list_sort_func* compareFunction) {
 	//Performs a linear sort of the list, using the supplied function to compare two elements.
 	//compare_function is called as comp((void*)elem1->data,(void*)elem2->data).
 	//compare_function should behave like strcmp() and return a value smaller than 0
@@ -281,7 +279,7 @@ void Blah_List_sort(Blah_List *list, blah_list_sort_func compareFunction) {
 
 
 
-void Blah_List_setDestroyElementFunction(Blah_List *list, blah_list_element_dest_func function) {
+void Blah_List_setDestroyElementFunction(Blah_List* list, blah_list_element_dest_func* function) {
 	//Sets the function pointer to the given function used to destroy element data
 	//contained in elements of this list
 	list->destroyElementFunction = function;

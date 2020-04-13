@@ -11,11 +11,11 @@
 /* Private internal functions */
 
 // static Blah_Tree_Element **Blah_Tree_Element_findPosition(Blah_Tree_Element **beginAddr, char *key);
-	//Returns address of pointer where element should be located in tree
+    // Returns address of pointer where element should be located in tree
 
-static void Blah_Tree_Element_recursiveCall(Blah_Tree_Element *element, blah_tree_element_func function) {
-	//Recurse into left and right elements of parent element and
-	//call function for with data pointer for every element
+static void Blah_Tree_Element_recursiveCall(Blah_Tree_Element *element, blah_tree_element_func* function) {
+	// Recurse into left and right elements of parent element and
+	// call function for with data pointer for every element
 	if (element->left) {
 		Blah_Tree_Element_recursiveCall(element->left, function);
 	} else {
@@ -24,7 +24,7 @@ static void Blah_Tree_Element_recursiveCall(Blah_Tree_Element *element, blah_tre
 	}
 }
 
-static void Blah_Tree_Element_recursiveCallWithArg(Blah_Tree_Element *element, blah_tree_element_func_1arg function, void *arg) {
+static void Blah_Tree_Element_recursiveCallWithArg(Blah_Tree_Element* element, blah_tree_element_func_1arg* function, void* arg) {
 	// Recurse into left and right elements of parent element and
 	// call function for with data pointer for every element with single argument 'arg'
 	if (element->left) { Blah_Tree_Element_recursiveCallWithArg(element->left, function, arg); } // call for left if valid
@@ -40,8 +40,7 @@ static void Blah_Tree_Element_recursiveRemove(Blah_Tree_Element *element) {
 	free(element);
 }
 
-static void Blah_Tree_Element_recursiveDestroy(Blah_Tree_Element *element,
-	blah_tree_element_dest_func *destFunc) {
+static void Blah_Tree_Element_recursiveDestroy(Blah_Tree_Element *element, blah_tree_element_dest_func* destFunc) {
 	//Recurse into left and right elements of parent element and
 	//frees memory occupied by element structure, and also destroys the data contained
 	//stored in element->data
@@ -54,7 +53,7 @@ static void Blah_Tree_Element_recursiveDestroy(Blah_Tree_Element *element,
 
 /* Element Function Definitions */
 
-Blah_Tree_Element *Blah_Tree_Element_new(char *key, void *data) {
+Blah_Tree_Element *Blah_Tree_Element_new(const char* key, void *data) {
 	//Creates a new tree element
 	Blah_Tree_Element *newElement = malloc(sizeof(Blah_Tree_Element));
 	newElement->left = newElement->right = NULL;
@@ -91,23 +90,22 @@ static Blah_Tree_Element **Blah_Tree_Element_findPosition(Blah_Tree_Element **be
 }
 
 
-void Blah_Tree_Element_callFunction(Blah_Tree_Element *element, blah_tree_element_func function) {
+void Blah_Tree_Element_callFunction(Blah_Tree_Element* element, blah_tree_element_func* function) {
 	//call function with data pointer of element
 	function(element->data);
 }
 
-void Blah_Tree_Element_callWithArg(Blah_Tree_Element *element, blah_tree_element_func_1arg function, void *arg) {
+void Blah_Tree_Element_callWithArg(Blah_Tree_Element* element, blah_tree_element_func_1arg* function, void* arg) {
 	//call function with data pointer of element and single void pointer arg
 	function(element->data, arg);
 }
 
-bool Blah_Tree_Element_callArgReturnBool(Blah_Tree_Element *element, blah_tree_element_bool_func_1arg function, void *arg) {
+bool Blah_Tree_Element_callArgReturnBool(Blah_Tree_Element* element, blah_tree_element_bool_func_1arg* function, void* arg) {
 	//call function for with data pointer of element
 	return function(element->data, arg);
 }
 
-void *Blah_Tree_Element_search(Blah_Tree_Element *treeElement,
-	blah_tree_search_func *searchFunction, void *arg) {
+void* Blah_Tree_Element_search(Blah_Tree_Element *treeElement, blah_tree_search_func* searchFunction, void *arg) {
 	//Performs a linear recursive search from location of given element in tree.
 	//Calls search_function for each element of the tree in sort order, using the
 	//element's data as the argument and 'arg' as a second argument.  Returns the data
@@ -143,23 +141,23 @@ Blah_Tree *Blah_Tree_new(char *name) { //Creates a new empty tree given name
 }
 
 Blah_Tree_Element *Blah_Tree_findElement(Blah_Tree *tree, const char *key) {
-	//finds and returns a pointer to the element structure holding data pointer
-	//or NULL if no element found with matching key string
+	// finds and returns a pointer to the element structure holding data pointer
+	// or NULL if no element found with matching key string
 	Blah_Tree_Element **elementPtrAddr = Blah_Tree_Element_findPosition(&tree->first, key);
 	return *elementPtrAddr;
 }
 
-void *Blah_Tree_search(Blah_Tree *tree, blah_tree_search_func *searchFunction, void *arg) {
-	//Calls search_function for each element of the tree in sort order, using the
-	//element's data as the argument.  Returns the data pointer of the first element
-	//for which search_function returns true, or NULL if no match;
+void* Blah_Tree_search(Blah_Tree *tree, blah_tree_search_func* searchFunction, void *arg) {
+	// Calls search_function for each element of the tree in sort order, using the
+	// element's data as the argument.  Returns the data pointer of the first element
+	// for which search_function returns true, or NULL if no match;
 
 	/* Simply return value from recursive element search function */
 	return Blah_Tree_Element_search(tree->first, searchFunction, arg);
 }
 
 
-bool Blah_Tree_removeElement(Blah_Tree *tree, char *key) {
+bool Blah_Tree_removeElement(Blah_Tree *tree, const char* key) {
 	//remove given tree element from tree.  Does not destroy data
 	Blah_Tree_Element **elementPtrAddr;
 	Blah_Tree_Element *removeMe;
@@ -195,7 +193,7 @@ void Blah_Tree_removeAll(Blah_Tree *tree) {
 void Blah_Tree_destroyElements(Blah_Tree *tree) {
 	//clears all memory allocated for elements and data but does not destroy basic tree header
 	if (tree->first) {
-		blah_tree_element_dest_func *destFunc = tree->destroyElementFunction ? tree->destroyElementFunction : free;
+		blah_tree_element_dest_func* destFunc = tree->destroyElementFunction ? tree->destroyElementFunction : free;
 		//If there is a valid destory function, we will use it, else we will just use free()
 		Blah_Tree_Element_recursiveDestroy(tree->first, destFunc); //call free on all element pointers
 		tree->first = NULL;
@@ -209,9 +207,9 @@ void Blah_Tree_destroy(Blah_Tree *tree) {
 	free(tree);	//clear the tree itself
 }
 
-bool Blah_Tree_insertElement(Blah_Tree *tree, char *key, void *data) {
-	//inserts a new element with given key and data pointer
-	//Returns TRUE on success, or FALSE if an element with same key already exists
+bool Blah_Tree_insertElement(Blah_Tree *tree, const char* key, void *data) {
+	// inserts a new element with given key and data pointer
+	// Returns TRUE on success, or FALSE if an element with same key already exists
 
 	Blah_Tree_Element **newPtrAddr = Blah_Tree_Element_findPosition(&tree->first, key);
 	if (*newPtrAddr) { // If search found existing element,
@@ -224,11 +222,11 @@ bool Blah_Tree_insertElement(Blah_Tree *tree, char *key, void *data) {
 }
 
 
-void Blah_Tree_callFunction(Blah_Tree *tree, blah_tree_element_func function) {
-	//call function for with data pointer for every element
+void Blah_Tree_callFunction(Blah_Tree* tree, blah_tree_element_func* function) {
+	// call function for with data pointer for every element
 	Blah_Tree_Element_recursiveCall(tree->first, function);
 }
 
-void Blah_Tree_callWithArg(Blah_Tree *tree, blah_tree_element_func_1arg function, void *arg) {
+void Blah_Tree_callWithArg(Blah_Tree* tree, blah_tree_element_func_1arg* function, void* arg) {
 	Blah_Tree_Element_recursiveCallWithArg(tree->first, function, arg);
 }

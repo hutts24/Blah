@@ -15,7 +15,7 @@
 	extern "C" {
 #endif //__cplusplus
 
-bool blah_video_sdl_init(Blah_Video_Settings *settings); //Initialise SDL video
+bool blah_video_sdl_init(const Blah_Video_Settings* settings); //Initialise SDL video
 bool blah_video_sdl_exit(); //Shutdown SDL video component
 void blah_video_sdl_swapBuffers();  //Swap video buffer when double buffering
 void blah_video_sdl_clearBuffer(); //Clears drawing buffer
@@ -30,7 +30,7 @@ void blah_video_sdl_setSizeFullScreen(int width, int height);
 void blah_video_sdl_updateBuffer();
 	//Update all drawing changes to buffer
 
-bool blah_video_sdl_setMode(Blah_Video_Mode *mode);
+bool blah_video_sdl_setMode(const Blah_Video_Mode *mode);
 	//Use SDL libraries to set display device in given mode
 
 #ifdef __cplusplus

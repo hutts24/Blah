@@ -88,7 +88,7 @@ void blah_input_keyboard_exit() { //shutdown keyboard input component
 	//input_keyboard_sdl_exit();
 }
 
-void blah_input_keyboard_setDepressFunction(blah_input_key_symbol keySymbol, blah_input_key_depress_func *function) {
+void blah_input_keyboard_setDepressFunction(blah_input_key_symbol keySymbol, blah_input_key_depress_func* function) {
 	//attaches a handler function to be called when key is initially depressed
 	//Function will be called with a single argument of type Blah_Input_key representing
 	//the key which has been depressed
@@ -96,7 +96,7 @@ void blah_input_keyboard_setDepressFunction(blah_input_key_symbol keySymbol, bla
 	Blah_Input_Key_updateMonitored(&blahInputKeys[keySymbol]);
 }
 
-void blah_input_keyboard_setHoldFunction(blah_input_key_symbol keySymbol, blah_input_key_hold_func *function) {
+void blah_input_keyboard_setHoldFunction(blah_input_key_symbol keySymbol, blah_input_key_hold_func* function) {
 	//attaches a handler function to be called while a key is still depressed
 	//after the first initial detection.  Function will be called with a single
 	//argument of type Blah_Input_key representing the key which is depressed

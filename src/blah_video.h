@@ -9,17 +9,16 @@
 /* Definitions */
 
 #define BLAH_VIDEO_API_NAME_LENGTH 20
-
 #define BLAH_VIDEO_MODE_NAME_LENGTH 20
 
 /* Forward Declarations */
 
-struct Blah_Video_Settings;
-struct Blah_Video_Mode;
+typedef struct Blah_Video_Mode Blah_Video_Mode;
+typedef struct Blah_Video_Settings Blah_Video_Settings;
 
 /* Function Type Declarations */
 
-typedef bool blah_video_api_init_func(struct Blah_Video_Settings *settings);
+typedef bool blah_video_api_init_func(const Blah_Video_Settings* settings);
 	//This type of function is called to initialise the video subsystem
 
 typedef void blah_video_api_main_func();
@@ -43,21 +42,21 @@ typedef void blah_video_api_update_func();
 typedef void blah_video_api_db_func(bool fullFlag);
 	//This type of function is called to establish double buffering of video subsystem
 
-typedef bool blah_video_api_mode_func(struct Blah_Video_Mode *mode);
+typedef bool blah_video_api_mode_func(const Blah_Video_Mode* mode);
 	//This type of function is called to change the mode of the video subsystem
 
 /* Data Structures */
 
 typedef struct Blah_Video_API { //Defines functions to use with a specific API
 	char name[BLAH_VIDEO_API_NAME_LENGTH+1]; //name of API
-	blah_video_api_init_func *initFunction;
-	blah_video_api_exit_func *exitFunction;
-	blah_video_api_swap_func *swapBuffersFunction;
-	blah_video_api_clear_func *clearBufferFunction;
-	blah_video_api_fs_func *setFullScreenFunction;
-	blah_video_api_update_func *updateBufferFunction;
-	blah_video_api_db_func *setDoubleBufferedFunction;
-	blah_video_api_mode_func *setModeFunction;
+	blah_video_api_init_func* initFunction;
+	blah_video_api_exit_func* exitFunction;
+	blah_video_api_swap_func* swapBuffersFunction;
+	blah_video_api_clear_func* clearBufferFunction;
+	blah_video_api_fs_func* setFullScreenFunction;
+	blah_video_api_update_func* updateBufferFunction;
+	blah_video_api_db_func* setDoubleBufferedFunction;
+	blah_video_api_mode_func* setModeFunction;
 } Blah_Video_API;
 
 typedef struct Blah_Video_Settings { //Stores all current configuration settings for video

@@ -91,20 +91,20 @@ void blah_draw_gl_solidCone(float base, float height, int slices, int stacks, Bl
 void blah_draw_gl_solidSphere(float radius, int slices, int stacks, Blah_Material *material);
 
 void blah_draw_gl_triangle(Blah_Vertex *points[], Blah_Texture_Map *textureMap, Blah_Material *material);
-	//Draws a trianlge with points specified by points
+	// Draws a trianlge with points specified by points
 
 void blah_draw_gl_triangleStrip(Blah_Vertex *points[], Blah_Texture_Map *textureMap, Blah_Material *material);
-	//Draws a trianlge strip with points specified by points
+	// Draws a trianlge strip with points specified by points
 
-void blah_draw_gl_update2dProjection(Blah_Video_Mode *mode);
-	//Calculates and updates the internal 2d projection matrix using physical
-	//dimensions of viewing area (video mode width/height)
-	//This function is called when the video mode is set and should not be called
-	//at any other time.
+void blah_draw_gl_update2dProjection(const Blah_Video_Mode* mode);
+	// Calculates and updates the internal 2d projection matrix using physical
+	// dimensions of viewing area (video mode width/height)
+	// This function is called when the video mode is set and should not be called
+	// at any other time.
 
 void blah_draw_gl_updatePerspective();
-	//Sets up the viewing perspective by setting up view clipping planes and
-	//applying a transform matrix to the modelview matrix to simulate a vantage point
+	// Sets up the viewing perspective by setting up view clipping planes and
+	// applying a transform matrix to the modelview matrix to simulate a vantage point
 
 void blah_draw_gl_wireCube(float sideLength, Blah_Material *material);
 

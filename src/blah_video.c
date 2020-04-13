@@ -96,7 +96,7 @@ bool blah_video_init() {
 	} else { //Call current API init
 		if (blah_video_currentAPI->initFunction(&blah_video_settings) ) {
 			//Sort video modes list
-			Blah_List_sort(&blah_video_modes, (blah_list_sort_func)blah_video_modeCompare);
+			Blah_List_sort(&blah_video_modes, (blah_list_sort_func*)blah_video_modeCompare);
 			blah_video_settings.initialised = true;
 			Blah_Debug_Log_message(&blah_video_log, "blah_video_init() successful.");
 			return true;
@@ -202,7 +202,7 @@ const Blah_Video_Mode* blah_video_getMode(int width, int height, int bppDepth) {
 	char tempModeName[BLAH_VIDEO_MODE_NAME_LENGTH + 1];
 	/* construct a mode name from given attributes and search mode tree for match */
 	sprintf(tempModeName, "%dx%dx%d", width, height, bppDepth);
-	return (Blah_Video_Mode*)Blah_List_search(&blah_video_modes, (blah_list_search_func)blah_video_modeSearch, tempModeName);
+	return (Blah_Video_Mode*)Blah_List_search(&blah_video_modes, (blah_list_search_func*)blah_video_modeSearch, tempModeName);
 }
 
 const Blah_Video_Mode* blah_video_getIdealMode(unsigned int width, unsigned int height, unsigned int bppDepth) {

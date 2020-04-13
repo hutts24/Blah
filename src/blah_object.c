@@ -1,7 +1,7 @@
-/* blah_object.c 
+/* blah_object.c
 	Defines functions that operate upon objects.
 	Objects are represented as a collection of primitives. */
-	
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,12 +24,11 @@ Blah_Object *Blah_Object_fromModel(Blah_Model *model) {
 	Blah_Vertex *tempVerticesArray[300];
 	Blah_Vertex *currentVertex;
 	Blah_Material *tempMaterial;
-	Blah_Primitive *newPrim;
 	Blah_Point mappingArray[300]; //big dodgy temporary array to store mapping coords
-	Blah_Point *mappingIndices[300]; //big dodgy temporary array to hold mapping indices
+	const Blah_Point* mappingIndices[300]; //big dodgy temporary array to hold mapping indices
 	Blah_Model_Surface *currentSurface;
 	Blah_Model_Texture_Map *texMap=NULL;
-	
+
 	long vertexCount;
 	int vertexIndex;
 	int tempIndex;
@@ -37,7 +36,7 @@ Blah_Object *Blah_Object_fromModel(Blah_Model *model) {
 	Blah_Point textureOrigin;
 	Blah_Vector delta;
 	Blah_Vector normal;
-	
+
 	newObject = Blah_Object_new();
 	//Create a temporary array with pointers to all vertices for indexing purposes
 	tempVerticesPointerArray = malloc(sizeof(Blah_Vertex*) * model->vertices.length);
@@ -62,25 +61,25 @@ Blah_Object *Blah_Object_fromModel(Blah_Model *model) {
 		while (tempFaceElement) { //while not yet end of model faces
 			tempIndexElement = ((Blah_Model_Face*)tempFaceElement->data)->indices.first;
 			vertexCount = 0;
-		
+
 			//FIXME - this sucks, need to allow for multiple textures
-			while (tempIndexElement) { //create temp_indices_array as an array of 
+			while (tempIndexElement) { //create temp_indices_array as an array of
 				vertexIndex = tempIndexElement->data - NULL;
 				currentVertex = tempVerticesPointerArray[vertexIndex];
 				tempVerticesArray[vertexCount] = currentVertex;
 				if (currentSurface->textures.first) { //do texture mapping_array
 					texMap = (Blah_Model_Texture_Map*)currentSurface->textures.first->data;
 					//fprintf(stderr,"texture name: %s\n",tex_map->texture->name);
-		
+
 					//calculate texture origin (0,0)
 					textureOrigin.x = texMap->textureCenter.x - texMap->textureSize.x/2.0;
 					textureOrigin.y = texMap->textureCenter.y - texMap->textureSize.y/2.0;
 					textureOrigin.z = texMap->textureCenter.z - texMap->textureSize.z/2.0;
 					//fprintf(stderr,"using coordinates: %f,%f, %f\n",texture_origin.x,
 					//	texture_origin.y, texture_origin.z);
-			
-					Blah_Point_deltaPoint(&textureOrigin, &currentVertex->location, &delta);	
-				
+
+					Blah_Point_deltaPoint(&textureOrigin, &currentVertex->location, &delta);
+
 					switch (texMap->projectionAxis) {
 						case 'x' :
 							x = fabs(delta.z / texMap->textureSize.z);
@@ -99,52 +98,49 @@ Blah_Object *Blah_Object_fromModel(Blah_Model *model) {
 					mappingIndices[vertexCount] = &mappingArray[vertexCount];
 				} else
 					texMap = NULL;
-		
+
 				tempIndexElement = tempIndexElement->next;
 				vertexCount++;
 			}
-					
+
 			tempVerticesArray[vertexCount] = NULL; //Add terminating NULL pointer
 			mappingIndices[vertexCount] = NULL; //terminate array of mapping coordinates
-		
-			if (vertexCount==3)
-				newPrim = Blah_Primitive_new(BLAH_PRIMITIVE_TRIANGLE, tempVerticesArray, vertexCount);
-			else
-				newPrim = Blah_Primitive_new(BLAH_PRIMITIVE_POLYGON, tempVerticesArray, vertexCount);
+
+			Blah_Primitive* newPrim = Blah_Primitive_new(vertexCount == 3 ? BLAH_PRIMITIVE_TRIANGLE : BLAH_PRIMITIVE_POLYGON, tempVerticesArray, vertexCount);
+
 			//Set material property for new Primitive
 			Blah_Primitive_setMaterial(newPrim, tempMaterial);
 			Blah_Object_addPrimitive(newObject, newPrim);
-					
-			if (texMap) //Map texture if appropriate
-				Blah_Primitive_mapTexture(newPrim, texMap->texture, mappingIndices);	
-				//get next face to make into primitive
-			
+
+            // Map texture if appropriate
+			if (texMap) { Blah_Primitive_mapTexture(newPrim, texMap->texture, mappingIndices); }
+
+            // get next face to make into primitive
 			/* FIXME - BIG UGLY MESS TO MAKE NORMALS FOR VERTICES */
-			if (((Blah_Model_Face*)tempFaceElement->data)->indices.length > 2)
-				Blah_Primitive_getNormal(newPrim, &normal);
+			if (((Blah_Model_Face*)tempFaceElement->data)->indices.length > 2) { Blah_Primitive_getNormal(newPrim, &normal); }
 			tempIndex = 0;
 			currentVertex = tempVerticesArray[0];
-			
+
 			while (currentVertex) {
 				Blah_Vector_addVector(&currentVertex->normal, &normal);
 				Blah_Vector_normalise(&currentVertex->normal);
 				tempIndex++;
 				currentVertex = tempVerticesArray[tempIndex];
 			}
-						
+
 			tempFaceElement = tempFaceElement->next;
 		}
 		tempSurfaceElement = tempSurfaceElement->next;
 	}
-		
+
 	free(tempVerticesPointerArray);
-	
+
 	//Free all temp memory buffers
 	Blah_Object_updateBounds(newObject);
-	
+
 	return newObject;
 }
-	
+
 void Blah_Object_destroy(Blah_Object *object) {//standard destroy routine for object
 	Blah_List_destroyElements(&object->primitives);
 	Blah_List_destroyElements(&object->vertices);
@@ -154,10 +150,11 @@ void Blah_Object_destroy(Blah_Object *object) {//standard destroy routine for ob
 
 void Blah_Object_draw(Blah_Object *object) {
 	//Draw object in space using the current drawing matrix
-	if (object->drawFunction!=NULL) //if draw function defined, use it
+	if (object->drawFunction != NULL) { // if draw function defined, use it
 		object->drawFunction(object);
- 	else //call primitive draw function to draw all primitives
-		Blah_List_callFunction(&object->primitives,(blah_list_element_func)Blah_Primitive_draw);		
+ 	} else { // call primitive draw function to draw all primitives
+		Blah_List_callFunction(&object->primitives,(blah_list_element_func*)Blah_Primitive_draw);
+ 	}
 }
 
 void Blah_Object_init(Blah_Object *object) {
@@ -168,18 +165,18 @@ void Blah_Object_init(Blah_Object *object) {
 	Blah_List_init(&object->primitives, "object primitives");
 	Blah_List_init(&object->vertices, "resource vertices");
 	Blah_List_init(&object->materials, "resource materials");
-	object->primitives.destroyElementFunction = (blah_list_element_dest_func)Blah_Primitive_destroy;
+	object->primitives.destroyElementFunction = (blah_list_element_dest_func*)Blah_Primitive_destroy;
 }
 
 Blah_Object *Blah_Object_new() {
 	Blah_Object *newObject = malloc(sizeof(Blah_Object));
 	if (newObject != NULL) // Ensure memory allocation succeeded before initialising
 		Blah_Object_init(newObject);
-	
-	return newObject;
-}	
 
-void Blah_Object_setDrawFunction(Blah_Object *object, blah_object_draw_func function) {
+	return newObject;
+}
+
+void Blah_Object_setDrawFunction(Blah_Object* object, blah_object_draw_func* function) {
 	object->drawFunction = function;
 }
 
@@ -187,22 +184,22 @@ void Blah_Object_setDrawFunction(Blah_Object *object, blah_object_draw_func func
 void Blah_Object_setColour(Blah_Object *object, float red, float green, float blue,	float alpha) {
 	//Sets the colour of all an object's materials
 	Blah_List_Element *materialElement = object->materials.first;
-	
+
 	while (materialElement) {
 		Blah_Material_setColour((Blah_Material*)materialElement->data, red, green, blue, alpha);
 		materialElement = materialElement->next;
 	}
 }
 
-void Blah_Object_setMaterial(Blah_Object *object, Blah_Material *material) {
+void Blah_Object_setMaterial(Blah_Object* object, Blah_Material* material) {
 	//Set the material used by all primitives belonging to the object
-	Blah_List_callWithArg(&object->primitives, (blah_list_element_func_1arg)Blah_Primitive_setMaterial, material);
+	Blah_List_callWithArg(&object->primitives, (blah_list_element_func_1arg*)Blah_Primitive_setMaterial, material);
 }
-	
+
 void Blah_Object_mapTextureAuto(Blah_Object *obj, Blah_Texture *texture) {
 	//Map given texture to all primitives of given object
-	Blah_List_callWithArg(&obj->primitives, (blah_list_element_func_1arg)Blah_Primitive_mapTextureAuto, texture);
-	
+	Blah_List_callWithArg(&obj->primitives, (blah_list_element_func_1arg*)Blah_Primitive_mapTextureAuto, texture);
+
 	/* prim->texture = texture;
 	if (prim->texture_mapping) { //If there is a pre-existing mapping, need to destroy it
 		free(prim->texture_mapping);
@@ -223,7 +220,7 @@ void Blah_Object_addVertices(Blah_Object *object, Blah_Point *vertices[]) {
 	//Adds multiple vertices given a NULL pointer terminated array of *Blah_PointS */
 	//Memory is not duplicated; Do not free the supplied vertex structures
 	int vertexIndex = 0;
-		
+
 	while (vertices[vertexIndex]) {
 		Blah_List_appendElement(&object->vertices,vertices[vertexIndex]);
 		vertexIndex++;
@@ -245,28 +242,28 @@ void Blah_Object_addMaterial(Blah_Object *object, Blah_Material *material) {
 
 void Blah_Object_updateBounds(Blah_Object* object) {
 	//Calculates the collision boundaries of an object
-	
+
 	Blah_List_Element *primElement;
 	Blah_Vertex **vertexList;
 	Blah_Point origin = {0,0,0};
 	int vertexIndex;
 	float maxRadius = 0;
 	float tempRadius;
-	
+
 	primElement = object->primitives.first;
-	
+
 	while (primElement) {
 		vertexList = ((Blah_Primitive*)primElement->data)->sequence;
 		if (vertexList) { //if there is a vertex list
 			vertexIndex = 0;
-			
+
 			while (vertexList[vertexIndex]) {
 				tempRadius = Blah_Point_distancePoint(&origin, &vertexList[vertexIndex]->location);
 				if (tempRadius > maxRadius)
 					maxRadius = tempRadius; //update max radius
 				vertexIndex++;
 			}
-		}	
+		}
 		primElement = primElement->next;
 	}
 	//fprintf(stderr,"new radius calculated:%f\n",max_radius);
@@ -277,8 +274,8 @@ static void Blah_Object_scalePoint(Blah_Point *point, float *scaleFactor) {
 	Blah_Point_scale(point, *scaleFactor);
 }
 
-void Blah_Object_scale(Blah_Object *object, float scaleFactor) {
+void Blah_Object_scale(Blah_Object* object, float scaleFactor) {
 	//Alters every vertex in the object by multiplying each coordinate by scale_factor
-	Blah_List_callWithArg(&object->vertices, (blah_list_element_func_1arg)Blah_Object_scalePoint, &scaleFactor);
+	Blah_List_callWithArg(&object->vertices, (blah_list_element_func_1arg*)Blah_Object_scalePoint, &scaleFactor);
 	Blah_Object_updateBounds(object);
 }

@@ -60,7 +60,7 @@ void Blah_Overlay_draw(Blah_Overlay *overlay) {
 	if (overlay->visible) { //only draw overlay if it is visible
 		blah_draw_pushDrawport();
 		blah_draw_setDrawport(overlay->posX, overlay->posY, overlay->posX+overlay->width-1, overlay->posX+overlay->height-1);
-		Blah_List_callFunction(&overlay->textList, (blah_list_element_func)Blah_Overlay_Text_draw);
+		Blah_List_callFunction(&overlay->textList, (blah_list_element_func*)Blah_Overlay_Text_draw);
 		blah_draw_popDrawport();
 	}
 }

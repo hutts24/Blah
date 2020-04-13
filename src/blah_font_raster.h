@@ -36,12 +36,12 @@ void Blah_Font_Raster_disable(Blah_Font_Raster *font);
 	//Frees internally allocated memory for the raster data of the raster font structure,
 	//leaving basic raster font structure available for reuse.
 
-bool Blah_Font_Raster_init(Blah_Font_Raster *rasterFont, char *fontName, Blah_Image *source, unsigned int charMap[256], int charWidth, int charHeight);
+bool Blah_Font_Raster_init(Blah_Font_Raster *rasterFont, const char* fontName, const Blah_Image* source, unsigned int charMap[256], int charWidth, int charHeight);
 	//Given a pointer to a simple unitialised raster font structure, this function initialises all important
 	//variables within the structure, allocates font data and performs all other tasks necessary to make
 	//the font usable.  Function returns true on success, or false on error.
 
-Blah_Font_Raster *Blah_Font_Raster_new(char *fontName, Blah_Image *source, unsigned int charMap[256], int charWidth, int charHeigth);
+Blah_Font_Raster *Blah_Font_Raster_new(const char* fontName, const Blah_Image* source, unsigned int charMap[256], int charWidth, int charHeigth);
 	//Creates a new raster font structure from source image using index char map
 	//and given width and height of each character.  Width and height of source
 	//image must be a discreet multiple of character width and height. Index char

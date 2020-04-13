@@ -14,7 +14,7 @@
 /* Static Globals - Private to blah_debug.c */
 static Blah_List logList = {
     .name = "debug_logs",
-    .destroyElementFunction = (blah_list_element_dest_func)Blah_Debug_Log_destroy,  // List of all entities, defaults to empty
+    .destroyElementFunction = (blah_list_element_dest_func*)Blah_Debug_Log_destroy,  // List of all entities, defaults to empty
 };
 
 /* Private Function Declarations */

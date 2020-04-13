@@ -17,31 +17,10 @@ static Blah_Tree textureTree = {"", NULL, NULL, 0};	//Tree of all constructed te
 
 /* Function Declarations */
 
-Blah_Texture *Blah_Texture_fromImage(Blah_Image *sourceImage) {
-	//Creates a new texture from a source image, adds to texture_tree and retunrs pointer to new texture object.
-	//If an error occurs, this function returns a NULL pointer.
-
-	/* Blah_Texture *newTexture = (Blah_Texture*)malloc(sizeof(Blah_Texture));
-
-	if (newTexture) { //Check that memory allocation succeeded
-		//Copy statistics from source image
-		newTexture->pixelFormat = sourceImage->pixelFormat;
-		newTexture->pixelDepth = sourceImage->pixelDepth;
-		newTexture->width = sourceImage->width;
-		newTexture->height = sourceImage->height;
-		blah_util_strncpy(newTexture->name, sourceImage->name, BLAH_TEXTURE_NAME_LENGTH);
-		//Call API specific function to create a texture and return handle to it
-		newTexture->handle = Blah_Texture_gl_new(sourceImage);
-
-		if (!Blah_Tree_insertElement(&textureTree, newTexture->name, newTexture)) { //If an error occurred inserting into tree,
-			Blah_Texture_destroy(newTexture); //Destroy texture that was just created because something is obviously wrong
-			newTexture = NULL; //Set the pointer to return NULL value
-		}
-	}
-
-	return newTexture; */
-
-	const blah_texture_handle handle = Blah_Texture_gl_new(sourceImage);
+Blah_Texture* Blah_Texture_fromImage(const Blah_Image* sourceImage) {
+	// Creates a new texture from a source image, adds to texture_tree and retunrs pointer to new texture object.
+	// If an error occurs, this function returns a NULL pointer.
+    const blah_texture_handle handle = Blah_Texture_gl_new(sourceImage);
 	return Blah_Texture_new(sourceImage->name, sourceImage->width, sourceImage->height, handle, sourceImage->pixelFormat, sourceImage->pixelDepth);
 }
 
@@ -98,35 +77,36 @@ Blah_Texture *Blah_Texture_new(const char* name, unsigned int width, unsigned in
 
 //  Blah_Texture_Map functions
 
-Blah_Texture_Map *Blah_Texture_Map_new(Blah_Texture *texture, Blah_Point *mapping[]) {
-	//Constructs a new texture map object with a pointer to given texture,
-	//and a newly allocated array of texture coordinates (points)
-	Blah_Texture_Map *newMap = (Blah_Texture_Map*)malloc(sizeof(Blah_Texture_Map));
-	if (newMap != NULL)
-		if (!Blah_Texture_Map_init(newMap, texture, mapping)) {
-			//if init failed, then free memory and return NULL
-			free(newMap);
-			newMap = NULL;
-		}
+Blah_Texture_Map* Blah_Texture_Map_new(const Blah_Texture* texture, const Blah_Point* mapping[]) {
+	// Constructs a new texture map object with a pointer to given texture,
+	// and a newly allocated array of texture coordinates (points)
+	Blah_Texture_Map* newMap = (Blah_Texture_Map*)malloc(sizeof(Blah_Texture_Map));
+	if (newMap != NULL && !Blah_Texture_Map_init(newMap, texture, mapping)) {
+        // if init failed, then free memory and return NULL
+        // TODO - exit with error instead on critical failure
+        free(newMap);
+        newMap = NULL;
+	}
 
 	return newMap;
 }
 
-bool Blah_Texture_Map_init(Blah_Texture_Map *map, Blah_Texture *texture, Blah_Point *mapping[]) {
+bool Blah_Texture_Map_init(Blah_Texture_Map *map, const Blah_Texture* texture, const Blah_Point *mapping[]) {
 	int coordCount = 0, coordIndex;
 
-	while (mapping[coordCount])
-		coordCount++; //sum the number of coordinate supplied
+	while (mapping[coordCount]) { coordCount++; } // sum the number of coordinate supplied
 
 	map->mapping = (Blah_Point*)malloc(sizeof(Blah_Point)*coordCount);
 	if (map->mapping != NULL) {
 		//allocate new array of texture coordinates (one for each vertex) and copy values
-		for (coordIndex = 0;coordIndex < coordCount; coordIndex++)
+		for (coordIndex = 0;coordIndex < coordCount; coordIndex++) {
 			memcpy(&map->mapping[coordIndex], mapping[coordIndex], sizeof(Blah_Point));
+		}
 		map->texture = texture; //assign texture pointer
 		return true;
-	} else
+	} else {
 		return false;
+	}
 }
 
 void Blah_Texture_Map_destroy(Blah_Texture_Map *map) {

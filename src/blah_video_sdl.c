@@ -28,7 +28,7 @@ static Blah_Debug_Log blah_video_sdl_log = { .filePointer = NULL };
 
 /* Function Declarations */
 
-bool blah_video_sdl_init(Blah_Video_Settings *settings) {  //Initialise SDL video subsystem
+bool blah_video_sdl_init(const Blah_Video_Settings* settings) {  // Initialise SDL video subsystem
 	char tempString[200];
 	char modeName[BLAH_VIDEO_MODE_NAME_LENGTH+1];
 	int modeIndex = 0; int bpp;
@@ -122,7 +122,7 @@ void blah_video_sdl_setSizeFullScreen(int width, int height) {
 	//FIXME blah_video_sdl_set_mode();  //Values we need are already in the video settings sructure
 }
 
-bool blah_video_sdl_setMode(Blah_Video_Mode *mode) {
+bool blah_video_sdl_setMode(const Blah_Video_Mode* mode) {
 	//Set SDL video settings based apon ptr_video_settings
 	//This function exists because basically SDL has no way of controlling individual settings
 	Uint32 sdlFlags = SDL_OPENGL;

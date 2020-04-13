@@ -74,14 +74,13 @@ void Blah_Scene_disable(Blah_Scene *scene) {
 
 void Blah_Scene_draw(Blah_Scene *scene) {
 	//Setup lighting parameters
-	blah_draw_setAmbientLight(scene->ambientLightRed, scene->ambientLightGreen,
-		scene->ambientLightBlue, scene->ambientLightAlpha);
-	Blah_List_callFunction(&scene->lights, (blah_list_element_func)Blah_Scene_setupLight);
-		
+	blah_draw_setAmbientLight(scene->ambientLightRed, scene->ambientLightGreen,	scene->ambientLightBlue, scene->ambientLightAlpha);
+	Blah_List_callFunction(&scene->lights, (blah_list_element_func*)Blah_Scene_setupLight);
+
 	//Draw the scene with all scene objects, entities and overlays contained within
-	Blah_List_callFunction(&scene->objects, (blah_list_element_func)Blah_Scene_Object_draw);
-	Blah_List_callFunction(&scene->entities, (blah_list_element_func)Blah_Entity_draw);
-	Blah_List_callFunction(&scene->overlays, (blah_list_element_func)Blah_Overlay_draw);
+	Blah_List_callFunction(&scene->objects, (blah_list_element_func*)Blah_Scene_Object_draw);
+	Blah_List_callFunction(&scene->entities, (blah_list_element_func*)Blah_Entity_draw);
+	Blah_List_callFunction(&scene->overlays, (blah_list_element_func*)Blah_Overlay_draw);
 }
 
 /* void Blah_Scene_draw_all() {
@@ -99,13 +98,13 @@ void Blah_Scene_init(Blah_Scene* scene) {
 	Blah_Point_set(&scene->origin, 0,0,0);
 	Blah_Matrix_setIdentity(&scene->sceneMatrix);
 	Blah_List_init(&scene->entities, "Scene Entities");
-	Blah_List_setDestroyElementFunction(&scene->entities, (blah_list_element_dest_func)Blah_Entity_destroy);
+	Blah_List_setDestroyElementFunction(&scene->entities, (blah_list_element_dest_func*)Blah_Entity_destroy);
 	Blah_List_init(&scene->objects, "Scene Objects");
-	Blah_List_setDestroyElementFunction(&scene->objects, (blah_list_element_dest_func)Blah_Scene_Object_destroy);
+	Blah_List_setDestroyElementFunction(&scene->objects, (blah_list_element_dest_func*)Blah_Scene_Object_destroy);
 	Blah_List_init(&scene->overlays, "Scene Overlays");
-	Blah_List_setDestroyElementFunction(&scene->overlays, (blah_list_element_dest_func)Blah_Overlay_destroy);
+	Blah_List_setDestroyElementFunction(&scene->overlays, (blah_list_element_dest_func*)Blah_Overlay_destroy);
 	Blah_List_init(&scene->lights, "Scene Lights");
-	
+
 	scene->ambientLightRed = BLAH_SCENE_DEFAULT_AMBIENT_LIGHT_RED;
 	scene->ambientLightBlue = BLAH_SCENE_DEFAULT_AMBIENT_LIGHT_BLUE;
 	scene->ambientLightGreen = BLAH_SCENE_DEFAULT_AMBIENT_LIGHT_GREEN;
@@ -117,7 +116,7 @@ Blah_Scene *Blah_Scene_new() {
 	Blah_Scene *newScene = malloc(sizeof(Blah_Scene));
 	if (newScene != NULL)
 		Blah_Scene_init(newScene);
-		
+
 	return newScene;
 }
 
@@ -165,9 +164,9 @@ void Blah_Scene_setAmbientLight(Blah_Scene *scene, float red, float green, float
 	scene->ambientLightAlpha = alpha;
 }
 
-void Blah_Scene_setDrawFunction(Blah_Scene *scene, blah_scene_draw_func function); 
+void Blah_Scene_setDrawFunction(Blah_Scene* scene, blah_scene_draw_func* function);
 	//set pointer for draw function
-	
+
 static void Blah_Scene_setupLight(Blah_Light *light) {
 	//Initialise default lighting parameters for scene - fixme big time
 	blah_draw_setLight(&light->location, &light->diffuse, &light->ambient, &light->direction, light->intensity, light->spread);

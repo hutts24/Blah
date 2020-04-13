@@ -85,15 +85,13 @@ void Blah_Primitive_setMaterial(Blah_Primitive *prim, Blah_Material *material) {
 
 void Blah_Primitive_mapTextureAuto(Blah_Primitive *prim, Blah_Texture *texture) {
 	//Map given texture to specified primitive
-	int vertexCount=0,vertexIndex;
-	Blah_Point **texCoordIndices;
+	int vertexCount = 0, vertexIndex;
 	Blah_Point topLeft = {0,1,0};Blah_Point topRight = {1,1,0};
 	Blah_Point bottomLeft = {0,0,0}; Blah_Point bottomRight = {1,0,1};
 
-	while(prim->sequence[vertexCount])
-		vertexCount++;
+	while(prim->sequence[vertexCount]) { vertexCount++; }
 
-	texCoordIndices = (Blah_Point**)malloc(sizeof(Blah_Point*)*(vertexCount+1));
+	const Blah_Point** texCoordIndices = (const Blah_Point**)malloc(sizeof(Blah_Point*)*(vertexCount + 1));
 
 	for (vertexIndex=0;vertexIndex < vertexCount;vertexIndex++) {
 		switch (vertexIndex & 3) {
@@ -109,13 +107,11 @@ void Blah_Primitive_mapTextureAuto(Blah_Primitive *prim, Blah_Texture *texture) 
 	free(texCoordIndices);
 }
 
-void Blah_Primitive_mapTexture(Blah_Primitive *prim, Blah_Texture *texture, Blah_Point *mapping[]) {
+void Blah_Primitive_mapTexture(Blah_Primitive *prim, const Blah_Texture* texture, const Blah_Point* mapping[]) {
 	//Maps a texture to a primitive using the given array of texture coordinates (mapping)
 	//Creates a new primitive texture map structure and assigns it the the given primitive
 	//Replaces current mapping if one already exists
-	if (prim->textureMap)
-		Blah_Texture_Map_destroy(prim->textureMap);
-
+	if (prim->textureMap) { Blah_Texture_Map_destroy(prim->textureMap); }
 	prim->textureMap = Blah_Texture_Map_new(texture, mapping);
 }
 

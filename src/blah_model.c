@@ -46,7 +46,7 @@ bool Blah_Model_init(Blah_Model *model, char *modelName) {
 	blah_util_strncpy(model->name, modelName, BLAH_MODEL_NAME_LENGTH);
 	Blah_List_init(&model->vertices,"model vertices list");
 	Blah_List_init(&model->faces,"model faces list");
-	Blah_List_setDestroyElementFunction(&model->faces, (blah_list_element_dest_func)Blah_Model_Face_destroy);
+	Blah_List_setDestroyElementFunction(&model->faces, (blah_list_element_dest_func*)Blah_Model_Face_destroy);
 	Blah_List_init(&model->surfaces,"model surfaces list");
 	return true;
 }
@@ -198,7 +198,7 @@ void Blah_Model_Texture_Map_setCenter(Blah_Model_Texture_Map *map, float x, floa
 }
 
 static void Blah_Model_Surface_scale(Blah_Model_Surface *surface, float *scaleFactor) {
-	Blah_List_callWithArg(&surface->textures, (blah_list_element_func_1arg)Blah_Model_Texture_Map_scale, scaleFactor);
+	Blah_List_callWithArg(&surface->textures, (blah_list_element_func_1arg*)Blah_Model_Texture_Map_scale, scaleFactor);
 }
 
 void Blah_Model_Surface_addTexture(Blah_Model_Surface *surface, Blah_Model_Texture_Map *map) {
@@ -208,8 +208,8 @@ void Blah_Model_Surface_addTexture(Blah_Model_Surface *surface, Blah_Model_Textu
 
 void Blah_Model_scale(Blah_Model *model, float scaleFactor) {
 	//Alters every vertex in the model by multiplying each coordinate by scale_factor
-	Blah_List_callWithArg(&model->vertices, (blah_list_element_func_1arg)Blah_Model_scaleVertex, &scaleFactor);
-	Blah_List_callWithArg(&model->surfaces, (blah_list_element_func_1arg)Blah_Model_Surface_scale, &scaleFactor);
+	Blah_List_callWithArg(&model->vertices, (blah_list_element_func_1arg*)Blah_Model_scaleVertex, &scaleFactor);
+	Blah_List_callWithArg(&model->surfaces, (blah_list_element_func_1arg*)Blah_Model_Surface_scale, &scaleFactor);
 }
 
 void blah_model_destroyAll() {

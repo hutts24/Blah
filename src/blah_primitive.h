@@ -34,31 +34,31 @@ typedef struct Blah_Primitive {
 #endif //__cplusplus
 
 bool Blah_Primitive_init(Blah_Primitive *prim, blah_primitive_type newType, Blah_Vertex* vertexArray[], unsigned int vertexCount);
-	//Initialise primitive structure with given type and allocates memory for vertex sequence.
-	//Vertex data is copied from parameter 'vertexArray'. Function returns false in case of error.
+	// Initialise primitive structure with given type and allocates memory for vertex sequence.
+	// Vertex data is copied from parameter 'vertexArray'. Function returns false in case of error.
 
 Blah_Primitive *Blah_Primitive_new(blah_primitive_type newType, Blah_Vertex *vertexArray[], unsigned int vertexCount);  //Creates a new primitive structure
 
 void Blah_Primitive_destroy(Blah_Primitive *prim);
-	//Destroys a primitive and frees all memory used by it
+	// Destroys a primitive and frees all memory used by it
 
 void Blah_Primitive_draw(Blah_Primitive *prim);
-	//Draws a primitive using the current matrix
+	// Draws a primitive using the current matrix
 
 void Blah_Primitive_setMaterial(Blah_Primitive *prim, Blah_Material *material);
-	//Assigns the specified material to the given primitive by assigning the material
-	//pointer value of the primitive object.
+	// Assigns the specified material to the given primitive by assigning the material
+	// pointer value of the primitive object.
 
 void Blah_Primitive_mapTextureAuto(Blah_Primitive *prim, Blah_Texture *texture);
-	//Maps a texture to a primtive using automatic texture coordinates
+	// Maps a texture to a primtive using automatic texture coordinates
 
-void Blah_Primitive_mapTexture(Blah_Primitive *prim, Blah_Texture *texture, Blah_Point *mapping[]);
-	//Maps a texture to a primitive using the given null terminated array of
-	//texture coordinates (mapping)
+void Blah_Primitive_mapTexture(Blah_Primitive *prim, const Blah_Texture* texture, const Blah_Point* mapping[]);
+	// Maps a texture to a primitive using the given null terminated array of
+	// texture coordinates (mapping)
 
 void Blah_Primitive_getNormal(Blah_Primitive *prim, Blah_Vector *normal);
-	//Calculates normal for surface represented by primitive and stores
-	//in Vector structure pointed to by normal
+	// Calculates normal for surface represented by primitive and stores
+	// in Vector structure pointed to by normal
 
 #ifdef __cplusplus
 	}

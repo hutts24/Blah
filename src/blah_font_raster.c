@@ -26,7 +26,7 @@ void Blah_Font_Raster_disable(Blah_Font_Raster *font)
 	free(font->rasterData);
 }
 
-bool Blah_Font_Raster_init(Blah_Font_Raster *rasterFont, char *fontName, Blah_Image *source, unsigned int charMap[256], int charWidth, int charHeight)
+bool Blah_Font_Raster_init(Blah_Font_Raster *rasterFont, const char* fontName, const Blah_Image* source, unsigned int charMap[BLAH_FONT_NUM_CHARS], int charWidth, int charHeight)
 {	//Given a pointer to a simple unitialised raster font structure, this function initialises all important
 	//variables within the structure, allocates font data and performs all other tasks necessary to make
 	//the font usable.  Function returns true on success, or false on error.
@@ -41,7 +41,7 @@ bool Blah_Font_Raster_init(Blah_Font_Raster *rasterFont, char *fontName, Blah_Im
 	if (rasterPointer) //Ensure that allocation of raster data buffer succeeded before continuing
 	{
 	    //Call common basic init routine for all font structures
-		Blah_Font_init(BLAH_FONT_RASTER, &rasterFont->fontBase, fontName, source, charWidth, charHeight);
+		Blah_Font_init(&rasterFont->fontBase, BLAH_FONT_RASTER, fontName, source, charWidth, charHeight);
 
 	    //determine how many characters are represented in the source image
 		const unsigned int charsWide = source->width / charWidth;
@@ -58,7 +58,7 @@ bool Blah_Font_Raster_init(Blah_Font_Raster *rasterFont, char *fontName, Blah_Im
 		}
 
 		// Setup the character mapping
-		for (unsigned int charCount = 0; charCount < 256; charCount++) {
+		for (unsigned int charCount = 0; charCount < BLAH_FONT_NUM_CHARS; charCount++) {
 			unsigned int mapIndex = charMap[charCount];
 			Blah_Debug_Log_message(&fontLog, "ascii '%c' mapped to char %d", charCount, mapIndex);
 			if (!mapIndex || mapIndex > charsNum) { //if map index is 0 or beyond actual number of characters
@@ -80,25 +80,21 @@ bool Blah_Font_Raster_init(Blah_Font_Raster *rasterFont, char *fontName, Blah_Im
 	return success;
 }
 
-Blah_Font_Raster *Blah_Font_Raster_new(char *fontName, Blah_Image *source, unsigned int charMap[256], int charWidth, int charHeight)
-{	//Creates a new font structure from source image using index char map
-	//and given width and height of each character.  Width and height of source
-	//image must be a discreet multiple of character width and height. Index char
-	//map begins with first character at position 1.  0 is ignored.
-	//Returns NULL on error.
-	Blah_Font_Raster *newFont;
+Blah_Font_Raster* Blah_Font_Raster_new(const char* fontName, const Blah_Image* source, unsigned int charMap[BLAH_FONT_NUM_CHARS], int charWidth, int charHeight)
+{
+    // Creates a new font structure from source image using index char map
+	// and given width and height of each character.  Width and height of source
+	// image must be a discreet multiple of character width and height. Index char
+	// map begins with first character at position 1.  0 is ignored.
+	// Returns NULL on error.
 
-	//allocate extended structure and assign basic font properties
-	newFont = (Blah_Font_Raster*)malloc(sizeof(Blah_Font_Raster));
-
-	if (newFont) //If memory allocation OK
-	{
-		if (!Blah_Font_Raster_init(newFont, fontName, source, charMap, charWidth, charHeight))
-		{	//If initialisation of raster font fails, free the base structure and return NULL pointer
-			free(newFont); //Bail out!
-			newFont = NULL;
-		}
-	}
+	Blah_Font_Raster* newFont = (Blah_Font_Raster*)malloc(sizeof(Blah_Font_Raster)); // allocate extended structure and assign basic font properties
+	if (newFont != NULL && !Blah_Font_Raster_init(newFont, fontName, source, charMap, charWidth, charHeight))
+    {
+        // If initialisation of raster font fails, free the base structure and return NULL pointer
+        free(newFont); // Bail out!
+        newFont = NULL;
+    }
 
 	return newFont;
 }

@@ -37,7 +37,7 @@ void Blah_Overlay_Text_draw(Blah_Overlay_Text *text) {
 	//fprintf(stderr,"end overlay_text_draw\n");
 }
 
-void Blah_Overlay_Text_init(Blah_Overlay_Text *text, char *name, unsigned int size, Blah_Font *fontStyle) {
+void Blah_Overlay_Text_init(Blah_Overlay_Text* text, const char* name, unsigned int size, const Blah_Font* fontStyle) {
     //Initialise overlay text object.
     blah_util_strncpy(text->name, name, BLAH_OVERLAY_TEXT_NAME_LENGTH);
 	text->parent = NULL; //By default text does not belong to any parent
@@ -55,16 +55,16 @@ bool Blah_Overlay_Text_isVisible(Blah_Overlay_Text *text) {
 	return text->visible;
 }
 
-Blah_Overlay_Text *Blah_Overlay_Text_new(char *name, unsigned int size, Blah_Font *fontStyle) {
-	//Create an overlay text object using supplied name, size and
-	//font style.  Alloc a new Structure and return pointer
-	Blah_Overlay_Text *newText = malloc(sizeof(Blah_Overlay_Text));
+Blah_Overlay_Text* Blah_Overlay_Text_new(const char* name, unsigned int size, const Blah_Font* fontStyle) {
+	// Create an overlay text object using supplied name, size and
+	// font style.  Alloc a new Structure and return pointer
+	Blah_Overlay_Text* newText = malloc(sizeof(Blah_Overlay_Text));
     // Ensure memory allocation succeeded before attempting initialisation
     if (newText != NULL) { Blah_Overlay_Text_init(newText, name, size, fontStyle); }
 	return newText;
 }
 
-void Blah_Overlay_Text_setDrawFunction(Blah_Overlay_Text *text, blah_overlay_text_draw_func *function) {
+void Blah_Overlay_Text_setDrawFunction(Blah_Overlay_Text* text, blah_overlay_text_draw_func* function) {
 	//set pointer for draw function
 	text->drawFunction = function;
 }

@@ -64,7 +64,7 @@ void Blah_Scene_Object_init(Blah_Scene_Object *sceneObject, char *name, Blah_Obj
 	sceneObject->visible = true; //visible by default
 }
 
-void Blah_Scene_Object_setDrawFunction(Blah_Scene_Object *sceneObject, blah_scene_object_draw_func *function) {
+void Blah_Scene_Object_setDrawFunction(Blah_Scene_Object* sceneObject, blah_scene_object_draw_func* function) {
 	//set pointer for draw function
 	sceneObject->drawFunction = function;
 }

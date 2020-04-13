@@ -1,5 +1,9 @@
 TODO LIST for Blah.
 
+- Add new memory allocation function that checks for failure and exits with error reporting.
+
+- All function types should be defined as regular signatures without pointer types.  Variables of function pointer types should be defined as such with the pointer symbol *
+
 - Complete Blah_Font_Load function.
 
 - Put garbage collection etc into a function and register with atexit(C11).

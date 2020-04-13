@@ -33,7 +33,9 @@ void Blah_Font_destroy(Blah_Font *font)
 		case BLAH_FONT_TEXTURE :
 			Blah_Font_Texture_destroy((Blah_Font_Texture*)font);
 			break;
-		default : free(font); break;
+		default :
+		    free(font);
+		    break;
 	}
 
 	Blah_Tree_removeElement(&blah_font_tree, font->name);
@@ -44,7 +46,7 @@ void blah_font_destroyAll()
 	Blah_Tree_destroyElements(&blah_font_tree);
 }
 
-void Blah_Font_init(blah_font_type type, Blah_Font *font, char *fontName, Blah_Image *source, int charWidth, int charHeight)
+void Blah_Font_init(Blah_Font* font, blah_font_type type, const char* fontName, const Blah_Image* source, int charWidth, int charHeight)
 {	//Initialises base font information structure and assigns basic font properties
 	font->type = type; //Assign font type e.g. raster, texture
 	blah_util_strncpy(font->name, fontName, BLAH_FONT_NAME_LENGTH);
@@ -54,14 +56,15 @@ void Blah_Font_init(blah_font_type type, Blah_Font *font, char *fontName, Blah_I
 	font->pixelFormat = source->pixelFormat;
 }
 
-Blah_Font *Blah_Font_load(char *filename)
+Blah_Font* Blah_Font_load(const char* filename)
 {	// creates new font structure from a font datafile and returns pointer
 	// Return NULL if error
     // TODO - complete me
+    (void)filename;
 	return NULL;
 }
 
-Blah_Font *Blah_Font_new(blah_font_type type, char *fontName, Blah_Image *source, unsigned int charMap[256], int charWidth, int charHeight)
+Blah_Font* Blah_Font_new(blah_font_type type, const char *fontName, const Blah_Image* source, unsigned int charMap[BLAH_FONT_NUM_CHARS], int charWidth, int charHeight)
 {	//Creates a new font structure from source image using index char map
 	//and given width and height of each character.  Width and height of source
 	//image must be a discreet multiple of character width and height. Index char
@@ -81,7 +84,9 @@ Blah_Font *Blah_Font_new(blah_font_type type, char *fontName, Blah_Image *source
 			case BLAH_FONT_TEXTURE :
 				newFont = (Blah_Font*)Blah_Font_Texture_new(fontName, source, charMap, charWidth, charHeight);
 				break;
-			default : newFont = NULL; break;
+			default :
+			    newFont = NULL;
+			    break;
 		}
 
 		Blah_Tree_insertElement(&blah_font_tree, fontName, newFont);
@@ -89,7 +94,7 @@ Blah_Font *Blah_Font_new(blah_font_type type, char *fontName, Blah_Image *source
 	return newFont;
 }
 
-void Blah_Font_printChar2d(Blah_Font *font, char singleChar, int x, int y) {
+void Blah_Font_printChar2d(const Blah_Font* font, char singleChar, int x, int y) {
 	//Prints a single text character using the given font at supplied screen
 	//coordinates, in 2D mode.  Text is not rendered in 3D mode.
 	switch (font->type) {
@@ -103,11 +108,11 @@ void Blah_Font_printChar2d(Blah_Font *font, char singleChar, int x, int y) {
 	}
 }
 
-void Blah_Font_printString2d(Blah_Font *font, char *text, int x, int y)
+void Blah_Font_printString2d(const Blah_Font* font, const char* text, int x, int y)
 {	//Prints a text string using the given font at supplied screen coordinates,
 	//in 2D mode.  Text is not rendered in 3D mode.
-	char *charPointer = text;
-	char tempChar = *charPointer;  //get first character in string
+	const char *charPointer = text;
+	char tempChar = *charPointer;  // get first character in string
 	int xPos = x;
 
 	//fprintf(stderr,"begin font_print_string\n");
@@ -115,7 +120,8 @@ void Blah_Font_printString2d(Blah_Font *font, char *text, int x, int y)
 	while (tempChar) {  //loop until NULL char encountered
 		//fprintf(stderr,"printing character '%c'\n",temp_char);
 		if (tempChar == '\n') { //if current character is a new line,
-			xPos = x; y -= font->height;
+			xPos = x;
+			y -= font->height;
 		} else {
 			Blah_Font_printChar2d(font, tempChar, xPos, y);
 
@@ -131,7 +137,7 @@ void Blah_Font_printString2d(Blah_Font *font, char *text, int x, int y)
 				default : break;
 			} */
 
-			xPos+=font->width; //advance to position for next character
+			xPos += font->width; //advance to position for next character
 		}
 		charPointer++;
 		tempChar = *charPointer; //get next character in string
@@ -139,14 +145,18 @@ void Blah_Font_printString2d(Blah_Font *font, char *text, int x, int y)
 	//fprintf(stderr,"end font_print_string\n");
 }
 
-void Blah_Font_printChar3d(Blah_Font *font, char singleChar, Blah_Matrix *matrix)
-{	//Prints a single text character using the given font at with orientation
-	//specified by 'matrix' in 3D space.
+void Blah_Font_printChar3d(const Blah_Font* font, char singleChar, const Blah_Matrix* matrix)
+{
+    // TODO
+    // Prints a single text character using the given font at with orientation
+	// specified by 'matrix' in 3D space.
 }
 
-void Blah_Font_printString3d(Blah_Font *font, char *text, Blah_Matrix *matrix)
-{	//Prints a text string using the given font at with orientation
-	//specified by 'matrix' in 3D space.
+void Blah_Font_printString3d(const Blah_Font* font, const char* text, const Blah_Matrix* matrix)
+{
+    // TODO
+    // Prints a text string using the given font at with orientation
+	// specified by 'matrix' in 3D space.
 }
 
 

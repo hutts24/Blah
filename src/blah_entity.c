@@ -23,7 +23,7 @@
 // List of those entities which were dynamically allocated, defaults to empty
 Blah_List blah_entity_list = {
     .name = "entities",
-    .destroyElementFunction = (blah_list_element_dest_func)Blah_Entity_destroy,
+    .destroyElementFunction = (blah_list_element_dest_func*)Blah_Entity_destroy,
 };
 
 /* Static Prototypes */
@@ -62,7 +62,7 @@ void blah_entity_main()
 void blah_entity_processAll()
 {
 	// fprintf(stderr, "blah_entity_process_all()\n");
-	Blah_List_callFunction(&blah_entity_list, (blah_list_element_func)Blah_Entity_process);
+	Blah_List_callFunction(&blah_entity_list, (blah_list_element_func*)Blah_Entity_process);
 }
 
 /* Entity Function Definitions */
@@ -84,7 +84,7 @@ static void Blah_Entity_checkCollision(Blah_Entity *entity)
         Blah_Point impact;
         Blah_Entity* currentEntity = (Blah_Entity*)currentElement->data;
         if (currentEntity == entity) { continue; } // Don't check collision with itself!
-		blah_entity_collision_func colFunc = currentEntity->collisionFunction;
+		blah_entity_collision_func* colFunc = currentEntity->collisionFunction;
 		if (colFunc != NULL && currentEntity->activeCollision && Blah_Entity_checkCollisionEntity(entity, currentEntity, &impact)) {
             colFunc(currentEntity, entity); // call collision handler for recipient object
         }
@@ -97,6 +97,7 @@ bool Blah_Entity_checkCollisionEntity(Blah_Entity *entity1, Blah_Entity *entity2
 {
     // Returns true if entity_1 is colliding with entity_2
     // TODO - return impact point
+	(void)impact;
 	Blah_List_Element *entity1Obj = entity1->objects.first;
 	Blah_List_Element *entity2Obj = entity2->objects.first; // Get the first object in list of each entity
 	bool collision = false; // assume no collision yet
@@ -120,7 +121,7 @@ bool Blah_Entity_checkCollisionEntity(Blah_Entity *entity1, Blah_Entity *entity2
 
 void Blah_Entity_destroy(Blah_Entity *entity)
 {	//standard destroy routine for entity
-	fprintf(stderr, "Blah_Entity_destroy %p\n", entity);
+	fprintf(stderr, "Blah_Entity_destroy %p\n", (void*)entity);
 	if (entity->destroyFunction) {//call custom destroy function if there is one defined
 		entity->destroyFunction(entity); //, entity->destroyFunctionData);
 	} else {
@@ -163,7 +164,7 @@ void Blah_Entity_draw(Blah_Entity *entity)
 		blah_draw_pushMatrix();
 		//Blah_Matrix_set_translation(&entity->current_matrix,&entity->location);
 		blah_draw_multMatrix(&entity->fakeMatrix);
-		Blah_List_callFunction(&entity->objects, (blah_list_element_func)Blah_Entity_Object_draw); //call Object_draw for all entity objects
+		Blah_List_callFunction(&entity->objects, (blah_list_element_func*)Blah_Entity_Object_draw); //call Object_draw for all entity objects
 		blah_draw_popMatrix();
 	}
 
@@ -204,7 +205,7 @@ void Blah_Entity_init(Blah_Entity *newEntity, char *name, int type, size_t dataS
 	Blah_List_init(&newEntity->objects, "Objects");
 	Blah_List_init(&newEntity->events,"Events");
 	//FIXME - change this direct assignment of destroyElementFunction member
-	newEntity->objects.destroyElementFunction = (blah_list_element_dest_func)Blah_Entity_Object_destroy;
+	newEntity->objects.destroyElementFunction = (blah_list_element_dest_func*)Blah_Entity_Object_destroy;
 	newEntity->activeCollision = false;
 
 	Blah_Entity_setLocation(newEntity,0,0,0); //set location to origin
@@ -303,26 +304,26 @@ void Blah_Entity_setType(Blah_Entity *entity, int type)
 }
 
 
-void Blah_Entity_setCollisionFunction(Blah_Entity *entity, blah_entity_collision_func function)
+void Blah_Entity_setCollisionFunction(Blah_Entity* entity, blah_entity_collision_func* function)
 {
 	entity->collisionFunction = function;
 	//entity->collisionFunctionData = externData;
 }
 
-void Blah_Entity_setDestroyFunction(Blah_Entity *entity, blah_entity_destroy_func function)
+void Blah_Entity_setDestroyFunction(Blah_Entity* entity, blah_entity_destroy_func* function)
 {
 	entity->destroyFunction = function;
 	//entity->destroyFunctionData = externData;
 }
 
-void Blah_Entity_setDrawFunction(Blah_Entity *entity, blah_entity_draw_func function) //, void *externData)
+void Blah_Entity_setDrawFunction(Blah_Entity* entity, blah_entity_draw_func* function) //, void *externData)
 {
 	//fprintf(stderr,"entity set draw func %p, data:%p\n",function,extern_data);
 	entity->drawFunction = function;
 	//entity->drawFunctionData = externData;
 }
 
-void Blah_Entity_setMoveFunction(Blah_Entity *entity, blah_entity_move_func function) //, void *externData)
+void Blah_Entity_setMoveFunction(Blah_Entity* entity, blah_entity_move_func* function) //, void *externData)
 {
 	entity->moveFunction = function;
 	//entity->moveFunctionData = externData;
@@ -352,24 +353,19 @@ void *Blah_Entity_Event_getData(Blah_Entity_Event *event)
 	return event->eventData;
 }
 
-void Blah_Entity_Event_init(Blah_Entity_Event *event, char *name, Blah_Entity *sender, blah_entity_event_func function, size_t dataSize)
+void Blah_Entity_Event_init(Blah_Entity_Event* event, const char* name, const Blah_Entity* sender, blah_entity_event_func* function, size_t dataSize)
 {
-	if (dataSize)
-		event->eventData = malloc(dataSize);
-	else
-		event->eventData = NULL;
+	event->eventData = (dataSize > 0) ? malloc(dataSize) : NULL;
 	blah_util_strncpy(event->name, name, BLAH_ENTITY_EVENT_NAME_LENGTH);
 	event->sender = sender;
 	event->eventFunction = function;
 	event->destroyFunction = NULL;
 }
 
-Blah_Entity_Event *Blah_Entity_Event_new(char *name, Blah_Entity *sender, blah_entity_event_func function, size_t dataSize)
+Blah_Entity_Event* Blah_Entity_Event_new(const char* name, const Blah_Entity* sender, blah_entity_event_func* function, size_t dataSize)
 {
 	Blah_Entity_Event *newEvent = malloc(sizeof(Blah_Entity_Event));
-	if (newEvent)
-		Blah_Entity_Event_init(newEvent, name, sender, function, dataSize);
-
+	if (newEvent) {	Blah_Entity_Event_init(newEvent, name, sender, function, dataSize); }
 	return newEvent;
 }
 
@@ -377,10 +373,9 @@ Blah_Entity_Event *Blah_Entity_Event_new(char *name, Blah_Entity *sender, blah_e
 
 static bool Blah_Entity_processEvent(Blah_Entity *entity,  Blah_Entity_Event *event) {
 	//Deals with pending event
-	bool result=false;
+	bool result = false;
 	//fprintf(stderr,"processing event:%s for entity %s\n",event->name, entity->name);
-	if (event->eventFunction)
-		result = event->eventFunction(entity, event);
+	if (event->eventFunction) { result = event->eventFunction(entity, event); }
 	//fprintf(stderr,"destroying event\n");
 	Blah_Entity_Event_destroy(event);
 	return result;

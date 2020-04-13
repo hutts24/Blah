@@ -7,10 +7,6 @@
 
 #include <stdbool.h>
 
-// typedef enum Blah_Boolean {false = false, true = true} bool; // Made obsolete by C99 stdbool.
-
-//typedef void (*blah_function)();
-
 /* typedef void (*blah_function_1arg)(void*);
 typedef void (*blah_function_2arg)(void*,void*);
 typedef bool (*blah_function_bool_2arg)(void*,void*); */

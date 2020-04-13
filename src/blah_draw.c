@@ -295,8 +295,9 @@ void blah_draw_triangleStrip(Blah_Vertex *points[], Blah_Texture_Map *textureMap
 void blah_draw_wireCube(float side_length, Blah_Material *material)
 {	//Draws a wire cube with sides of given length
 	//FIXME
-	if (!material) //If material not specified, use default material
-		material = &blah_draw_defaultMaterial;
+	(void)side_length;
+	if (!material) { material = &blah_draw_defaultMaterial; }//If material not specified, use default material
+
 	//blah_draw_gl_wire_cube(side_length, material);
 }
 

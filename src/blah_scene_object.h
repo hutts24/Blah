@@ -19,7 +19,7 @@ struct Blah_Scene_Object;
 
 /* Function Type Definitions */
 
-typedef void blah_scene_object_draw_func(struct Blah_Scene_Object *object);
+typedef void blah_scene_object_draw_func(struct Blah_Scene_Object* object);
 	//This function type should draw the given object in the scene in relation
 	//to the parent entity.
 
@@ -27,12 +27,12 @@ typedef void blah_scene_object_draw_func(struct Blah_Scene_Object *object);
 
 typedef struct Blah_Scene_Object { //represents an scene object in the world
 	char name[BLAH_SCENE_OBJECT_NAME_LENGTH+1];
-	Blah_Object *object;	//Pointer the object that constitutes this
-	Blah_Point position; //object's position in 3d space relative to world coordinates
-	Blah_Matrix objectMatrix; //object's relative matrix.  Don't mess with it directly.
-	Blah_Vector axisX, axisY, axisZ; //object's own primary axes x,y, and z
-	blah_scene_object_draw_func *drawFunction;
-	bool visible;		//Visibility flag; If TRUE, then object is drawn
+	Blah_Object* object;	// Pointer the object that constitutes this
+	Blah_Point position; // object's position in 3d space relative to world coordinates
+	Blah_Matrix objectMatrix; // object's relative matrix.  Don't mess with it directly.
+	Blah_Vector axisX, axisY, axisZ; // object's own primary axes x,y, and z
+	blah_scene_object_draw_func* drawFunction;
+	bool visible;		// Visibility flag; If TRUE, then object is drawn
 } Blah_Scene_Object;
 
 /* Structure Function prototypes */
@@ -61,7 +61,7 @@ void Blah_Scene_Object_draw(Blah_Scene_Object *sceneObject);
 void Blah_Scene_Object_init(Blah_Scene_Object *sceneObejct, char *name, Blah_Object *object_ptr);
 	//Initialise scene object with supplied name and object pointer.  Object will be made visible by default.
 
-void Blah_Scene_Object_setDrawFunction(Blah_Scene_Object *sceneObject, blah_scene_object_draw_func *function);
+void Blah_Scene_Object_setDrawFunction(Blah_Scene_Object* sceneObject, blah_scene_object_draw_func* function);
 	//set pointer for draw function
 
 void Blah_Scene_Object_setVisible(Blah_Scene_Object *sceneObject, bool visFlag);

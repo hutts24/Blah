@@ -32,25 +32,25 @@ struct Blah_Entity_Event;
 
 /* Function Type Declarations */
 
-typedef bool (*blah_entity_event_func)(struct Blah_Entity *entity, struct Blah_Entity_Event *event);
-	//This function type is responsible for applying the affect of the given event
-	//to the given entity.  Function should return false, if subsequent events
-	//for the entity should not be processed (e.g. entity has been destroyed).
-	//Else function should return true if all is ok.
+typedef bool blah_entity_event_func(struct Blah_Entity* entity, struct Blah_Entity_Event* event);
+	// This function type is responsible for applying the affect of the given event
+	// to the given entity.  Function should return false, if subsequent events
+	// for the entity should not be processed (e.g. entity has been destroyed).
+	// Else function should return true if all is ok.
 
-typedef void (*blah_entity_event_destroy_func)(struct Blah_Entity_Event *event);
-	//This type of function takes care of custom destroy routine for an entity event
+typedef void blah_entity_event_destroy_func(struct Blah_Entity_Event* event);
+	// This type of function takes care of custom destroy routine for an entity event
 
-typedef void (*blah_entity_draw_func)(struct Blah_Entity *entity);
-	//This type of function renders the entity in the 3d scene
+typedef void blah_entity_draw_func(struct Blah_Entity* entity);
+	// This type of function renders the entity in the 3d scene
 
-typedef void (*blah_entity_move_func)(struct Blah_Entity *entity);
-	//This type of function controls the movement of the entity at regular intervals
+typedef void blah_entity_move_func(struct Blah_Entity* entity);
+	// This type of function controls the movement of the entity at regular intervals
 
-typedef void (*blah_entity_collision_func)(struct Blah_Entity *thisEntity, struct Blah_Entity *otherEntity);
-	//This function type should handle the event of the object colliding with another
+typedef void blah_entity_collision_func(struct Blah_Entity* thisEntity, struct Blah_Entity* otherEntity);
+	// This function type should handle the event of the object colliding with another
 
-typedef void (*blah_entity_destroy_func)(struct Blah_Entity *entity);
+typedef void blah_entity_destroy_func(struct Blah_Entity *entity);
 	//This type of function takes care of custom destroy routine for an entity
 
 
@@ -73,13 +73,13 @@ typedef struct Blah_Entity {
 	float rotationAxisX;		//rate of turn around x axis
 	float rotationAxisY;		//rate of turn around y axis
 	float rotationAxisZ;		//rate of turn around z axis
-	blah_entity_draw_func drawFunction;	//pointer to function to draw entity
+	blah_entity_draw_func* drawFunction;	//pointer to function to draw entity
 	//void *draw_function_data;
-	blah_entity_move_func moveFunction;	//pointer to function to control movement
+	blah_entity_move_func* moveFunction;	//pointer to function to control movement
 	//void *move_function_data;
-	blah_entity_collision_func collisionFunction;	//pointer to function to call when colliding with other entity
+	blah_entity_collision_func* collisionFunction;	//pointer to function to call when colliding with other entity
 	//void *collision_function_data;
-	blah_entity_destroy_func destroyFunction;
+	blah_entity_destroy_func* destroyFunction;
 	//void *destroy_function_data;
 	char name[BLAH_ENTITY_NAME_LENGTH+1];
 	int type;					//The entity type
@@ -91,10 +91,10 @@ typedef struct Blah_Entity {
 
 typedef struct Blah_Entity_Event {
 	char name[BLAH_ENTITY_EVENT_NAME_LENGTH+1];
-	Blah_Entity *sender;
-	blah_entity_event_func eventFunction;
-	blah_entity_event_destroy_func destroyFunction;
-	void *eventData;
+	const Blah_Entity* sender;
+	blah_entity_event_func* eventFunction;
+	blah_entity_event_destroy_func* destroyFunction;
+	void* eventData;
 } Blah_Entity_Event;
 
 /* Entity Function prototpyes */
@@ -149,26 +149,26 @@ void Blah_Entity_process(Blah_Entity *entity);
 
 void blah_entity_processAll();
 
-void Blah_Entity_rotateEuler(Blah_Entity *entity, float x, float y, float z);
+void Blah_Entity_rotateEuler(Blah_Entity* entity, float x, float y, float z);
 
-void Blah_Entity_setLocation(Blah_Entity *entity,float x, float y, float z);
+void Blah_Entity_setLocation(Blah_Entity* entity, float x, float y, float z);
 	//Sets entity's location in 3D space given 3 coordinates
 
-void Blah_Entity_setRotationAxisX(Blah_Entity *entity, float x);
+void Blah_Entity_setRotationAxisX(Blah_Entity* entity, float x);
 
-void Blah_Entity_setRotationAxisY(Blah_Entity *entity, float y);
+void Blah_Entity_setRotationAxisY(Blah_Entity* entity, float y);
 
 void Blah_Entity_setVelocity(Blah_Entity *entity, float x, float y, float z);
 
-void Blah_Entity_setDrawFunction(Blah_Entity *entity, blah_entity_draw_func function); //, void *externData);
+void Blah_Entity_setDrawFunction(Blah_Entity* entity, blah_entity_draw_func* function); //, void *externData);
 
-void Blah_Entity_setMoveFunction(Blah_Entity *entity, blah_entity_move_func function); //, void *externData);
+void Blah_Entity_setMoveFunction(Blah_Entity* entity, blah_entity_move_func* function); //, void *externData);
 
-void Blah_Entity_setDestroyFunction(Blah_Entity *entity, blah_entity_destroy_func function); //, void *externData);
+void Blah_Entity_setDestroyFunction(Blah_Entity* entity, blah_entity_destroy_func* function); //, void *externData);
 
-void Blah_Entity_setCollisionFunction(Blah_Entity *entity, blah_entity_collision_func function); //, void *externData);
+void Blah_Entity_setCollisionFunction(Blah_Entity* entity, blah_entity_collision_func* function); //, void *externData);
 
-void Blah_Entity_setActiveCollision(Blah_Entity *entity, bool flag);
+void Blah_Entity_setActiveCollision(Blah_Entity* entity, bool flag);
 
 void Blah_Entity_setType(Blah_Entity *entity, int type);
 
@@ -180,13 +180,13 @@ void Blah_Entity_Event_destroy(Blah_Entity_Event *event);
 
 void *Blah_Entity_Event_getData(Blah_Entity_Event *event);
 
-void Blah_Entity_EventInit(Blah_Entity_Event *event, char *name, Blah_Entity *sender,  blah_entity_event_func function, size_t dataSize);
+void Blah_Entity_EventInit(Blah_Entity_Event* event, const char* name, const Blah_Entity* sender, blah_entity_event_func* function, size_t dataSize);
 
-Blah_Entity_Event *Blah_Entity_Event_new(char *name, Blah_Entity *sender,  blah_entity_event_func function, size_t dataSize);
-	//Creates a new event structure
+Blah_Entity_Event* Blah_Entity_Event_new(const char *name, const Blah_Entity* sender, blah_entity_event_func* function, size_t dataSize);
+	// Creates a new event structure
 
-void Blah_Entity_sendEvent(Blah_Entity *recipient, Blah_Entity_Event *event);
-	//Sends an event to an entity
+void Blah_Entity_sendEvent(Blah_Entity* recipient, Blah_Entity_Event* event);
+	// Sends an event to an entity
 
 
 #ifdef __cplusplus
