@@ -60,6 +60,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/blah_colour.h" />
+		<Unit filename="../src/blah_console.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_console.h" />
 		<Unit filename="../src/blah_debug.c">
 			<Option compilerVar="CC" />
 		</Unit>

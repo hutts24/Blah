@@ -22,10 +22,12 @@ bool Blah_Primitive_init(Blah_Primitive *prim, blah_primitive_type newType, Blah
 			memcpy(newSequence, vertexArray, sizeof(Blah_Vertex*) * (vertexCount));
 			newSequence[vertexCount] = NULL;
 			prim->sequence = newSequence;
-		} else
+		} else {
 			bSuccess = false;
-	} else
+		}
+	} else {
 		prim->sequence = NULL;
+	}
 
 	prim->textureMap = NULL; //Default no texture mapping coordinates
 	prim->material = NULL; //Default to no material, use default

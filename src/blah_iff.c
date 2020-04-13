@@ -113,7 +113,7 @@ char *Blah_IFF_Chunk_readString(Blah_IFF_Chunk *chunk)
 	//Returns pointer to allocated string on success, NULL on error
 	char *returnString = blah_file_readString(chunk->filePointer);
 	blah_unsigned32 dataLength;
-	if (returnString) {
+	if (returnString != NULL) {
 		dataLength = strlen(returnString) + 1; //string length +1 for null char
 		if (dataLength & 1) {
 			dataLength++;

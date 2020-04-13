@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "blah_file.h"
 #include "blah_types.h"
@@ -62,6 +63,7 @@ char* blah_file_readString(FILE *file)
 {
     // Reads a null terminated string from the give file pointer.
 	// Returns pointer to allocated string on success, null on error.
+	// Caller must free the returned string.
 	unsigned long length = 0;
 	char *newString;
 	bool nullFound = false;
@@ -76,10 +78,19 @@ char* blah_file_readString(FILE *file)
 		newString = (char*)malloc(length); //Allocate memory buffer for new string
 		fread(newString, length, 1, file);	//Read whole string including null char into buffer
 		return newString;
-	} else
+	} else {
 		return NULL; //If failure, return NULL pointer
+	}
 }
 
+// Write a formatted string to a file stream.  Works like printf.  Does not append a new line char.  Does not flush stream.
+void blah_file_writeString(FILE* file, const char* messageFormat, ...)
+{
+    va_list varArgs;
+    va_start(varArgs, messageFormat);
+    fprintf(file, messageFormat, varArgs);
+    va_end(varArgs);
+}
 
 bool blah_file_readUnsigned16(FILE *file, blah_unsigned16 *dest)
 {	// Reads a 16bit unsigned integer value from binary file_pointer into 'dest'

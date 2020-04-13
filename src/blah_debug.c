@@ -19,9 +19,10 @@ static Blah_List logList = {
 
 /* Private Function Declarations */
 
+// Creates a new log file with given log name and returns FILE handle.
+// If the file already exists, it is replaced with a new empty one.
 static FILE *Blah_Debug_Log_createFile(char *logName)
-{	// Creates a new log file with given log name and returns FILE handle.
-    // If the file already exists, it is replaced with a new empty one.
+{
 	char tempFileName[BLAH_DEBUG_LOG_NAME_LENGTH + 4]; //Add 4 chars for ".log"
     snprintf(tempFileName, sizeof(tempFileName) / sizeof(char), "%s.log", logName);
     FILE *newFile = fopen(tempFileName, BLAH_FILE_MODE_OVERWRITE);
@@ -47,36 +48,40 @@ bool Blah_Debug_Log_close(Blah_Debug_Log *log)
 	return closeOK;
 }
 
+// Unregisters log from log list, frees memory and deallocates file resources
 void Blah_Debug_Log_destroy(Blah_Debug_Log *log)
-{	//Dregisters log from log list, frees memory and deallocates file resources
+{
 	Blah_List_removeElement(&logList, log); //First remove from list of logs
 	Blah_Debug_Log_close(log); //Close the log file
 	free(log);
 }
 
+// Cleanup routine to do garbage collection for logs exit
 void blah_debug_log_destroyAll()
-{	//Cleanup routine to do garbage collection for logs exit
+{
 	Blah_List_destroyElements(&logList);
 }
 
+// Disables Log.  Reverses initialisation.  Closes log.
 void Blah_Debug_Log_disable(Blah_Debug_Log *log)
-{	//Disables Log.  Reverses initialisation.  Closes log.
+{
 	Blah_Debug_Log_close(log);
 }
 
+// Initialises a given log data structure as a new log with new open file pointer
+// to a log file on the file system with the same name as the given log name.
 void Blah_Debug_Log_init(Blah_Debug_Log *log, const char *logName)
-{	// Initialises a given log data structure as a new log with new open file pointer
-	// to a log file on the file system with the same name as the given log name.
+{
 	log->filePointer = NULL;
 	log->numEntries = 0;
 	blah_util_strncpy(log->name, logName, BLAH_DEBUG_LOG_NAME_LENGTH); //Copy name string
 	Blah_Debug_Log_open(log);
 }
 
+// Append the given string to the specified log with a following new line char
+// Returns TRUE if success
 bool Blah_Debug_Log_message(Blah_Debug_Log *log, const char *messageFormat, ...)
 {
-    // Append the given string to the specified log with a following new line char
-	// Returns TRUE if success
 	if (log->filePointer == NULL) { // If invalid file pointer, return false immediately
         fprintf(stderr, "Failed to write to log: %s - FILE NOT OPEN\n", log->name);
 		return false;
@@ -85,7 +90,7 @@ bool Blah_Debug_Log_message(Blah_Debug_Log *log, const char *messageFormat, ...)
     // Try to call fprintf using the variable args and then release them
     va_list varArgs;
     va_start(varArgs, messageFormat);
-    const bool fprintfOk = fprintf(log->filePointer, "%s\n", messageFormat) >= 0;
+    const bool fprintfOk = fprintf(log->filePointer, messageFormat, varArgs) >= 0;
     va_end(varArgs);
 
     // If failed to write to log file, return false;
@@ -99,8 +104,9 @@ bool Blah_Debug_Log_message(Blah_Debug_Log *log, const char *messageFormat, ...)
     return fprintfOk;
 }
 
+// Creates a new debugging log with given name
 Blah_Debug_Log *Blah_Debug_Log_new(const char *logName)
-{	//Creates a new debugging log with given name
+{
 	Blah_Debug_Log *newLog = malloc(sizeof(Blah_Debug_Log));  //Allocate memory for new log structure;
 
 	if (newLog) { //If memory allocation ok

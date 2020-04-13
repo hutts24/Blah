@@ -1,5 +1,9 @@
 TODO LIST for Blah.
 
+- Add more information to debug messages such as time and source if possible.
+
+- Add signal handlers for standard signals like SIGILL and SIGSEGV.
+
 - Add new memory allocation function that checks for failure and exits with error reporting.
 
 - All function types should be defined as regular signatures without pointer types.  Variables of function pointer types should be defined as such with the pointer symbol *
