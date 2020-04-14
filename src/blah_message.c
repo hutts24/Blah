@@ -9,6 +9,8 @@
 #include "blah_time.h"
 #include "blah_error.h"
 
+#define ERROR_CODE_MAX_LENGTH 20 // Large enough to display unsigned 64bit integers
+
 // Internal function only.  Write current timestamp to file in local time zone with a trailing space.
 // Does not append new line character or flush the stream
 static void blah_message_writeTimeStampToFile(FILE* file)
@@ -38,15 +40,23 @@ void blah_message_writeToFileVA(FILE* file, const char* messageFormat, va_list v
 // All errors going to a FILE should use this function.
 void blah_message_writeErrorToFileVA(FILE* file, int errorCode, const char* messageFormat, va_list varArgs)
 {
-    // If a non zero error code has been supplied, print first line with time, error code and description
-    if (errorCode != 0) {
-        char errorDescription[BLAH_ERROR_MAX_DESC_LENGTH + 1];
-        strerror_s(errorDescription, sizeof(errorDescription), errorCode);
-        blah_message_writeToFile(file, "Error Code: %d, %s", errorCode, errorDescription); // Adds new line automatically
-    }
-    // Print second line using formatted message and variable arguments
+    // Write timestamp first
     blah_message_writeTimeStampToFile(file);
-    fputs("Error Info: ", file);
+    // Write the error code to the file stream
+    char errorCodeString[ERROR_CODE_MAX_LENGTH];
+    if (errorCode == 0 || snprintf(errorCodeString, sizeof(errorCodeString), "%d", errorCode) >= ERROR_CODE_MAX_LENGTH) {
+        strcpy(errorCodeString, "Not specified"); // error code is too large to display (greater than 64 bits)
+        errorCode = 0; // Ignore the error code supplied
+    }
+    fprintf(file, "Error Code: %s", errorCodeString);
+    // Now if the error code is valid, add its description to the output
+    if (errorCode != 0) {
+        char errorDescription[200];
+        strerror_s(errorDescription, sizeof(errorDescription), errorCode);
+        fprintf(file, " - %s", errorDescription);
+    }
+    // Now print the formatted message supplied with the error code
+    fputs(".  ", file);
     vfprintf(file, messageFormat, varArgs); // Adds new line automatically
     fputc('\n', file);
     fflush(file);
