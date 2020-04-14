@@ -7,28 +7,43 @@
 
 #include "blah_console.h"
 #include "blah_file.h"
+#include "blah_message.h"
 
-// Write formatted output to standard output.  Works like printf.  Does not flush stream.
+/* External Declarations of functions for internal use */
+extern void blah_message_writeToFileVA(FILE* file, const char* messageFormat, va_list varArgs);
+extern void blah_message_writeErrorToFileVA(FILE* file, int errorCode, const char* messageFormat, va_list varArgs);
+
+
+// No new line appended
+void blah_console_writeString(const char* formatString, ...)
+{
+    va_list varArgs;
+    va_start(varArgs, formatString);
+    vfprintf(stdout, formatString, varArgs);
+    va_end(varArgs);
+}
+
+// Write formatted output to standard output.  Works like printf.
+// A new line character is appended at the end of output and error output is flushed.
 void blah_console_message(const char* messageFormat, ...)
 {
     va_list varArgs;
     va_start(varArgs, messageFormat);
-    blah_file_writeString(stdout, messageFormat, varArgs);
+    blah_message_writeToFileVA(stdout, messageFormat, varArgs);
     va_end(varArgs);
 }
 
 // Write formatted output to standard error.  Works like printf.  Does not flush stream.
-void blah_console_error(const char* messageFormat, ...)
+void blah_console_error(int errorCode, const char* messageFormat, ...)
 {
     va_list varArgs;
     va_start(varArgs, messageFormat);
-    blah_file_writeString(stderr, messageFormat, varArgs);
+    blah_message_writeErrorToFileVA(stderr, errorCode, messageFormat, varArgs);
     va_end(varArgs);
 }
 
-// Flush output to both console messages and errors
+// Flushes standard output only.  There is no need to flush the error output because the error functions do that automatically
 void blah_console_flush()
 {
     fflush(stdout);
-    fflush(stderr);
 }

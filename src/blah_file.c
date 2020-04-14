@@ -70,7 +70,7 @@ char* blah_file_readString(FILE *file)
 
 	while (!(feof(file) || nullFound)) { // While a null char hasn't been found and not eof
 		length++;
-		if (fgetc(file) == '\0') { nullFound = true; } //If next character from file stream is not null
+		if (fgetc(file) == '\0') { nullFound = true; } // If next character from file stream is not null
 	}
 
 	if (nullFound) { //If we have found a null termed string before eof
@@ -81,15 +81,6 @@ char* blah_file_readString(FILE *file)
 	} else {
 		return NULL; //If failure, return NULL pointer
 	}
-}
-
-// Write a formatted string to a file stream.  Works like printf.  Does not append a new line char.  Does not flush stream.
-void blah_file_writeString(FILE* file, const char* messageFormat, ...)
-{
-    va_list varArgs;
-    va_start(varArgs, messageFormat);
-    fprintf(file, messageFormat, varArgs);
-    va_end(varArgs);
 }
 
 bool blah_file_readUnsigned16(FILE *file, blah_unsigned16 *dest)
@@ -103,4 +94,3 @@ bool blah_file_readUnsigned32(FILE *file, blah_unsigned32 *dest)
 	// Returns true on succes, false on error
 	return blah_file_readX86(file, dest, 4);
 }
-

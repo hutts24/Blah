@@ -49,9 +49,6 @@ bool blah_file_readUnsigned32(FILE *file, blah_unsigned32 *dest);
 // Returns pointer to allocated string on success, null on error.
 char *blah_file_readString(FILE *file);
 
-// Write a formatted string to a file stream.  Works like printf.  Does not append a new line char.  Does not flush stream.
-void blah_file_writeString(FILE* file, const char* messageFormat, ...);
-
 #ifdef __cplusplus
 	}
 #endif //__cplusplus

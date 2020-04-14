@@ -48,38 +48,30 @@ static Blah_Debug_Log blah_video_log = { .filePointer = NULL };
 
 /* Private static functions */
 
-static int blah_video_modeCompare(Blah_Video_Mode *mode1, Blah_Video_Mode *mode2) {
-	//Returns 0 if the two modes compared are identical, 1 if mode1 > mode2, -1 if mode1 < mode2
-	//Compare mode1 against mode2
-	if (mode1->colourDepth < mode2->colourDepth)
-		return -1; //if colour depth is smaller, return -1
-	else if (mode1->colourDepth > mode2->colourDepth)
-		return 1; //if greater, return 1
-	else { //if equal colour depth, compare on horiz resolution
-		if (mode1->width < mode2->width)
-			return -1; //return -1 if width smaller
-		else if (mode1->width > mode2->width)
-			return 1; //return 1 if width greater
-		else { //if equal width compare depth
-			if (mode1->height < mode2->height)
-				return -1; //if height is smaller return -1
-			else if (mode1->height > mode2->height)
-				return 1;
-			else //modes are identical as far as resolution and colour depth
-				return 0;
-		}
-	}
+// Returns 0 if the two modes compared are identical, 1 if mode1 > mode2, -1 if mode1 < mode2
+static int blah_video_modeCompare(const Blah_Video_Mode* mode1, const Blah_Video_Mode* mode2) {
+	// Compare colour depth of mode1 against mode2
+	if (mode1->colourDepth < mode2->colourDepth) { return -1; }
+	if (mode1->colourDepth > mode2->colourDepth) { return 1; }
+	// Modes have equal colour depth.  Compare horizontal resolution
+	if (mode1->width < mode2->width) { return -1; }
+	if (mode1->width > mode2->width) { return 1; }
+	// Modes have equal horizontal resolution.  Compare vertical resolution
+    if (mode1->height < mode2->height) { return -1; }
+	if (mode1->height > mode2->height) { return 1; }
+
+	return 0; //modes are identical as far as resolution and colour depth
 }
 
-
-static bool blah_video_modeSearch(Blah_Video_Mode *mode, char *modeName) {
-	//Returns true if the video mode name matches the given name to search
+// Returns true if the video mode name matches the given name to search
+static bool blah_video_modeSearch(const Blah_Video_Mode* mode, const char* modeName) {
 	return !strcmp(mode->name, modeName) ? true : false;
 }
 
 /* Video Function Declarations */
 
-void blah_video_clearBuffer() {  //Clears current drawing buffer
+// Clears current drawing buffer
+void blah_video_clearBuffer() {
 	blah_video_currentAPI->clearBufferFunction(NULL);
 }
 
@@ -178,7 +170,7 @@ void blah_video_setSizeWindowed(int width, int height) {;}
 
 void blah_video_setSizeFullScreen(int width, int height) {;}
 
-bool blah_video_setMode(Blah_Video_Mode *mode) {
+bool blah_video_setMode(const Blah_Video_Mode* mode) {
 	//Sets the display device to the given mode.  Returns TRUE upon success, else false
 	Blah_Debug_Log_message(&blah_video_log, "Calling blah_video_sdl_set_mode()");
 	if (blah_video_sdl_setMode(mode)) {
@@ -239,16 +231,15 @@ const Blah_Video_Mode *blah_video_getNextMode(const Blah_Video_Mode *mode) {
 	return nextMode;
 }
 
-const Blah_Video_Mode *blah_video_getPrevMode(Blah_Video_Mode *mode) {
+const Blah_Video_Mode *blah_video_getPrevMode(const Blah_Video_Mode* mode) {
 	//Searches for a lower resolution mode than the given mode, using the same
 	//colour depth.  Returns a pointer to the new mode found or NULL if there is no
 	//lower resolution mode available with requested colour depth;
-	Blah_List_Element *modeElement = Blah_List_findElement(&blah_video_modes, mode);
-	Blah_List_Element *prevElement = modeElement->prev;
-	Blah_Video_Mode *prevMode;
+	const Blah_List_Element *modeElement = Blah_List_findElement(&blah_video_modes, mode);
+	const Blah_List_Element *prevElement = modeElement->prev;
 
 	if (prevElement) { //If there is a prev mode in the list, continue
-		prevMode = (Blah_Video_Mode*)prevElement->data;
+		const Blah_Video_Mode* prevMode = (Blah_Video_Mode*)prevElement->data;
 		return mode->colourDepth == prevMode->colourDepth ? prevMode : NULL;
 	} else {
 		return NULL;

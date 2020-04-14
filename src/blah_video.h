@@ -106,7 +106,7 @@ bool blah_video_isFullScreen();
 bool blah_video_isDoubleBuffered();
 	// Returns true if in full double buffering active
 
-bool blah_video_setMode(Blah_Video_Mode *mode);
+bool blah_video_setMode(const Blah_Video_Mode* mode);
 	// Sets the display device to the given mode.  Returns TRUE upon success, else false
 
 const Blah_Video_Mode *blah_video_getCurrentMode();
@@ -129,7 +129,7 @@ const Blah_Video_Mode *blah_video_getNextMode(const Blah_Video_Mode *mode);
 	// colour depth.  Returns a pointer to the new mode found or NULL if there is no
 	// higher resolution mode available with requested colour depth;
 
-const Blah_Video_Mode *blah_video_getPrevMode(Blah_Video_Mode *mode);
+const Blah_Video_Mode *blah_video_getPrevMode(const Blah_Video_Mode* mode);
 	// Searches for a lower resolution mode than the given mode, using the same
 	// colour depth.  Returns a pointer to the new mode found or NULL if there is no
 	// lower resolution mode available with requested colour depth;

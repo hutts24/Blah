@@ -99,6 +99,7 @@
 		<Unit filename="../src/blah_error.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="../src/blah_error.h" />
 		<Unit filename="../src/blah_file.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -160,6 +161,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/blah_matrix.h" />
+		<Unit filename="../src/blah_message.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_message.h" />
 		<Unit filename="../src/blah_model.c">
 			<Option compilerVar="CC" />
 		</Unit>

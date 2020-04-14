@@ -5,6 +5,7 @@
 #define _BLAH_ALL
 
 #include "blah_colour.h"
+#include "blah_console.h"
 #include "blah_debug.h"
 #include "blah_draw.h"
 #include "blah_engine.h"

@@ -6,11 +6,12 @@
 
 #define _BLAH_CONSOLE
 
-// Write formatted output to standard output.  Works like printf.  Does not flush stream.
+// Write formatted output to standard output.  Works like printf.
+// A new line character is appended at the end of output.  Does not flush stream.
 void blah_console_message(const char* messageFormat, ...);
 
 // Write formatted output to standard error.  Works like printf.  Does not flush stream.
-void blah_console_error(const char* messageFormat, ...);
+void blah_console_error(int errorCode, const char* messageFormat, ...);
 
 
 #endif

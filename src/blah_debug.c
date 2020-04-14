@@ -18,14 +18,16 @@ static Blah_List logList = {
 };
 
 /* Private Function Declarations */
+extern void blah_message_writeToFileVA(FILE* file, const char* messageFormat, va_list varArgs);
+extern void blah_message_writeErrorToFileVA(FILE* file, int errorCode, const char* messageFormat, va_list varArgs);
 
 // Creates a new log file with given log name and returns FILE handle.
 // If the file already exists, it is replaced with a new empty one.
-static FILE *Blah_Debug_Log_createFile(char *logName)
+static FILE* Blah_Debug_Log_createFile(char* logName)
 {
 	char tempFileName[BLAH_DEBUG_LOG_NAME_LENGTH + 4]; //Add 4 chars for ".log"
     snprintf(tempFileName, sizeof(tempFileName) / sizeof(char), "%s.log", logName);
-    FILE *newFile = fopen(tempFileName, BLAH_FILE_MODE_OVERWRITE);
+    FILE* newFile = fopen(tempFileName, BLAH_FILE_MODE_OVERWRITE);
     // TODO - Exit here if log file could not be created
 	if (!newFile) { fprintf(stderr, "Create log file failed\n"); }
 
@@ -80,28 +82,19 @@ void Blah_Debug_Log_init(Blah_Debug_Log *log, const char *logName)
 
 // Append the given string to the specified log with a following new line char
 // Returns TRUE if success
-bool Blah_Debug_Log_message(Blah_Debug_Log *log, const char *messageFormat, ...)
+bool Blah_Debug_Log_message(Blah_Debug_Log* log, const char* messageFormat, ...)
 {
 	if (log->filePointer == NULL) { // If invalid file pointer, return false immediately
         fprintf(stderr, "Failed to write to log: %s - FILE NOT OPEN\n", log->name);
 		return false;
     }
 
-    // Try to call fprintf using the variable args and then release them
+    // Try to write message to file using the variable args and then release them
     va_list varArgs;
     va_start(varArgs, messageFormat);
-    const bool fprintfOk = fprintf(log->filePointer, messageFormat, varArgs) >= 0;
+    blah_message_writeToFileVA(log->filePointer, messageFormat, varArgs);
     va_end(varArgs);
-
-    // If failed to write to log file, return false;
-    if (fprintfOk) {
-        fflush(log->filePointer); // Flush log file to disk
-        log->numEntries++; // Increment entry count
-    } else {
-        fprintf(stderr,"Failed to write to log: %s\n", log->name);
-    }
-
-    return fprintfOk;
+    return true;
 }
 
 // Creates a new debugging log with given name
