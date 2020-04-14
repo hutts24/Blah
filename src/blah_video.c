@@ -33,7 +33,7 @@ Blah_Video_API blah_video_SDL = {
 	.setModeFunction = blah_video_sdl_setMode
 };
 
-Blah_Video_Mode *blah_video_currentMode = NULL;	// A pointer to the current mode being used
+const Blah_Video_Mode *blah_video_currentMode = NULL;	// A pointer to the current mode being used
 Blah_List blah_video_modes = { .name = "video_modes" }; //Binary tree of all usable video modes. Extern in blah_video_sdl.h
 
 #ifdef BLAH_USE_GLUT

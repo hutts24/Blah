@@ -8,6 +8,7 @@
 #include "blah_draw.h"
 #include "blah_entity.h"
 #include "blah_debug.h"
+#include "blah_signal.h"
 
 /* Global variables */
 
@@ -44,7 +45,9 @@ void blah_engine_exit()
 }
 
 bool blah_engine_init()
-{	//initialises all engine components
+{
+    // initialises all engine components
+    blah_signal_init(); // Install signal handlers
 	Blah_Debug_Log_init(&blah_engine_log, "blah_engine");
 
 	Blah_Debug_Log_message(&blah_engine_log, "Call to video init");
