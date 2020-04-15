@@ -12,6 +12,7 @@
 #include "blah_util.h"
 #include "blah_file.h"
 #include "blah_types.h"
+#include "blah_error.h"
 
 /* Private locals */
 Blah_Tree imageTree = {"", NULL, NULL, 0}; //Binary tree of all images
@@ -109,7 +110,10 @@ bool Blah_Image_init(Blah_Image *image, const char *name, unsigned char pixelDep
 Blah_Image* Blah_Image_fromFile(const char* filename) {
 	//Creates a new Image structure from file given by 'filename'.
 	FILE* fileStream = blah_file_open(filename, "rb");
-	if (fileStream == NULL) { return NULL; }
+	if (fileStream == NULL) {
+	    // If failed to open file, exit with error
+	    blah_error_raise(errno, "Blah_Image_fromFile() failed to open filename '%s'", filename);
+    }
 	Blah_Image* const newImage = Blah_Image_Targa_fromFile(filename, fileStream);
 	fclose(fileStream);
 	return newImage;

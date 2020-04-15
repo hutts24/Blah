@@ -13,6 +13,14 @@
 extern void blah_message_writeToFileVA(FILE* file, const char* messageFormat, va_list varArgs);
 extern void blah_message_writeErrorToFileVA(FILE* file, int errorCode, const char* messageFormat, va_list varArgs);
 
+/* Private Functions */
+
+void blah_console_errorVA(int errorCode, const char* messageFormat, va_list varArgs)
+{
+    blah_message_writeErrorToFileVA(stderr, errorCode, messageFormat, varArgs);
+}
+
+/* Public Functions */
 
 // No new line appended
 void blah_console_writeString(const char* formatString, ...)
@@ -38,7 +46,7 @@ void blah_console_error(int errorCode, const char* messageFormat, ...)
 {
     va_list varArgs;
     va_start(varArgs, messageFormat);
-    blah_message_writeErrorToFileVA(stderr, errorCode, messageFormat, varArgs);
+    blah_console_errorVA(errorCode, messageFormat, varArgs);
     va_end(varArgs);
 }
 
