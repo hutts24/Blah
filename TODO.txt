@@ -1,5 +1,7 @@
 TODO LIST for Blah.
 
+- Update from SDL1 to SDL2.
+
 - Use timespec and timespec_get() for time functions.  Currently the old time_t and time() are used.
 
 - Add more information to debug messages such as time and source if possible.

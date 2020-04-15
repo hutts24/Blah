@@ -29,7 +29,6 @@ static Blah_Debug_Log blah_video_sdl_log = { .filePointer = NULL };
 /* Function Declarations */
 
 bool blah_video_sdl_init(const Blah_Video_Settings* settings) {  // Initialise SDL video subsystem
-	char tempString[200];
 	char modeName[BLAH_VIDEO_MODE_NAME_LENGTH+1];
 	int modeIndex = 0; int bpp;
 	int curResX = 0, curResY = 0;
@@ -39,15 +38,14 @@ bool blah_video_sdl_init(const Blah_Video_Settings* settings) {  // Initialise S
 	Blah_Debug_Log_init(&blah_video_sdl_log, "blah_video_sdl"); //Set up SDL video log
 
 	if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) { // Initialise SDL with no extra subsystems
-		sprintf(tempString, "Failed to initialise SDL: %s\n", SDL_GetError());
-		Blah_Debug_Log_message(&blah_video_sdl_log, tempString);
+		Blah_Debug_Log_message(&blah_video_sdl_log, "Failed to initialise SDL: %s\n", SDL_GetError());
 		Blah_Debug_Log_disable(&blah_video_sdl_log);
 		return false;
 	} else {
 		/* Get video info */
 		Blah_Debug_Log_message(&blah_video_sdl_log,"Getting a list of available video modes through SDL");
-		videoInfo = (SDL_VideoInfo*)SDL_GetVideoInfo(); //Get pointer to SDL video info
-		bpp = videoInfo->vfmt->BitsPerPixel; //get bits per pixel in best colour mode
+		videoInfo = (SDL_VideoInfo*)SDL_GetVideoInfo(); // Get pointer to SDL video info
+		bpp = videoInfo->vfmt->BitsPerPixel; // get bits per pixel in best colour mode
 		sdlModes = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_OPENGL);
 
 		/* Construct a valid list of modes in blah_video_modes */

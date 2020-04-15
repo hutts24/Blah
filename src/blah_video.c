@@ -198,10 +198,10 @@ const Blah_Video_Mode* blah_video_getMode(int width, int height, int bppDepth) {
 }
 
 const Blah_Video_Mode* blah_video_getIdealMode(unsigned int width, unsigned int height, unsigned int bppDepth) {
-	//Searches for an available mode with the given attributes and returns handle
-	//to Blah_Video_Mode structure if one exists, otherwise the next best mode is
-	//returned.  Note that this structure is internal to blah video and must
-	//not be altered in any way!
+	// Searches for an available mode with the given attributes and returns handle
+	// to Blah_Video_Mode structure if one exists, otherwise the next best mode is
+	// returned.  Note that this structure is internal to blah video and must
+	// not be altered in any way!
 	const Blah_Video_Mode *idealMode = NULL;
 	const Blah_Video_Mode* tempMode = blah_video_getLeastMode();
 	bool stopFlag = false;
@@ -248,8 +248,8 @@ const Blah_Video_Mode *blah_video_getPrevMode(const Blah_Video_Mode* mode) {
 
 
 const Blah_Video_Mode* blah_video_getLeastMode() {
-	//Returns a pointer to the lowest resolution mode using the lowest
-	//available colour depth
+	// Returns a pointer to the lowest resolution mode using the lowest
+	// available colour depth
 	return blah_video_modes.first->data;
 }
 

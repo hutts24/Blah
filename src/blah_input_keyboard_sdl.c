@@ -30,7 +30,7 @@ void blah_input_keyboard_sdl_init() {
 	// If SDL Video hasn't been initialised, initialise SDL with video subsystem and we get keyboard also
 	if (!SDL_WasInit(SDL_INIT_VIDEO)) { blah_video_init(); }
 
-    //Set all mappings to -1, meaning not mapped to engine key symbols
+    // Set all mappings to -1, meaning not mapped to engine key symbols
 	Blah_Debug_Log_message(&blah_input_keyboard_log, "Initialising key mappings");
 	for (int symCount = 0; symCount < SDLK_EURO; symCount++) { blahInputKeyboardSDLMap[symCount] = BLAH_INPUT_KEY_NONE; };
 
