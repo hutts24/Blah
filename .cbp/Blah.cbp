@@ -210,6 +210,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/blah_scene_object.h" />
+		<Unit filename="../src/blah_signal.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/blah_signal.h" />
 		<Unit filename="../src/blah_stack.c">
 			<Option compilerVar="CC" />
 		</Unit>
