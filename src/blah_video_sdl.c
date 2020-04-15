@@ -38,7 +38,7 @@ bool blah_video_sdl_init(const Blah_Video_Settings* settings) {  // Initialise S
 
 	Blah_Debug_Log_init(&blah_video_sdl_log, "blah_video_sdl"); //Set up SDL video log
 
-	if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) {	//Initialise SDL with no extra subsystems
+	if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) { // Initialise SDL with no extra subsystems
 		sprintf(tempString, "Failed to initialise SDL: %s\n", SDL_GetError());
 		Blah_Debug_Log_message(&blah_video_sdl_log, tempString);
 		Blah_Debug_Log_disable(&blah_video_sdl_log);
@@ -82,8 +82,10 @@ bool blah_video_sdl_init(const Blah_Video_Settings* settings) {  // Initialise S
 bool blah_video_sdl_exit() { //Shutdown SDL video component
 	if (blah_video_sdl_initialised) {
 		Blah_Debug_Log_message(&blah_video_sdl_log, "Begin SDL Video shutdown blah_video_sdl_exit()");
-		SDL_ShowCursor(SDL_ENABLE); //Show cursor
-		SDL_WM_GrabInput(SDL_GRAB_OFF); //Allow mouse to roam free outside window
+		SDL_ShowCursor(SDL_ENABLE); // Show cursor
+		Blah_Debug_Log_message(&blah_video_sdl_log, "Enabled SDL cursor");
+		SDL_WM_GrabInput(SDL_GRAB_OFF); // Allow mouse to roam free outside window
+		Blah_Debug_Log_message(&blah_video_sdl_log, "Turned input grabbing off");
 		SDL_QuitSubSystem(SDL_INIT_VIDEO);
 		blah_video_sdl_initialised = false;  //set state flag off
 		Blah_Debug_Log_message(&blah_video_sdl_log, "Video shutdown with SDL_QuitSubSystem()");
@@ -127,7 +129,6 @@ bool blah_video_sdl_setMode(const Blah_Video_Mode* mode) {
 	//This function exists because basically SDL has no way of controlling individual settings
 	Uint32 sdlFlags = SDL_OPENGL;
 	int sdlBpp;
-	char tempString[100];
 
 	//Calculate size based apon full screen attribute and size settings
 	const int width = mode->width;
@@ -146,13 +147,10 @@ bool blah_video_sdl_setMode(const Blah_Video_Mode* mode) {
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, mode->doubleBuffered);
 
-	sprintf(tempString, "Setting video to %dx%dx%d\n", width, height, bpp);
-	Blah_Debug_Log_message(&blah_video_sdl_log, tempString);
+	Blah_Debug_Log_message(&blah_video_sdl_log, "Setting video to %dx%dx%d\n", width, height, bpp);
 	sdlBpp = SDL_VideoModeOK(width, height, bpp, sdlFlags);
-	sprintf(tempString, "SDL bpp is %d", sdlBpp);
-	Blah_Debug_Log_message(&blah_video_sdl_log, tempString);
-	sprintf(tempString, "Suggested bpp for %dx%d is %d", width, height, bpp);
-	Blah_Debug_Log_message(&blah_video_sdl_log, tempString);
+	Blah_Debug_Log_message(&blah_video_sdl_log, "SDL bpp is %d", sdlBpp);
+	Blah_Debug_Log_message(&blah_video_sdl_log, "Suggested bpp for %dx%d is %d", width, height, bpp);
 	if (SDL_SetVideoMode(width, height, bpp, sdlFlags)) {
 		//blah_video_current_mode = mode;  //FIXME??
 		glViewport(0, 0, width, height);

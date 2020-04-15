@@ -9,8 +9,7 @@
 #include <stdio.h>
 
 // Write formatted message to given FILE stream.
-// A new line character is appened to the end of the output.
-// File stream is not flushed.
+// A new line character is appened to the end of the output and stream is flushed.
 void blah_message_writeToFile(FILE* file, const char* messageFormat, ...);
 
 // Write a detailed error message to given FILE stream and flush to output (errors are important).

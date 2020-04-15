@@ -7,43 +7,35 @@
 #include "blah_input_keyboard_sdl.h"
 #include "blah_input_keyboard.h"
 #include "blah_video_sdl.h"
+#include "blah_debug.h"
 
 /* Externally Referenced Variables */
 extern Blah_Input_Key blahInputKeys[BLAH_INPUT_KEYBOARD_NUM_KEYS];
-
+extern Blah_Debug_Log blah_input_keyboard_log;
 
 /* Globals */
 
 blah_input_key_symbol blahInputKeyboardSDLMap[SDLK_EURO]; // FIXME an array to map SDL key symbols to engine key syms
 
-/* Private Function Prototypes */
-
-static int blah_input_keyboard_sdl_eventFilter(const SDL_Event *event);
-
 /* Function Declarations */
 
 static int blah_input_keyboard_sdl_eventFilter(const SDL_Event *event) {
 	//Filters out all but keyboard events from the SDL event queue
-	if (event->type == SDL_KEYDOWN || event->type == SDL_KEYUP)
-		return 1;
-	else
-		return 0;
+	return (event->type == SDL_KEYDOWN || event->type == SDL_KEYUP) ? 1 : 0;
 }
 
-void blah_input_keyboard_sdl_init() { //initialises SDL keyboard input
-	fprintf(stderr,"Checking if sdl video inited\n");
-
+// initialises SDL keyboard input
+void blah_input_keyboard_sdl_init() {
 	// This is pretty simple.  SDL Video is required for SDL keyboard input
 	// If SDL Video hasn't been initialised, initialise SDL with video subsystem and we get keyboard also
 	if (!SDL_WasInit(SDL_INIT_VIDEO)) { blah_video_init(); }
 
-	fprintf(stderr, "initing mappings\n");
-
-	//Set all mappings to -1, meaning not mapped to engine key symbols
+    //Set all mappings to -1, meaning not mapped to engine key symbols
+	Blah_Debug_Log_message(&blah_input_keyboard_log, "Initialising key mappings");
 	for (int symCount = 0; symCount < SDLK_EURO; symCount++) { blahInputKeyboardSDLMap[symCount] = BLAH_INPUT_KEY_NONE; };
 
-	fprintf(stderr,"setting up key mappings\n");
-	//Set up active mappings
+	// Set up active mappings
+	Blah_Debug_Log_message(&blah_input_keyboard_log, "Configuring key mappings");
 	int activeKeyIndex = 0;
 	int sdlActiveKeys[] = {SDLK_UP,BLAH_INPUT_KEY_UP, SDLK_DOWN,BLAH_INPUT_KEY_DOWN, SDLK_LEFT,BLAH_INPUT_KEY_LEFT,
 	SDLK_RIGHT,BLAH_INPUT_KEY_RIGHT, SDLK_SPACE,BLAH_INPUT_KEY_SPACE, SDLK_LSHIFT,BLAH_INPUT_KEY_LEFT_SHIFT,
@@ -51,13 +43,13 @@ void blah_input_keyboard_sdl_init() { //initialises SDL keyboard input
 	SDLK_d,BLAH_INPUT_KEY_D, SDLK_x,BLAH_INPUT_KEY_X, SDLK_t,BLAH_INPUT_KEY_T, SDLK_z,BLAH_INPUT_KEY_Z,
 	SDLK_EQUALS,BLAH_INPUT_KEY_EQUALS, SDLK_MINUS,BLAH_INPUT_KEY_MINUS,
 	SDLK_h,BLAH_INPUT_KEY_H,		(-1)};
-
-	while (sdlActiveKeys[activeKeyIndex] !=-1) { //while end of mapping list hasn't been reached
+	// Loop through the whole list of key mappings above until then end of the list is reached (indicated by -1)
+	while (sdlActiveKeys[activeKeyIndex] !=-1) {
 		blahInputKeyboardSDLMap[sdlActiveKeys[activeKeyIndex]] = sdlActiveKeys[activeKeyIndex+1];
 		activeKeyIndex += 2;
 	}
 
-	SDL_SetEventFilter(blah_input_keyboard_sdl_eventFilter);  //Set up event filter
+	SDL_SetEventFilter(blah_input_keyboard_sdl_eventFilter); // Set up event filter
 }
 
 void blah_input_keyboard_sdl_exit() { // shutdown SDL keyboard input component

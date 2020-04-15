@@ -25,18 +25,19 @@ static void blah_message_writeTimeStampToFile(FILE* file)
 }
 
 // Internal function accepts variable arguments directly.
-// Write message preceded by a timestamp and followed by a new line character.
-// All messages going to a FILE should use this function.  File stream is not flushed.
+// Write message preceded by a timestamp and followed by a new line character and flush the stream.
+// All messages going to a FILE should use this function.
 void blah_message_writeToFileVA(FILE* file, const char* messageFormat, va_list varArgs)
 {
     // Print the time string, followed by formatted message
     blah_message_writeTimeStampToFile(file);
     vfprintf(file, messageFormat, varArgs);
     fputc('\n', file); // Add new line
+    fflush(file);
 }
 
 // Internal function that accepts va_list directly like vprintf for internal use.
-// Write formatted error message to file stream with new line character appended and flush stream
+// Write formatted error message to file stream with new line character appended and flush the stream
 // All errors going to a FILE should use this function.
 void blah_message_writeErrorToFileVA(FILE* file, int errorCode, const char* messageFormat, va_list varArgs)
 {
@@ -63,8 +64,7 @@ void blah_message_writeErrorToFileVA(FILE* file, int errorCode, const char* mess
 }
 
 // Write formatted message to given FILE stream.
-// A new line character is appened to the end of the output.
-// File stream is not flushed.
+// A new line character is appened to the end of the output and flush the stream
 void blah_message_writeToFile(FILE* file, const char* messageFormat, ...)
 {
     va_list varArgs;

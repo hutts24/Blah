@@ -6,6 +6,7 @@
 
 #include "blah_input_keyboard.h"
 #include "blah_input_keyboard_sdl.h"
+#include "blah_debug.h"
 
 #ifdef BLAH_USE_GLUT
 #include "blah_input_keyboard_glut.h"
@@ -13,38 +14,39 @@
 
 #include "blah_macros.h"
 
-/* Globals */
+/* Public globals */
 
-Blah_Input_Keyboard_API blah_input_keyboard_SDL = {"SDL", blah_input_keyboard_sdl_init,
+Blah_Input_Key blahInputKeys[BLAH_INPUT_KEYBOARD_NUM_KEYS];
+Blah_Debug_Log blah_input_keyboard_log = { .filePointer = NULL };
+
+/* Private statics */
+static Blah_Input_Keyboard_API blah_input_keyboard_SDL = {"SDL", blah_input_keyboard_sdl_init,
 	blah_input_keyboard_sdl_main, blah_input_keyboard_sdl_exit};
 
 #ifdef BLAH_USE_GLUT
-Blah_Input_Keyboard_API blah_input_keyboard_GLUT = {"GLUT",blah_input_keyboard_glut_init,
+static Blah_Input_Keyboard_API blah_input_keyboard_GLUT = {"GLUT",blah_input_keyboard_glut_init,
 	blah_input_keyboard_glut_main, blah_input_keyboard_glut_exit};
 #endif
 
-Blah_Input_Keyboard_API *blah_input_keyboard_currentAPI = &blah_input_keyboard_SDL;
-	//Pointer to current API structure
+static Blah_Input_Keyboard_API *blah_input_keyboard_currentAPI = &blah_input_keyboard_SDL; // Pointer to current API structure
 
-Blah_Input_Key blahInputKeys[BLAH_INPUT_KEYBOARD_NUM_KEYS];
 
 /* Private function declarations */
 
+// Sets the monitored flag to true if atleast one state handler
+// is assigned, else false.
 static void Blah_Input_Key_updateMonitored(Blah_Input_Key *key) {
-	//Sets the monitored flag to true if atleast one state handler
-	//is assigned, else false.
-	if (key->depressFunction || key->releaseFunction || key->holdFunction)
-		key->monitored = true;
-	else
-		key->monitored = false;
+	key->monitored = key->depressFunction || key->releaseFunction || key->holdFunction;
 }
 
 /* Public Function Declarations */
 
-void blah_input_keyboard_init () { //initialises keyboard input configuration
-	int keySymbol;
-	//take care of the key status data
-	for (keySymbol=0; keySymbol < BLAH_INPUT_KEYBOARD_NUM_KEYS; keySymbol++) {
+// initialises keyboard input configuration
+void blah_input_keyboard_init () {
+    Blah_Debug_Log_init(&blah_input_keyboard_log, "blah_input_keyboard");
+    Blah_Debug_Log_message(&blah_input_keyboard_log, "Initialising keyboard input");
+	// take care of the key status data
+	for (int keySymbol = 0; keySymbol < BLAH_INPUT_KEYBOARD_NUM_KEYS; keySymbol++) {
 		blahInputKeys[keySymbol].key = keySymbol;
 		blahInputKeys[keySymbol].monitored = false;
 		blahInputKeys[keySymbol].depressed = false;
@@ -53,39 +55,39 @@ void blah_input_keyboard_init () { //initialises keyboard input configuration
 		blahInputKeys[keySymbol].releaseFunction = NULL;
 		blahInputKeys[keySymbol].holdFunction = NULL;
 	}
-	fprintf(stderr,"calling sdl keyboard init\n");
 	blah_input_keyboard_currentAPI->initFunction(NULL);
-
 }
 
-void blah_input_keyboard_main() {  //update keyboard status
-	int keyCount;
-	Blah_Input_Key *tempKey;
-
+// update keyboard status
+void blah_input_keyboard_main() {
 	//input_keyboard_sdl_main();  //Update key status via SDL
 	blah_input_keyboard_currentAPI->mainFunction(NULL);
 	//Invoke key handlers where applicable
 
-	for (keyCount = 0; keyCount < BLAH_INPUT_KEYBOARD_NUM_KEYS; keyCount++) {
-		tempKey = &blahInputKeys[keyCount];
+	for (int keyCount = 0; keyCount < BLAH_INPUT_KEYBOARD_NUM_KEYS; keyCount++) {
+		Blah_Input_Key *tempKey = &blahInputKeys[keyCount];
 		if (tempKey->monitored) {  //check for change of state
 			if (tempKey->depressed != tempKey->oldDepressed) {
-				if (tempKey->depressed && tempKey->depressFunction)
+				if (tempKey->depressed && tempKey->depressFunction) {
 					tempKey->depressFunction(&blahInputKeys[keyCount]);
-			 	else if (!tempKey->depressed && tempKey->releaseFunction)
+			 	} else if (!tempKey->depressed && tempKey->releaseFunction) {
 					tempKey->releaseFunction(&blahInputKeys[keyCount]);
+			 	}
 				//update the old status to preserve state before next inspection
 				tempKey->oldDepressed = tempKey->depressed;
-			} else if (tempKey->depressed && tempKey->holdFunction)
+			} else if (tempKey->depressed && tempKey->holdFunction) {
 				tempKey->holdFunction(&blahInputKeys[keyCount]);
+            }
 				//if key status has not changed and is still held, call hold_function
 		}
 	}
 }
 
-void blah_input_keyboard_exit() { //shutdown keyboard input component
+// shutdown keyboard input component
+void blah_input_keyboard_exit()
+{
 	blah_input_keyboard_currentAPI->exitFunction(NULL);
-	//input_keyboard_sdl_exit();
+	Blah_Debug_Log_disable(&blah_input_keyboard_log);
 }
 
 void blah_input_keyboard_setDepressFunction(blah_input_key_symbol keySymbol, blah_input_key_depress_func* function) {

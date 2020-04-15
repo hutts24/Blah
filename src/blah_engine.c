@@ -1,6 +1,7 @@
 /* blah_engine.c - defines main engine framework */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "blah_engine.h"
 #include "blah_video.h"
@@ -16,37 +17,33 @@ static Blah_Debug_Log blah_engine_log = { .filePointer = NULL };
 
 /* Function Declarations */
 
-void blah_engine_exit()
+// Deallocate everything left over from runtime
+static void blah_engine_exit()
 {
-	fprintf(stderr, "exiting draw\n");
 	blah_draw_exit();	//Shutdown drawing component
 	Blah_Debug_Log_message(&blah_engine_log, "Call to draw exit successful");
-	fprintf(stderr, "exiting video\n");
 	blah_video_exit();
 	Blah_Debug_Log_message(&blah_engine_log, "Call to video exit successful");
-	fprintf(stderr, "exiting input\n");
 	blah_input_exit();  //shutdown the input component
 	Blah_Debug_Log_message(&blah_engine_log, "Call to input exit successful");
 	/* Do garbage collection */
-	fprintf(stderr, "garbage collection\n");
-	fprintf(stderr, "collecting entities\n");
+	Blah_Debug_Log_message(&blah_engine_log, "Running garbage collection ...");
 	blah_entity_destroyAll();  //destroy all entities and free memory
-	fprintf(stderr, "collecting fonts\n");
+	Blah_Debug_Log_message(&blah_engine_log, "Released all entities");
 	blah_font_destroyAll(); //Destroy all remaining fonts in memory
-	// fprintf(stderr,"collecting images\n");
+	Blah_Debug_Log_message(&blah_engine_log, "Released all fonts");
 	// blah_image_destroyAll(); //destroy all remaining images
-	fprintf(stderr, "collecting models\n");
 	blah_model_destroyAll(); //destroy all models in memory
-	fprintf(stderr, "collecting textures\n");
+	Blah_Debug_Log_message(&blah_engine_log, "Released all models");
 	blah_texture_destroyAll(); //Garbage collection on textures
+	Blah_Debug_Log_message(&blah_engine_log, "Released all textures");
 	Blah_Debug_Log_message(&blah_engine_log, "End of engine exit");
-	fprintf(stderr, "collecting logs\n");
 	blah_debug_log_destroyAll();	//Destroy all debugging logs
 }
 
 bool blah_engine_init()
 {
-    // initialises all engine components
+    // initialises all engine components and register blah_engine_exit() to execute on program exit via atexit()
     blah_signal_init(); // Install signal handlers
 	Blah_Debug_Log_init(&blah_engine_log, "blah_engine");
 
@@ -74,6 +71,7 @@ bool blah_engine_init()
 	}
 	Blah_Debug_Log_message(&blah_engine_log, "Input init successful");
 
+	atexit(blah_engine_exit);
 	return true;
 }
 

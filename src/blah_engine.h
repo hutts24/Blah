@@ -10,7 +10,7 @@
 
 #include "blah_types.h"
 
-void blah_engine_exit();
+// void blah_engine_exit(); // No longer public, because it is called atexit()
 	//Quit the engine.
 
 bool blah_engine_init();

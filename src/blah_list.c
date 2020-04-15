@@ -130,19 +130,19 @@ void Blah_List_removeAll(Blah_List *list) {
 	list->length=0;
 }
 
+// clears all memory allocated for elements and data but does not destroy basic list header
 void Blah_List_destroyElements(Blah_List *list) {
-	//clears all memory allocated for elements and data but does not destroy basic list header
-	Blah_List_Element *tempElement = list->first, *destElement;
+	Blah_List_Element *tempElement = list->first;
 	blah_list_element_dest_func* destFunc = list->destroyElementFunction ? list->destroyElementFunction : free;
 	//If there is a valid destory function, we will use it, else we will just use free()
 
 	while (tempElement != NULL) {
-		destElement = tempElement;  //remember current pointer
+		Blah_List_Element *destElement = tempElement;  //remember current pointer
 		tempElement = tempElement->next;  //prepare for next element
 		destFunc(destElement->data); //Call destroy function to free/destroy data
 		free(destElement);	//free current element
 	}
-	list->first=list->last = NULL;  //clear list to empty
+	list->first = list->last = NULL;  //clear list to empty
 	list->length = 0;
 }
 
