@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "blah_image_targa.h"
+#include "blah_error.h"
 
 /* Private Function Prototypes */
 
@@ -40,61 +41,64 @@ void Blah_Image_Targa_print_info(Blah_Image_Targa_Header *header)
 	fprintf(stderr,"targa image descriptor:%d\n",header->imageDescriptor);
 }
 
-Blah_Image *Blah_Image_Targa_fromFile(const char *filename, FILE *fileStream)
-{
-    // TODO
-    // Creates a new Image structure.  Memory is allocated etc
-	Blah_Image *newImage = NULL; //Pointer for new Image structure
+static bool Blah_Image_Targa_load(Blah_Image* image, const char* imageName, FILE* const fileStream) {
+	char tempHeader[18]; //Temporary storage to read header from file
 
+	if (fread(tempHeader, 18, 1, fileStream) != 1) {
+		blah_error_raise(errno, "Could not load header for targa image: %s", imageName);
+		return true;
+	}
+
+    Blah_Image_Targa_Header header = {		//Stores targa information
+        .idFieldLength = tempHeader[0],
+        .colourMapType = tempHeader[1],
+        .imageTypeCode = tempHeader[2],
+        .colourMapOrigin = *(short*)(tempHeader+3),
+        .colourMapCount = *(short*)(tempHeader+5),
+        .colourMapEntrySize = tempHeader[7],
+        .imageOriginX = *(short*)(tempHeader+8),
+        .imageOriginY = *(short*)(tempHeader+10),
+        .width = *(short*)(tempHeader+12),
+        .height = *(short*)(tempHeader+14),
+        .pixelSize = tempHeader[16],
+        .imageDescriptor = tempHeader[17],
+    };
+	// Skip Image identification data to colour map
+    if (fseek(fileStream, header.idFieldLength, SEEK_CUR) == -1) {
+        blah_error_raise(errno, "Couldn't seek past identification field in targa image: %s", imageName);
+        return false;
+    }
+
+    switch (header.imageTypeCode) {
+        case BLAH_IMAGE_TARGA_MAPPED :
+            Blah_Image_Targa_loadMapped(image, fileStream, &header, imageName);
+            break;
+        case BLAH_IMAGE_TARGA_RLE_MAPPED :
+            Blah_Image_Targa_loadRLEMapped(image, fileStream, &header, imageName);
+            break;
+        case BLAH_IMAGE_TARGA_RGB :
+            Blah_Image_Targa_loadRGB(image, fileStream, &header, imageName);
+            break;
+        case BLAH_IMAGE_TARGA_RLE_RGB :
+            Blah_Image_Targa_loadRLERGB(image, fileStream, &header, imageName);
+            break;
+        default:
+            fprintf(stderr,"Unsupported file type\n");
+            break;
+    }
+	return true;
+}
+
+// Creates a new Image structure from targa file stream.  Memory is allocated etc
+Blah_Image* Blah_Image_Targa_fromFile(const char *filename, FILE *fileStream)
+{
+	Blah_Image *newImage = malloc(sizeof(Blah_Image)); //Pointer for new Image structure
+    if (newImage != NULL) {
+        Blah_Image_Targa_load(newImage, fileName, fileStream);
+    }
 
 	return newImage; //Return pointer whether it be null or valid image
 }
-
-/* bool Blah_Image_Targa_load(Blah_Image* image, const char* filename, FILE* const fileStream) {
-	Blah_Image_Targa_Header header;		//Stores targa information
-	char tempHeader[18];	//Temporary storage to read header from file
-
-	if (fread(tempHeader, 18, 1, fileStream) != 1)
-		fprintf(stderr,"image_load_targa: Could not load image header\n");
-	else { //Construct targa header structure
-		header.idFieldLength = tempHeader[0];
-		header.colourMapType = tempHeader[1];
-		header.imageTypeCode = tempHeader[2];
-		header.colourMapOrigin = *(short*)(tempHeader+3);
-		header.colourMapCount = *(short*)(tempHeader+5);
-		header.colourMapEntrySize = tempHeader[7];
-		header.imageOriginX = *(short*)(tempHeader+8);
-		header.imageOriginY = *(short*)(tempHeader+10);
-		header.width = *(short*)(tempHeader+12);
-		header.height = *(short*)(tempHeader+14);
-		header.pixelSize = tempHeader[16];
-		header.imageDescriptor = tempHeader[17];
-
-		//Skip Image identification data to colour map
-		if (fseek(fileStream, header.idFieldLength, SEEK_CUR)==-1) //if error
-			fprintf(stderr, "Couldn't seek past identification field");
-		else {
-			switch (header.imageTypeCode) {
-				case BLAH_IMAGE_TARGA_MAPPED :
-					Blah_Image_Targa_loadMapped(image, fileStream, &header, filename);
-					break;
-				case BLAH_IMAGE_TARGA_RLE_MAPPED :
-					Blah_Image_Targa_loadRLEMapped(image, fileStream, &header, filename);
-					break;
-				case BLAH_IMAGE_TARGA_RGB :
-					Blah_Image_Targa_loadRGB(image, fileStream, &header, filename);
-					break;
-				case BLAH_IMAGE_TARGA_RLE_RGB :
-					Blah_Image_Targa_loadRLERGB(image, fileStream, &header, filename);
-					break;
-				default:
-					fprintf(stderr,"Unsupported file type\n");
-					break;
-			}
-		}
-	}
-	return true;
-} */
 
 static void *Blah_Image_Targa_loadMapped(FILE *fileStream, Blah_Image_Targa_Header *header, char *imageName)
 {	//Subfunction to deal with uncompressed colour mapped targas

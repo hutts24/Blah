@@ -87,14 +87,14 @@ Blah_Image* Blah_Image_fromImage(const Blah_Image *source, const char *name, int
 	return copyImage;
 }
 
+// Initialisaes given image structure with given name, pixel depth, width, height and pixel format
+// Allocates a new raster buffer within.  Raster content is undefined.
+// Function returns true if there were no errrors encountered
 bool Blah_Image_init(Blah_Image *image, const char *name, unsigned char pixelDepth, unsigned int width, unsigned int height, blah_pixel_format pixFormat) {
-	// Initialisaes given image structure with given name, pixel depth, width, height and pixel format
-	// Returns pointer to new image structure with allocated raster buffer within.
-	// Function returns true if there were no errrors encountered
 	bool result = false;
 	void *pixelData = (void*)malloc(width * height * (pixelDepth >> 3)); //Attempt to allocate memory for pixel data
 
-	if (pixelData) { //Continue only if memory allocation succeeded
+	if (pixelData !=NULL) { //Continue only if memory allocation succeeded
 		blah_util_strncpy(image->name, name, BLAH_IMAGE_NAME_LENGTH);
 		image->pixelDepth = pixelDepth;
 		image->width = width;
@@ -107,26 +107,26 @@ bool Blah_Image_init(Blah_Image *image, const char *name, unsigned char pixelDep
 	return result;
 }
 
+// Creates a new Image structure from file given by 'filename'.
 Blah_Image* Blah_Image_fromFile(const char* filename) {
-	//Creates a new Image structure from file given by 'filename'.
 	FILE* fileStream = blah_file_open(filename, "rb");
 	if (fileStream == NULL) {
 	    // If failed to open file, exit with error
 	    blah_error_raise(errno, "Blah_Image_fromFile() failed to open filename '%s'", filename);
+	    return NULL;
     }
 	Blah_Image* const newImage = Blah_Image_Targa_fromFile(filename, fileStream);
 	fclose(fileStream);
 	return newImage;
 }
 
+// Construct a new image with given name, pixel depth, width, height and pixel format
+// Adds new image structure to tree.  Raster content is undefined.
+// Returns pointer to new image structure with allocated raster buffer within or NULL pointer if an error occurred
 Blah_Image* Blah_Image_new(const char* name, unsigned char pixelDepth, unsigned int width, unsigned int height, blah_pixel_format pixFormat)
 {
-    // Construct a new image with given name, pixel depth, width, height and pixel format
-	// Adds new image structure to tree.
-	// Returns pointer to new image structure with allocated raster buffer within or NULL pointer if an error occurred
 	Blah_Image* newImage = (Blah_Image*)malloc(sizeof(Blah_Image));
-
-	if (newImage) //Continue only if image structure was allocated successfully
+	if (newImage != NULL) //Continue only if image structure was allocated successfully
 	{
 		if (!Blah_Image_init(newImage, name, pixelDepth, width, height, pixFormat)) {
 			//If initialisation of image structure failed, bail out and free allocated memory

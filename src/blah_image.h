@@ -25,13 +25,13 @@ typedef enum Blah_Pixel_Format blah_pixel_format;
 
 /* Data Structures */
 
-typedef struct Blah_Image { //Represents a raw data image in raster pattern
+typedef struct Blah_Image {// Represents a raw data image in raster pattern
 	char name[BLAH_IMAGE_NAME_LENGTH+1];
-	unsigned char pixelDepth; //Colour depth of pixels in bits per pixel
-	unsigned int width;		//width of image
-	unsigned int height;	//height of image (size is width * height * pixel depth
-	blah_pixel_format pixelFormat; //Format the pixel data is stored in
-	void *pixelData;		//pointer to buffer of raster data
+	unsigned char pixelDepth;// Colour depth of pixels in bits per pixel
+	unsigned int width; // width of image
+	unsigned int height; // height of image (size is width * height * pixel depth
+	blah_pixel_format pixelFormat; // Format the pixel data is stored in
+	void *pixelData; // pointer to buffer of raster data
 } Blah_Image;
 
 /* Function Prototypes */
