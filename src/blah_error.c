@@ -8,11 +8,13 @@
 
 #include "blah_error.h"
 
+#undef _blah_error_raise // Undo the hacky macro shadowing the real function so it can be defined below
+
 /* External functions used internally */
 extern void blah_console_errorVA(int errorCode, const char* messageFormat, va_list varArgs);
 
 // This function should be called when an error is detected and it will respond to the error with appropriate action.
-noreturn void blah_error_raise(int errorCode, const char* messageFormat, ...)
+noreturn void _blah_error_raise(int errorCode, const char* messageFormat, ...)
 {
     // Display the error on the console
     va_list varArgs;
