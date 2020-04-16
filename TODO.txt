@@ -1,5 +1,9 @@
 TODO LIST for Blah.
 
+- Use static temporary arrays and other objects where possible instead of dynamically allocating them.
+
+- Add new malloc function to do runtime checking for memory allocation failure and exit with error.
+
 - Update from SDL1 to SDL2.
 
 - Use timespec and timespec_get() for time functions.  Currently the old time_t and time() are used.

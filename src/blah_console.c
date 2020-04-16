@@ -8,6 +8,7 @@
 #include "blah_console.h"
 #include "blah_file.h"
 #include "blah_message.h"
+#include "blah_error.h"
 
 /* External Declarations of functions for internal use */
 extern void blah_message_writeToFileVA(FILE* file, const char* messageFormat, va_list varArgs);
@@ -15,7 +16,7 @@ extern void blah_message_writeErrorToFileVA(FILE* file, int errorCode, const cha
 
 /* Private Functions */
 
-void blah_console_errorVA(int errorCode, const char* messageFormat, va_list varArgs)
+void blah_console_errorVA(blah_error errorCode, const char* messageFormat, va_list varArgs)
 {
     blah_message_writeErrorToFileVA(stderr, errorCode, messageFormat, varArgs);
 }
@@ -42,7 +43,7 @@ void blah_console_message(const char* messageFormat, ...)
 }
 
 // Write formatted output to standard error.  Works like printf.  Does not flush stream.
-void blah_console_error(int errorCode, const char* messageFormat, ...)
+void blah_console_error(blah_error errorCode, const char* messageFormat, ...)
 {
     va_list varArgs;
     va_start(varArgs, messageFormat);

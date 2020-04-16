@@ -31,7 +31,7 @@ bool blah_file_readX86(FILE* fileStream, void* dest, int byteLength);
 bool blah_file_readX86(FILE* fileStream, void* dest, int byteLength)
 {	// Reads a binary number of size 'byteLength' bytes into 'dest'
 	// and reverses it for x86 compatible registers.  Returns true on success, false error.
-	if (fread(dest, byteLength, 1, fileStream)) { //Read binary value from file
+	if (fread(dest, byteLength, 1, fileStream) > 0) { //Read binary value from file
 		blah_util_byteSwap(dest, byteLength);  //Put into Intel compatible format
 		return true;
 	} else {

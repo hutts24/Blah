@@ -97,6 +97,21 @@ bool Blah_Debug_Log_message(Blah_Debug_Log* log, const char* messageFormat, ...)
     return true;
 }
 
+bool Blah_Debug_Log_error(Blah_Debug_Log* log, blah_error errorCode, const char* messageFormat, ...)
+{
+	if (log->filePointer == NULL) { // If invalid file pointer, return false immediately
+        fprintf(stderr, "Failed to write to log: %s - FILE NOT OPEN\n", log->name);
+		return false;
+    }
+
+    // Try to write message to file using the variable args and then release them
+    va_list varArgs;
+    va_start(varArgs, messageFormat);
+    blah_message_writeErrorToFileVA(log->filePointer, errorCode, messageFormat, varArgs);
+    va_end(varArgs);
+    return true;
+}
+
 // Creates a new debugging log with given name
 Blah_Debug_Log *Blah_Debug_Log_new(const char *logName)
 {

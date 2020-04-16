@@ -77,9 +77,9 @@ bool blah_engine_init()
 
 void blah_engine_main()
 {	//main loop
-	blah_input_main();  //Call main input processing
-	blah_entity_main();  //Call main entity processing
-	blah_video_main();	//Call main drawing routine to draw to display
+	blah_input_main(); // Call main input processing
+	blah_entity_main(); // Call main entity processing
+	blah_video_main(); // Call main drawing routine to draw to display
 }
 
 

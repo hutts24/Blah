@@ -98,18 +98,12 @@ bool blah_video_init() {
 	return false;
 }
 
-void blah_video_main() { //Handles video buffer swapping and drawing
-
-	blah_video_clearBuffer(); //Clear the video to begin new frame
-
-	blah_draw_main();	//Call the main drawing routine to set perspective and draw
-						//all objects and entities with automated drawing.
-	blah_video_updateBuffer(); //Update all the changes from the drawing buffer to
-								//video memory for new frame
-
-	if (blah_video_currentMode->doubleBuffered)
-		blah_video_swapBuffers(); //If double buffering enabled, swap buffers
-
+void blah_video_main() { // Handles video buffer swapping and drawing
+    blah_video_clearBuffer(); // Clear the video to begin new frame
+	blah_draw_main();	// Call the main drawing routine to set perspective and draw
+						// all objects and entities with automated drawing.
+	blah_video_updateBuffer(); //Update all the changes from the drawing buffer to video memory for new frame
+	if (blah_video_currentMode->doubleBuffered) { blah_video_swapBuffers(); } // If double buffering enabled, swap buffers
 }
 
 void blah_video_exit() { //Exit video engine component

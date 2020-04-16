@@ -81,12 +81,13 @@ static void Blah_Entity_checkCollision(Blah_Entity *entity)
 	Blah_List_Element* currentElement = blah_entity_list.first;
 
 	while (currentElement) {
-        Blah_Point impact;
         Blah_Entity* currentEntity = (Blah_Entity*)currentElement->data;
-        if (currentEntity == entity) { continue; } // Don't check collision with itself!
-		blah_entity_collision_func* colFunc = currentEntity->collisionFunction;
-		if (colFunc != NULL && currentEntity->activeCollision && Blah_Entity_checkCollisionEntity(entity, currentEntity, &impact)) {
-            colFunc(currentEntity, entity); // call collision handler for recipient object
+        if (currentEntity != entity) { // Don't check collision with itself!
+            blah_entity_collision_func* colFunc = currentEntity->collisionFunction;
+            Blah_Point impact;
+            if (colFunc != NULL && currentEntity->activeCollision && Blah_Entity_checkCollisionEntity(entity, currentEntity, &impact)) {
+                colFunc(currentEntity, entity); // call collision handler for recipient object
+            }
         }
 		currentElement = currentElement->next;
 	}
@@ -200,7 +201,7 @@ void Blah_Entity_init(Blah_Entity *newEntity, char *name, int type, size_t dataS
 		newEntity->entityData = NULL;	//Assign Entity data pointer
 
 	//fprintf(stderr,"Init new entity struct");
-	blah_util_strncpy(newEntity->name,name,BLAH_ENTITY_NAME_LENGTH); //copy name
+	blah_util_strncpy(newEntity->name, name, BLAH_ENTITY_NAME_LENGTH); //copy name
 	newEntity->type = type;	//Set new entity type
 	Blah_List_init(&newEntity->objects, "Objects");
 	Blah_List_init(&newEntity->events,"Events");
@@ -241,27 +242,15 @@ void Blah_Entity_process(Blah_Entity *entity)
 	Blah_Entity_Event *temp_event;
 	bool cont = true;
 
-	/* fprintf(stderr,"Blah_Entity_process()\n");
-
-	fprintf(stderr,"Blah_Entity_process - processing entity:%s\n",entity->name);
-	fflush(stderr); */
-
-	if (entity->moveFunction) {
-		entity->moveFunction(entity);	// If a movement control function is defined, call it
-		//fprintf(stderr, "Blah_Entity_process: called move function\n");
-		fflush(stderr);
-	}
+	
+	if (entity->moveFunction != NULL) { entity->moveFunction(entity); } // If a movement control function is defined, call it
 	Blah_Entity_animate(entity);	// Animate the entity
 	if (entity->activeCollision) { Blah_Entity_checkCollision(entity); } //If entity is actively colliding, check collisions
-
-	temp_event = (Blah_Entity_Event*)Blah_List_popElement(&entity->events);
+    temp_event = (Blah_Entity_Event*)Blah_List_popElement(&entity->events);
 	while (temp_event && cont) {//Take care of all pending events
-		//fprintf(stderr,"calling event function\n");
 		cont = Blah_Entity_processEvent(entity,temp_event); //process next event_data
-		//fprintf(stderr,"result is:%d",cont);
 		if (cont) { temp_event = Blah_List_popElement(&entity->events); } // If it is ok to keep processing events, get the next one
 	}
-	//fprintf(stderr,"Finished processing entity\n");
 }
 
 void Blah_Entity_rotateEuler(Blah_Entity *entity, float x, float y, float z)

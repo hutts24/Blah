@@ -8,6 +8,7 @@
 #include <stdio.h>
 
 #include "blah_types.h"
+#include "blah_error.h"
 
 /* Constant Definitions */
 
@@ -51,6 +52,10 @@ void Blah_Debug_Log_init(Blah_Debug_Log* log, const char* log_name);
 // Append the given string to the specified log, followed by a new line character.
 // Returns TRUE if success.  Uses printf style variable arguments.
 bool Blah_Debug_Log_message(Blah_Debug_Log* log, const char* messageFormat, ...);
+
+// Append the given error string to the specified log, followed by a new line character.
+// Returns TRUE if success.  Uses printf style variable arguments.
+bool Blah_Debug_Log_error(Blah_Debug_Log* log, blah_error errorCode, const char* messageFormat, ...);
 
 Blah_Debug_Log *Blah_Debug_Log_new(const char* log_name);
 	// Creates a new debugging log with given name and attached file

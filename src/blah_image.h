@@ -61,23 +61,26 @@ void blah_image_destroyAll();
 void Blah_Image_disable(Blah_Image *image);
 	// Remove image from internal image list, and release raster data buffer
 
+// Attempts to find an existing image in the image tree given the name of the image.
+// Image names are used as keys in the tree structure.  Returns a pointer to the
+// image with given name if successful match is found, else NULL.
 Blah_Image* blah_image_find(const char* name);
-	// Attempts to find an existing image in the image tree given the name of the image.
-	// Image names are used as keys in the tree structure.  Returns a pointer to the
-	// image with given name if successful match is found, else NULL.
 
+// Makes a new image by copying data from existing image.  Supplied coordinate
+// values define area which is copied.
 Blah_Image* Blah_Image_fromImage(const Blah_Image* source, const char* name, int left, int right, int bottom, int top);
-	// Makes a new image by copying data from existing image.  Supplied coordinate
-	// values define area which is copied.
 
-bool Blah_Image_init(Blah_Image* image, const char* name, unsigned char pixelDepth,
-    unsigned int width, unsigned int height, blah_pixel_format pixFormat);
-	// Initialises given image structure with given name, pixel depth, width, height and pixel format
-	// Returns pointer to new image structure with allocated raster buffer within.
-	// Function returns true if there were no errrors encountered
 
+// MADE PRIVATE.  Obsolete since the load functions.  bool
+// Blah_Image_init(Blah_Image* image, const char* name, unsigned char pixelDepth, unsigned int width, unsigned int height, blah_pixel_format pixFormat);
+// Initialises given image structure with given name, pixel depth, width, height and pixel format
+// Returns pointer to new image structure with allocated raster buffer within.
+// Function returns true if there were no errrors encountered
+
+
+// Creates a new Image structure from a file given by 'filename'.  Memory is allocated etc
 Blah_Image* Blah_Image_fromFile(const char* filename);
-	// Creates a new Image structure from a file given by 'filename'.  Memory is allocated etc
+
 
 Blah_Image *Blah_Image_new(const char *name, unsigned char pixelDepth, unsigned int width, unsigned int height, blah_pixel_format pixFormat);
 	// Construct a new image with given name, pixel depth, width, height and pixelf format

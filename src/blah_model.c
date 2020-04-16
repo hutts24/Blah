@@ -5,12 +5,14 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
+
 #include "blah_model.h"
 #include "blah_model_lightwave.h"
 #include "blah_point.h"
 #include "blah_tree.h"
 #include "blah_util.h"
 #include "blah_file.h"
+#include "blah_error.h"
 
 /* External Function Prototypes */
 
@@ -58,11 +60,13 @@ void Blah_Model_disable(Blah_Model *model) {
 }
 
 
-Blah_Model *Blah_Model_load(char *filename) {
-	FILE *fileStream = blah_file_open(filename, "rb");
-	Blah_Model *newModel;
-	if (!fileStream) return NULL;
-	newModel = Blah_Model_Lightwave_load(filename, fileStream);
+Blah_Model* Blah_Model_load(char* filename) {
+	FILE* fileStream = blah_file_open(filename, "rb");
+	if (!fileStream) {
+        blah_error_raise(errno, "Failed to open model file '%s'", filename);
+        return NULL;
+    }
+	Blah_Model* newModel = Blah_Model_Lightwave_load(filename, fileStream);
 	fclose(fileStream);
 	return newModel;
 }

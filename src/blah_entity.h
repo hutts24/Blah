@@ -21,7 +21,7 @@
 
 
 /* Definitions */
-#define BLAH_ENTITY_NAME_LENGTH 10 //Does not include terminating NULL character
+#define BLAH_ENTITY_NAME_LENGTH 20 //Does not include terminating NULL character
 #define BLAH_ENTITY_EVENT_NAME_LENGTH 10 //Does not include terminating NULL character
 #define BLAH_ENTITY_TYPE_LENGTH 10 //Does not include terminating NULL character
 
@@ -81,7 +81,7 @@ typedef struct Blah_Entity {
 	//void *collision_function_data;
 	blah_entity_destroy_func* destroyFunction;
 	//void *destroy_function_data;
-	char name[BLAH_ENTITY_NAME_LENGTH+1];
+	char name[BLAH_ENTITY_NAME_LENGTH + 1];
 	int type;					//The entity type
 	Blah_Quaternion orientation;		//Entity orientation (rotation only)
 	void *entityData;			//Entity specific information

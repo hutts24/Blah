@@ -9,23 +9,17 @@
 #include "blah_image_targa.h"
 #include "blah_error.h"
 
+#define BLAH_IMAGE_TARGA_HEADER_LENGTH 18
+
+/* Extern function declarations */
+extern bool Blah_Image_init(Blah_Image *image, const char *name, unsigned char pixelDepth, unsigned int width, unsigned int height, blah_pixel_format pixFormat);
+
 /* Private Function Prototypes */
 
-static void* Blah_Image_Targa_loadMapped(FILE *fileStream,  Blah_Image_Targa_Header *header,  char *imageName);
-	//Subfunction to deal with uncompressed colour mapped targas
 
-static void* Blah_Image_Targa_loadRLEMapped(FILE *fileStream,  Blah_Image_Targa_Header *header,  char *imageName);
-	//Subfunction to deal with run length encoded colour mapped targas
+/* Static Function Definitions */
 
-static void* Blah_Image_Targa_loadRGB(FILE *fileStream,  Blah_Image_Targa_Header *header,  char *imageName);
-	//Subfunction to deal with raw RGB targas
-
-static void* Blah_Image_Targa_loadRLERGB(FILE *fileStream,  Blah_Image_Targa_Header *header,  char *imageName);
-	//Subfunction to deal with run length encoded RGB targas
-
-/* Function Declarations */
-
-void Blah_Image_Targa_print_info(Blah_Image_Targa_Header *header)
+/* static void Blah_Image_Targa_print_info(Blah_Image_Targa_Header *header)
 {	//Prints info to the screen about targa, extracted from header information
 	fprintf(stderr,"targa id field length:%d\n",header->idFieldLength);
 	fprintf(stderr,"targa colour map type:%d\n",header->colourMapType);
@@ -39,30 +33,217 @@ void Blah_Image_Targa_print_info(Blah_Image_Targa_Header *header)
 	fprintf(stderr,"targa image height:%d\n",header->height);
 	fprintf(stderr,"targa image pixel size:%d\n",header->pixelSize);
 	fprintf(stderr,"targa image descriptor:%d\n",header->imageDescriptor);
-}
+} */
 
-static bool Blah_Image_Targa_load(Blah_Image* image, const char* imageName, FILE* const fileStream) {
-	char tempHeader[18]; //Temporary storage to read header from file
+// Subfunction to deal with uncompressed colour mapped targas
+// Load targa image from file into raw pixel data in memory
+static bool Blah_Image_Targa_loadMapped(Blah_Image* newImage, FILE *fileStream, const Blah_Image_Targa_Header* header, const char* imageName)
+{
+	unsigned int numPixels = header->width * header->height; //Total number of pixels in image
+	unsigned char mapEntryByteSize = header->colourMapEntrySize >> 3;
+	unsigned char pixelByteSize = header->pixelSize >> 3;
+	unsigned long colourMapSize = mapEntryByteSize * header->colourMapCount;
 
-	if (fread(tempHeader, 18, 1, fileStream) != 1) {
-		blah_error_raise(errno, "Could not load header for targa image: %s", imageName);
-		return true;
+	// Initialise the image structure dimensions etc and with allocated raster data buffer
+	Blah_Image_init(newImage, imageName, header->colourMapEntrySize, header->width,
+		header->height,	mapEntryByteSize == 3 ? BLAH_PIXEL_FORMAT_BGR : BLAH_PIXEL_FORMAT_BGRA);
+
+	void* colourMap = (void*)malloc(colourMapSize); // Allocate Temporary pointer to store colour map data
+	if (fread(colourMap, colourMapSize, 1, fileStream) < 1) { // Read colour map from file into buffer
+        blah_error_raise(errno, "Failed to read colour map from targa image '%s'", imageName);
+        return false;
 	}
 
-    Blah_Image_Targa_Header header = {		//Stores targa information
-        .idFieldLength = tempHeader[0],
-        .colourMapType = tempHeader[1],
-        .imageTypeCode = tempHeader[2],
-        .colourMapOrigin = *(short*)(tempHeader+3),
-        .colourMapCount = *(short*)(tempHeader+5),
-        .colourMapEntrySize = tempHeader[7],
-        .imageOriginX = *(short*)(tempHeader+8),
-        .imageOriginY = *(short*)(tempHeader+10),
-        .width = *(short*)(tempHeader+12),
-        .height = *(short*)(tempHeader+14),
-        .pixelSize = tempHeader[16],
-        .imageDescriptor = tempHeader[17],
-    };
+	char test[numPixels];
+
+	//Allocate index buffer
+	void* indexBuffer = (void*)malloc(numPixels * pixelByteSize); // Temporary pointer to store pixel indices
+	if (fread(indexBuffer, pixelByteSize, numPixels, fileStream) < numPixels) { // Read pixel map indexes into buffer
+        blah_error_raise(errno, "Failed to read pixel indices from targa image '%s'", imageName);
+        return false;
+	}
+	// Construct raw image from colour map indices
+
+	void* tempIndexPointer = indexBuffer; 	//Navigates pixel index buffer
+	void* tempRasterPointer = newImage->pixelData; // Navigates constructed raster buffer
+	//temp_raster pointer will be used to navigate raster buffer
+	for (unsigned int pixelCounter = 0 ; pixelCounter < numPixels ; pixelCounter++) {
+		unsigned int tempIndex = 0;
+		//Get next palette index from pixel index buffer and store in temp_index
+		memcpy(&tempIndex, tempIndexPointer, pixelByteSize);
+		//fprintf(stderr,"Pixel index:%d\n",temp_index);
+		tempIndexPointer += pixelByteSize;  //Advance pointer to next index
+		memcpy(tempRasterPointer, colourMap + ((tempIndex + header->colourMapOrigin) * mapEntryByteSize), mapEntryByteSize);
+		//Copy colour map entry data for pixel into raster data
+		tempRasterPointer += mapEntryByteSize; //Advance raster data pointer
+	}
+
+	free(colourMap);	//temporary colour map no longer needed
+	free(indexBuffer);	//free index buffer
+
+	return true;	//Return complete raw image data
+}
+
+// Subfunction to deal with run length encoded colour mapped targas
+static bool Blah_Image_Targa_loadRLEMapped(Blah_Image* newImage, FILE *fileStream, const Blah_Image_Targa_Header* header, const char* imageName)
+{
+	const size_t numPixels = header->width * header->height; // Total number of pixels in image
+	const uint8_t mapEntryByteSize = header->colourMapEntrySize >> 3;
+	const uint8_t pixelByteSize = header->pixelSize >> 3;
+	const unsigned long colourMapSize = mapEntryByteSize * header->colourMapCount;
+
+	// Initiase new image structure with dimensions and allocate pixel data buffer
+	Blah_Image_init(newImage, imageName, header->colourMapEntrySize, header->width,
+		header->height,	mapEntryByteSize == 3 ? BLAH_PIXEL_FORMAT_BGR : BLAH_PIXEL_FORMAT_BGRA);
+
+	void* colourMap = (void*)malloc(colourMapSize); // Allocate temp storage for colour map
+	if (fread(colourMap, colourMapSize, 1, fileStream) < 1) { // Read colour map from file into buffer
+        blah_error_raise(errno, "Failed dot read colour map from targa image '%s'", imageName);
+        return false;
+	}
+
+   	// Construct raw image from colour map indices
+	void* indexBuffer = (void*)malloc(128 * pixelByteSize); // Allocate index buffer for largest possible run of indices
+	void* tempRasterPointer = newImage->pixelData; // temp_raster pointer will be used to navigate raster buffer
+	long remainingPixels = numPixels; // counts down constructed pixels till complete (0) left
+	while (remainingPixels > 0) {
+		uint8_t pixelPacket;
+		fread(&pixelPacket, 1, 1, fileStream); //get next packet byte from file
+		uint8_t runLength = (pixelPacket & 127) +1 ; //Get run length from 7 other bits
+		remainingPixels -= runLength; //update total remaining pixels
+		if (pixelPacket & 128) { //test if high bit (7) is set.  If so, run follows
+            // Process run
+			unsigned int tempIndex = 0;
+			fread(&tempIndex, pixelByteSize, 1, fileStream);
+			// Read repeated pixel index from file following run length packet
+			void* tempColourMapPointer = colourMap + ((tempIndex + header->colourMapOrigin) * mapEntryByteSize);
+			while (runLength > 0) {
+				memcpy(tempRasterPointer, tempColourMapPointer, mapEntryByteSize);
+				//Copy colour map entry data for pixel into raster data
+				tempRasterPointer += mapEntryByteSize;
+				runLength--;
+			}
+		} else { // Read run of raw indices
+			fread(indexBuffer, pixelByteSize, runLength, fileStream);
+			void* tempIndexPointer = indexBuffer; //Set temp index pointer to start of buffer
+			while (runLength > 0) {
+				unsigned int tempIndex = 0;
+				// Get next palette index from pixel index buffer and store in temp_index
+				memcpy(&tempIndex, tempIndexPointer, pixelByteSize);
+				tempIndexPointer+=pixelByteSize;  //Advance pointer to next index
+				memcpy(tempRasterPointer, colourMap + ((tempIndex + header->colourMapOrigin) * mapEntryByteSize), mapEntryByteSize);
+				// Copy colour map entry data for pixel into raster data
+				tempRasterPointer+=mapEntryByteSize; // Advance raster data pointer
+				runLength--;
+			}
+		}
+	}
+
+	free(colourMap);	//temporary colour map no longer needed
+	free(indexBuffer);	//free index buffer
+
+	return true;	//Return complete raw image data
+}
+
+// Subfunction to deal with uncompressed raw RGB targas
+static bool Blah_Image_Targa_loadRGB(Blah_Image *newImage, FILE *fileStream, const Blah_Image_Targa_Header* header, const char* imageName)
+{
+	const size_t numPixels = header->width * header->height; //Total number of pixels in image
+	const uint8_t mapEntryByteSize = header->colourMapType ? header->colourMapEntrySize >> 3 : 0;
+	const uint8_t pixelByteSize = header->pixelSize >> 3;
+	const unsigned long colourMapSize = mapEntryByteSize * header->colourMapCount;
+
+	// Initiase new image structure with dimensions and allocate pixel data buffer
+	Blah_Image_init(newImage, imageName, header->pixelSize, header->width,
+		header->height, pixelByteSize==3 ? BLAH_PIXEL_FORMAT_BGR : BLAH_PIXEL_FORMAT_BGRA);
+
+	if (fseek(fileStream, colourMapSize, SEEK_CUR) != 0) { // Skip colour map in file if there is one defined
+        blah_error_raise(errno, "Failed to seek past colour map in targa image '%s'", imageName);
+        return false;
+	}
+
+	if (fread(newImage->pixelData, pixelByteSize, numPixels, fileStream) < numPixels) { // Construct raw image directly from file
+        blah_error_raise(errno, "Failed to read RGB pixel data from targa image '%s'", imageName);
+    }
+
+	return true;	//Return complete raw image data
+}
+
+// Subfunction to deal with run length encoded RGB targas
+static bool Blah_Image_Targa_loadRLERGB(Blah_Image* newImage, FILE *fileStream, const Blah_Image_Targa_Header* header, const char* imageName)
+{
+	const size_t numPixels = header->width * header->height; // Total number of pixels in image
+	const uint8_t mapEntryByteSize = header->colourMapType ? header->colourMapEntrySize >> 3 : 0;
+	const uint8_t pixelByteSize = header->pixelSize >> 3;
+	const unsigned long colourMapSize = mapEntryByteSize * header->colourMapCount;
+
+	// Initiase new image structure with dimensions and allocate pixel data buffer
+	Blah_Image_init(newImage, imageName, header->pixelSize, header->width,
+		header->height, pixelByteSize==3 ? BLAH_PIXEL_FORMAT_BGR : BLAH_PIXEL_FORMAT_BGRA);
+
+	if (fseek(fileStream, colourMapSize, SEEK_CUR) != 0) { // Skip colour map in file if there is one defined
+	    blah_error_raise(errno, "Failed to seek past colour map in targa image '%s'", imageName);
+        return false;
+	}
+
+	//Construct raw image directly from file
+	void* tempRasterPointer = newImage->pixelData; // temp_raster pointer will be used to navigate raster buffer
+	long remainingPixels = numPixels; // counts down constructed pixels till complete (0) left
+	while (remainingPixels > 0) {
+        uint8_t pixelPacket;
+		fread(&pixelPacket, 1, 1, fileStream); //get next packet byte from file
+		uint8_t runLength = (pixelPacket & 127) +1 ; //Get run length from 7 other bits
+		remainingPixels -= runLength; //update total remaining pixels
+		if (pixelPacket & 128) { //test if high bit (7) is set.  If so, run follows
+			//Process repeated run
+			unsigned int tempPixel = 0;
+			fread(&tempPixel, pixelByteSize, 1, fileStream);
+			//Read repeated pixel index from file following run length packet
+			while (runLength > 0) {
+				memcpy(tempRasterPointer, &tempPixel, pixelByteSize);
+				//Copy colour map entry data for pixel into raster data
+				tempRasterPointer+=pixelByteSize;
+				runLength--;
+			}
+		} else { //Read run of raw pixels
+			fread(tempRasterPointer, pixelByteSize, runLength, fileStream);
+			tempRasterPointer+=(runLength * pixelByteSize);
+			//Advance raster data pointer
+		}
+	}
+
+	return true;	//Return complete raw image data
+}
+
+// Read 18 bytes packed into the file and unpack into a useful structure
+static bool Blah_Image_Targa_Header_load(Blah_Image_Targa_Header* dest, FILE* fileStream)
+{
+    // Read header from file into temporary storage
+    char headerBytes[BLAH_IMAGE_TARGA_HEADER_LENGTH];
+    if (fread(headerBytes, BLAH_IMAGE_TARGA_HEADER_LENGTH, 1, fileStream) != 1) {
+		blah_error_raise(errno, "Could not load header for targa image");
+		return false;
+	}
+    // Unpack header bytes into useful structure
+    dest->idFieldLength = headerBytes[0];
+    dest->colourMapType = headerBytes[1];
+    dest->imageTypeCode = headerBytes[2];
+    dest->colourMapOrigin = *(uint16_t*)(headerBytes+3);
+    dest->colourMapCount = *(uint16_t*)(headerBytes+5);
+    dest->colourMapEntrySize = headerBytes[7];
+    dest->imageOriginX = *(uint16_t*)(headerBytes+8);
+    dest->imageOriginY = *(uint16_t*)(headerBytes+10);
+    dest->width = *(uint16_t*)(headerBytes+12);
+    dest->height = *(uint16_t*)(headerBytes+14);
+    dest->pixelSize = headerBytes[16];
+    dest->imageDescriptor = headerBytes[17];
+    return true;
+}
+
+static bool Blah_Image_Targa_load(Blah_Image* image, const char* imageName, FILE* fileStream) {
+	Blah_Image_Targa_Header header;
+	Blah_Image_Targa_Header_load(&header, fileStream);
+
 	// Skip Image identification data to colour map
     if (fseek(fileStream, header.idFieldLength, SEEK_CUR) == -1) {
         blah_error_raise(errno, "Couldn't seek past identification field in targa image: %s", imageName);
@@ -90,7 +271,7 @@ static bool Blah_Image_Targa_load(Blah_Image* image, const char* imageName, FILE
 }
 
 // Creates a new Image structure from targa file stream.  Memory is allocated etc
-Blah_Image* Blah_Image_Targa_fromFile(const char *filename, FILE *fileStream)
+Blah_Image* Blah_Image_Targa_fromFile(const char *fileName, FILE *fileStream)
 {
 	Blah_Image *newImage = malloc(sizeof(Blah_Image)); //Pointer for new Image structure
     if (newImage != NULL) {
@@ -98,203 +279,4 @@ Blah_Image* Blah_Image_Targa_fromFile(const char *filename, FILE *fileStream)
     }
 
 	return newImage; //Return pointer whether it be null or valid image
-}
-
-static void *Blah_Image_Targa_loadMapped(FILE *fileStream, Blah_Image_Targa_Header *header, char *imageName)
-{	//Subfunction to deal with uncompressed colour mapped targas
-	Blah_Image *newImage;
-
-	unsigned int numPixels = header->width * header->height; //Total number of pixels in image
-	unsigned char mapEntryByteSize = header->colourMapEntrySize >> 3;
-	unsigned char pixelByteSize = header->pixelSize >> 3;
-	unsigned long colourMapSize = mapEntryByteSize * header->colourMapCount;
-
-	void *colourMap;		//Temporary storage for colour map
-	void *indexBuffer;		//Temporary pointer to store pixel indices
-	void *tempRasterPointer;  //Navigates constructed raster buffer
-	void *tempIndexPointer;	//Navigates pixel index buffer
-
-	unsigned int tempIndex;
-	unsigned int pixelCounter;	//temporary loop control value
-
-	//Create new image structure
-	newImage = Blah_Image_new(imageName, header->colourMapEntrySize, header->width,
-		header->height,	mapEntryByteSize==3 ? BLAH_PIXEL_FORMAT_BGR : BLAH_PIXEL_FORMAT_BGRA);
-	//Allocate temp storage for colour map
-	colourMap = (void*)malloc(colourMapSize); //Temporary pointer to store colour map data
-	//Read colour map from file into buffer
-	fread(colourMap, colourMapSize, 1, fileStream);
-	//Allocate index buffer
-	indexBuffer = (void*)malloc(numPixels * pixelByteSize);
-	//Read pixel map indexes into buffer
-	fread(indexBuffer, pixelByteSize, numPixels, fileStream);
-	//Construct raw image from colour map indices
-
-	tempIndexPointer = indexBuffer;
-	tempRasterPointer = newImage->pixelData;
-	//temp_raster pointer will be used to navigate raster buffer
-	for (pixelCounter = 0 ; pixelCounter < numPixels ; pixelCounter++) {
-		tempIndex = 0;
-		//Get next palette index from pixel index buffer and store in temp_index
-		memcpy(&tempIndex, tempIndexPointer, pixelByteSize);
-		//fprintf(stderr,"Pixel index:%d\n",temp_index);
-		tempIndexPointer+=pixelByteSize;  //Advance pointer to next index
-		memcpy(tempRasterPointer, colourMap + ((tempIndex + header->colourMapOrigin) * mapEntryByteSize), mapEntryByteSize);
-		//Copy colour map entry data for pixel into raster data
-		tempRasterPointer+=mapEntryByteSize; //Advance raster data pointer
-	}
-
-	free(colourMap);	//temporary colour map no longer needed
-	free(indexBuffer);	//free index buffer
-
-	return newImage;	//Return complete raw image data
-}
-
-static void *Blah_Image_Targa_loadRLEMapped(FILE *fileStream, Blah_Image_Targa_Header *header, char *imageName)
-{	//Subfunction to deal with run length encoded colour mapped targas
-	Blah_Image *newImage;
-
-	unsigned int numPixels = header->width * header->height; //Total number of pixels in image
-	unsigned char mapEntryByteSize = header->colourMapEntrySize >> 3;
-	unsigned char pixelByteSize = header->pixelSize >> 3;
-	unsigned long colourMapSize = mapEntryByteSize * header->colourMapCount;
-
-	void *colourMap;		//Temporary storage for colour map
-	void *indexBuffer;		//Temporary pointer to store pixel indices
-	void *tempRasterPointer;  //Navigates constructed raster buffer
-	void *tempIndexPointer;	//Navigates pixel index buffer
-	void *tempColourMapPointer;
-
-	unsigned int tempIndex;
-	long remainingPixels;	//counts down constructed pixels till complete (0) left
-	unsigned char pixelPacket;
-	unsigned char runLength;
-
-	//Create new image structure
-	newImage = Blah_Image_new(imageName, header->colourMapEntrySize, header->width,
-		header->height,	mapEntryByteSize==3 ? BLAH_PIXEL_FORMAT_BGR : BLAH_PIXEL_FORMAT_BGRA);
-
-	//Allocate temp storage for colour map
-	colourMap = (void*)malloc(colourMapSize); //Temporary pointer to store colour map data
-	//Read colour map from file into buffer
-	fread(colourMap, colourMapSize, 1, fileStream);
-	//Allocate index buffer for largest possible run of indices
-	indexBuffer = (void*)malloc(128 * pixelByteSize);
-	//Construct raw image from colour map indices
-
-	tempRasterPointer = newImage->pixelData;
-	//temp_raster pointer will be used to navigate raster buffer
-	remainingPixels = numPixels;
-	while (remainingPixels > 0) {
-		fread(&pixelPacket, 1, 1, fileStream); //get next packet byte from file
-		runLength = (pixelPacket & 127) +1 ; //Get run length from 7 other bits
-		remainingPixels -= runLength; //update total remaining pixels
-		if (pixelPacket & 128) { //test if high bit (7) is set.  If so, run follows
-
-			//Process run
-			tempIndex = 0;
-			fread(&tempIndex, pixelByteSize, 1, fileStream);
-			//Read repeated pixel index from file following run length packet
-			tempColourMapPointer = colourMap + ((tempIndex + header->colourMapOrigin) * mapEntryByteSize);
-			while (runLength > 0) {
-				memcpy(tempRasterPointer, tempColourMapPointer, mapEntryByteSize);
-				//Copy colour map entry data for pixel into raster data
-				tempRasterPointer+=mapEntryByteSize;
-				runLength--;
-			}
-		} else { //Read run of raw indices
-			fread(indexBuffer, pixelByteSize, runLength, fileStream);
-			tempIndexPointer = indexBuffer; //Set temp index pointer to start of buffer
-			while (runLength > 0) {
-				tempIndex = 0;
-				//Get next palette index from pixel index buffer and store in temp_index
-				memcpy(&tempIndex, tempIndexPointer, pixelByteSize);
-				tempIndexPointer+=pixelByteSize;  //Advance pointer to next index
-				memcpy(tempRasterPointer, colourMap + ((tempIndex + header->colourMapOrigin) * mapEntryByteSize), mapEntryByteSize);
-				//Copy colour map entry data for pixel into raster data
-				tempRasterPointer+=mapEntryByteSize; //Advance raster data pointer
-				runLength--;
-			}
-		}
-	}
-
-	free(colourMap);	//temporary colour map no longer needed
-	free(indexBuffer);	//free index buffer
-
-	return newImage;	//Return complete raw image data
-}
-
-static void *Blah_Image_Targa_loadRGB(FILE *fileStream, Blah_Image_Targa_Header *header, char *imageName)
-{	//Subfunction to deal with uncompressed raw RGB targas
-	Blah_Image *newImage;
-
-	unsigned int numPixels = header->width * header->height; //Total number of pixels in image
-	unsigned char mapEntryByteSize = header->colourMapType ? header->colourMapEntrySize >> 3 : 0;
-	unsigned char pixelByteSize = header->pixelSize >> 3;
-	unsigned long colourMapSize = mapEntryByteSize * header->colourMapCount;
-
-	//Create the new image structure
-	newImage = Blah_Image_new(imageName, header->pixelSize, header->width,
-		header->height, pixelByteSize==3 ? BLAH_PIXEL_FORMAT_BGR : BLAH_PIXEL_FORMAT_BGRA);
-
-	//Skip colour map in file if there is one defined
-	fseek(fileStream, colourMapSize, SEEK_CUR);
-
-	//Construct raw image directly from file
-	fread(newImage->pixelData, pixelByteSize, numPixels, fileStream);
-
-	return newImage;	//Return complete raw image data
-}
-
-static void *Blah_Image_Targa_loadRLERGB(FILE *fileStream, Blah_Image_Targa_Header *header, char *imageName)
-{	//Subfunction to deal with run length encoded RGB targas
-	Blah_Image *newImage;
-
-	unsigned int numPixels = header->width * header->height; //Total number of pixels in image
-	unsigned char mapEntryByteSize = header->colourMapType ? header->colourMapEntrySize >> 3 : 0;
-	unsigned char pixelByteSize = header->pixelSize >> 3;
-	unsigned long colourMapSize = mapEntryByteSize * header->colourMapCount;
-
-	void *tempRasterPointer;  //Navigates constructed raster buffer
-
-	unsigned int tempPixel;
-	long remainingPixels;	//counts down constructed pixels till complete (0) left
-	unsigned char pixelPacket;
-	unsigned char runLength;
-
-	//Create the new image structure
-	newImage = Blah_Image_new(imageName, header->pixelSize, header->width,
-		header->height, pixelByteSize==3 ? BLAH_PIXEL_FORMAT_BGR : BLAH_PIXEL_FORMAT_BGRA);
-
-	//Skip colour map in file if there is one defined
-	fseek(fileStream, colourMapSize, SEEK_CUR);
-
-	//Construct raw image directly from file
-	tempRasterPointer = newImage->pixelData;
-
-	//temp_raster pointer will be used to navigate raster buffer
-	remainingPixels = numPixels;
-	while (remainingPixels > 0) {
-		fread(&pixelPacket, 1, 1, fileStream); //get next packet byte from file
-		runLength = (pixelPacket & 127) +1 ; //Get run length from 7 other bits
-		remainingPixels -= runLength; //update total remaining pixels
-		if (pixelPacket & 128) { //test if high bit (7) is set.  If so, run follows
-			//Process repeated run
-			tempPixel = 0;
-			fread(&tempPixel, pixelByteSize, 1, fileStream);
-			//Read repeated pixel index from file following run length packet
-			while (runLength > 0) {
-				memcpy(tempRasterPointer, &tempPixel, pixelByteSize);
-				//Copy colour map entry data for pixel into raster data
-				tempRasterPointer+=pixelByteSize;
-				runLength--;
-			}
-		} else { //Read run of raw pixels
-			fread(tempRasterPointer, pixelByteSize, runLength, fileStream);
-			tempRasterPointer+=(runLength * pixelByteSize);
-			//Advance raster data pointer
-		}
-	}
-
-	return newImage;	//Return complete raw image data
 }

@@ -128,8 +128,8 @@ Blah_Image* Blah_Image_new(const char* name, unsigned char pixelDepth, unsigned 
 	Blah_Image* newImage = (Blah_Image*)malloc(sizeof(Blah_Image));
 	if (newImage != NULL) //Continue only if image structure was allocated successfully
 	{
+		// If initialisation of image structure failed, bail out and free allocated memory
 		if (!Blah_Image_init(newImage, name, pixelDepth, width, height, pixFormat)) {
-			//If initialisation of image structure failed, bail out and free allocated memory
 			free(newImage);
 			newImage = NULL; //Set new image pointer to return NULL to indicate failure
 		} else {
