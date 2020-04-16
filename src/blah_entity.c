@@ -193,19 +193,14 @@ void Blah_Entity_getVelocity(Blah_Entity *entity, Blah_Vector *v)
 	Blah_Vector_set(v,entity->velocity.x,entity->velocity.y,entity->velocity.z);
 }
 
+// Initialises a new plain entity without objects, positioned at origin
 void Blah_Entity_init(Blah_Entity *newEntity, char *name, int type, size_t dataSize)
-{	//Initialises a new plain entity without objects, positioned at origin
-	if (dataSize)  //check if entity data is required
-		newEntity->entityData = malloc(dataSize);
-	else
-		newEntity->entityData = NULL;	//Assign Entity data pointer
-
-	//fprintf(stderr,"Init new entity struct");
-	blah_util_strncpy(newEntity->name, name, BLAH_ENTITY_NAME_LENGTH); //copy name
+{
+	newEntity->entityData = (dataSize > 0) ? malloc(dataSize) : NULL; // Allocate entity data if required
+	blah_util_strncpy(newEntity->name, name, blah_countof(newEntity->name)); //copy name
 	newEntity->type = type;	//Set new entity type
 	Blah_List_init(&newEntity->objects, "Objects");
 	Blah_List_init(&newEntity->events,"Events");
-	//FIXME - change this direct assignment of destroyElementFunction member
 	newEntity->objects.destroyElementFunction = (blah_list_element_dest_func*)Blah_Entity_Object_destroy;
 	newEntity->activeCollision = false;
 
@@ -230,10 +225,9 @@ Blah_Entity *Blah_Entity_new(char *name, int type, size_t dataSize)
 	if (newEntity) {
 		Blah_Entity_init(newEntity, name, type, dataSize);
 		Blah_List_appendElement(&blah_entity_list, newEntity);  //Add to list of entities
-	}
-	else
+	} else {
 		fprintf(stderr,"Blah_Entity_new - Failed to allocate memory for entity\n");  //FIXME - add proper log debugging
-
+	}
 	return newEntity;
 }
 
@@ -242,7 +236,7 @@ void Blah_Entity_process(Blah_Entity *entity)
 	Blah_Entity_Event *temp_event;
 	bool cont = true;
 
-	
+
 	if (entity->moveFunction != NULL) { entity->moveFunction(entity); } // If a movement control function is defined, call it
 	Blah_Entity_animate(entity);	// Animate the entity
 	if (entity->activeCollision) { Blah_Entity_checkCollision(entity); } //If entity is actively colliding, check collisions
@@ -358,14 +352,10 @@ Blah_Entity_Event* Blah_Entity_Event_new(const char* name, const Blah_Entity* se
 	return newEvent;
 }
 
-
-
 static bool Blah_Entity_processEvent(Blah_Entity *entity,  Blah_Entity_Event *event) {
 	//Deals with pending event
 	bool result = false;
-	//fprintf(stderr,"processing event:%s for entity %s\n",event->name, entity->name);
 	if (event->eventFunction) { result = event->eventFunction(entity, event); }
-	//fprintf(stderr,"destroying event\n");
 	Blah_Entity_Event_destroy(event);
 	return result;
 }

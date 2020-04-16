@@ -9,6 +9,7 @@
 #include "blah_file.h"
 #include "blah_types.h"
 #include "blah_util.h"
+#include "blah_macros.h"
 
 /* Private Function Prototypes */
 
@@ -16,7 +17,7 @@ FILE *blah_file_open(const char *filename, const char* mode)
 {	// Simplifies opening files across different platforms.  Calls fopen()
 	// Parameters have same purpose as in fopen()
 	char osFilename[200];
-    blah_util_strncpy(osFilename, filename, sizeof(osFilename));
+    blah_util_strncpy(osFilename, filename, blah_countof(osFilename));
 	blah_util_stringReplaceChar(osFilename, '\\', '/');
 	// change backslashes to forward slashes
 	return fopen(osFilename, mode);

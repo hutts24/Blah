@@ -8,6 +8,7 @@
 #include "blah_debug.h"
 #include "blah_material.h"
 #include "blah_draw.h"
+#include "blah_macros.h"
 
 /* Texture Font Functions */
 
@@ -59,7 +60,7 @@ bool Blah_Font_Texture_init(Blah_Font_Texture *font, const char *fontName, const
         const Blah_Point* tempMapping[] = {&coords[0], &coords[1], &coords[2], &coords[3], NULL};
 
 		unsigned int charCount = 0;
-		while (!error && charCount < sizeof(font->charMaps) / sizeof(Blah_Texture_Map*)) //Loop through all characters in font whilst an error has not been encountered
+		while (!error && charCount < blah_countof(font->charMaps)) //Loop through all characters in font whilst an error has not been encountered
 		{
 			const unsigned int mapIndex = charMap[charCount];
 			Blah_Debug_Log_message(&fontLog, "ascii '%c' mapped to char %d", charCount, mapIndex);

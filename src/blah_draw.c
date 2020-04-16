@@ -143,8 +143,9 @@ bool blah_draw_popDrawport()
 		blah_draw_gl_setDrawport(blah_draw_drawport.left, blah_draw_drawport.bottom,
 			blah_draw_drawport.right, blah_draw_drawport.top);
 		return true;
-	} else
+	} else {
 		return false;
+	}
 }
 
 bool blah_draw_pushDrawport()

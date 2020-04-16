@@ -12,7 +12,7 @@ typedef struct Blah_Matrix { //Vector is a complex array of float values represe
 	Blah_Vector axisX; float scaleX;
 	Blah_Vector axisY; float scaleY;
 	Blah_Vector axisZ; float scaleZ;
-	Blah_Point location; float scale;	//array of 16 floating point values	
+	Blah_Point location; float scale;	//array of 16 floating point values
 } Blah_Matrix;
 
 /* Matrix Function Prototypes */
@@ -30,7 +30,7 @@ void Blah_Matrix_formatQuaternion(Blah_Matrix *matrix, Blah_Quaternion *quat);
 void Blah_Matrix_init(Blah_Matrix *matrix);
 	//Initialises a matrix structure (just sets to identity matrix)
 
-void Blah_Matrix_multiply(Blah_Matrix *matrix1, Blah_Matrix *matrix2);  
+// void Blah_Matrix_multiply(Blah_Matrix *matrix1, Blah_Matrix *matrix2);
 	//multiplies matrix_1 by matrix_2
 
 Blah_Matrix *Blah_Matrix_new();
@@ -38,14 +38,14 @@ Blah_Matrix *Blah_Matrix_new();
 
 void Blah_Matrix_setAxisX(Blah_Matrix *matrix, float x, float y, float z);
 	//Sets the x axis of the matrix to supplied values
-	
+
 void Blah_Matrix_setAxisY(Blah_Matrix *matrix, float x, float y, float z);
 	//Sets the y axis of the matrix to supplied values
-	
+
 void Blah_Matrix_setAxisZ(Blah_Matrix *matrix, float x, float y, float z);
 	//Sets the z axis of the matrix to supplied values
 
-void Blah_Matrix_setIdentity(Blah_Matrix *matrix); 
+void Blah_Matrix_setIdentity(Blah_Matrix *matrix);
 	//sets the given matrix to the identity values
 
 void Blah_Matrix_setRotationQuat(Blah_Matrix *matrix, Blah_Quaternion *quat);

@@ -5,7 +5,7 @@
 
 #include "blah_matrix.h"
 #include "blah_quaternion.h"
-
+#include "blah_macros.h"
 
 /* Function Definitions */
 
@@ -13,7 +13,7 @@
 void Blah_Matrix_formatEuler(Blah_Matrix *matrix, float xAngle, float yAngle, float zAngle) {
 	//Formats the given matrix to be a 4x4 rotation matrix from euler angles x,y and z
 	float cosX, sinX, cosY, sinY, cosZ, sinZ;
-	
+
 	cosX = cos(xAngle); sinX = sin(xAngle);
     cosY = cos(yAngle); sinY = sin(yAngle);
     cosZ = cos(zAngle); sinZ = sin(zAngle);
@@ -28,7 +28,7 @@ void Blah_Matrix_formatEuler(Blah_Matrix *matrix, float xAngle, float yAngle, fl
 void Blah_Matrix_formatQuaternion(Blah_Matrix *matrix, Blah_Quaternion *quat) {
 	//Formats the given matrix to be a 4x4 rotation matrix from a quaternion
 	Blah_Matrix_setRotationQuat(matrix, quat);
-	
+
     Blah_Point_set(&matrix->location, 0, 0, 0);
 	matrix->scaleX = matrix->scaleY = matrix->scaleZ = 0;
 	matrix->scale = 1;
@@ -39,23 +39,26 @@ void Blah_Matrix_init(Blah_Matrix *matrix)
 	Blah_Matrix_setIdentity(matrix);
 }
 
-void Blah_Matrix_multiply(Blah_Matrix *matrix1, Blah_Matrix *matrix2) {  //multiplies matrix_1 by matrix_2
+// FIXME - This function relies upon the matrix structure being packed into memory as an array
+// of 16 floats, which is likely assuming same alignment for both structures, but not guaranteed
+/* void Blah_Matrix_multiply(Blah_Matrix *matrix1, Blah_Matrix *matrix2) {  //multiplies matrix_1 by matrix_2
 	int resultCell, matrix1Cell, matrix2Cell, count;
 	float result[16]={0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
-	
-	for (resultCell=0;resultCell<16;resultCell++) {
+
+	for (resultCell = 0; resultCell < blah_countof(result); resultCell++) {
 		//result[result_cell] = 0;
-		matrix1Cell=resultCell & 3;	//result_cell mod 4
-		matrix2Cell=resultCell & 252; //result_cell integer div 4 * 4
-		for (count=0;count<4;count++) {
+		// THIS LOOKS ALL WRONG.  IT PROBABLY NEVER WORKED AND HAS NEVER BEEN USED
+		matrix1Cell = resultCell & 3;	//result_cell mod 4
+		matrix2Cell = resultCell & 252; //result_cell integer div 4 * 4
+		for (count = 0;count < 4;count++) {
 			result[resultCell] += ((float*)matrix1)[matrix1Cell] * ((float*)matrix2)[matrix2Cell];
-			matrix1Cell+=4;
+			matrix1Cell += 4;
 			matrix2Cell++;
 		} //sum products of m2 * m1
 	}
-	
-	memcpy(matrix1, result, sizeof(float)*16); //copy result data into matrix_1
-}
+    // Copy the result into matrix1
+    memcpy(matrix1, result, sizeof(float)*16); //copy result data into matrix_1
+} */
 
 Blah_Matrix *Blah_Matrix_new()
 {	//constructs a new identity matrix
@@ -64,7 +67,7 @@ Blah_Matrix *Blah_Matrix_new()
 	{
 		Blah_Matrix_init(newMatrix); //initialise to identity matrix
 	}
-	
+
 	return newMatrix;
 }
 
@@ -95,7 +98,7 @@ void Blah_Matrix_setRotationQuat(Blah_Matrix *matrix, Blah_Quaternion *quat) {
 	float xx = x * x; float xy = x * y; float xz = x * z; float xw = x * w;
 	float yy = y * y; float yz = y * z; float yw = y * w;
 	float zz = z * z; float zw = z * w;
-	
+
 	Blah_Vector_set(&matrix->axisX, 1 - 2 * (yy+zz), 2 * (xy+zw), 2 * (xz-yw));
 	Blah_Vector_set(&matrix->axisY, 2 * (xy-zw), 1 - 2 * (xx+zz), 2 * (yz+xw));
 	Blah_Vector_set(&matrix->axisZ, 2 * (xz+yw), 2 * (yz-xw), 1 - 2 * (xx+yy));
@@ -107,7 +110,7 @@ void Blah_Matrix_setTranslation(Blah_Matrix *matrix, float x, float y, float z) 
 
 void Blah_Matrix_sprintf(char *dest, Blah_Matrix *matrixSrc) {
 	float *matrix = (float*)matrixSrc;
-	
+
 	sprintf(dest, "%f:%f:%f:%f\n%f:%f:%f:%f\n%f:%f:%f:%f\n%f:%f:%f:%f\n",
 		matrix[0],matrix[4],matrix[8],matrix[12],
 		matrix[1],matrix[5],matrix[9],matrix[13],

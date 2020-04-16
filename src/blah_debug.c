@@ -10,6 +10,7 @@
 #include "blah_list.h"
 #include "blah_util.h"
 #include "blah_file.h"
+#include "blah_macros.h"
 
 /* Static Globals - Private to blah_debug.c */
 static Blah_List logList = {
@@ -26,7 +27,7 @@ extern void blah_message_writeErrorToFileVA(FILE* file, int errorCode, const cha
 static FILE* Blah_Debug_Log_createFile(char* logName)
 {
 	char tempFileName[BLAH_DEBUG_LOG_NAME_LENGTH + 4]; //Add 4 chars for ".log"
-    snprintf(tempFileName, sizeof(tempFileName) / sizeof(char), "%s.log", logName);
+    snprintf(tempFileName, blah_countof(tempFileName), "%s.log", logName);
     FILE* newFile = fopen(tempFileName, BLAH_FILE_MODE_OVERWRITE);
     // TODO - Exit here if log file could not be created
 	if (!newFile) { fprintf(stderr, "Create log file failed\n"); }

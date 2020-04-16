@@ -8,6 +8,7 @@
 #include "blah_message.h"
 #include "blah_time.h"
 #include "blah_error.h"
+#include "blah_macros.h"
 
 #define ERROR_CODE_MAX_LENGTH 20 // Large enough to display unsigned 64bit integers
 
@@ -19,7 +20,7 @@ static void blah_message_writeTimeStampToFile(FILE* file)
     blah_time currentUTC;
     blah_time_getCurrentUTC(&currentUTC);
     char timeString[50];
-    Blah_Time_toLocalTimeString(&currentUTC, timeString, sizeof(timeString) / sizeof(char)); // Convert to local time and format as time only
+    Blah_Time_toLocalTimeString(&currentUTC, timeString, blah_countof(timeString)); // Convert to local time and format as time only
     // Print the time string, followed by formatted message
     fprintf(file, "%s ", timeString);
 }
@@ -45,7 +46,7 @@ void blah_message_writeErrorToFileVA(FILE* file, int errorCode, const char* mess
     blah_message_writeTimeStampToFile(file);
     // Write the error code to the file stream
     char errorCodeString[ERROR_CODE_MAX_LENGTH];
-    if (errorCode == 0 || snprintf(errorCodeString, sizeof(errorCodeString), "%d", errorCode) >= ERROR_CODE_MAX_LENGTH) {
+    if (errorCode == 0 || snprintf(errorCodeString, blah_countof(errorCodeString), "%d", errorCode) >= ERROR_CODE_MAX_LENGTH) {
         strcpy(errorCodeString, "Not specified"); // error code is too large to display (greater than 64 bits)
         errorCode = 0; // Ignore the error code supplied
     }

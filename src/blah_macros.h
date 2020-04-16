@@ -4,13 +4,8 @@
 
 #include "blah_types.h"
 
-/* #define BLAH_CALL(FUNC,ARG) ((void(*)(void*))FUNC)(ARG)
-#define BLAH_CALL_RETURN_BOOL(FUNC,ARG) ((bool(*)(void*))FUNC)(ARG)
-#define BLAH_CALL_2(FUNC,ARG1,ARG2) ((void(*)(void*,void*))FUNC)(ARG1,ARG2)
-#define BLAH_CALL_BOOL(FUNC,ARG) ((void(*)(bool))FUNC)(ARG)
-#define BLAH_CALL_2_RETURN_BOOL(FUNC,ARG1,ARG2) ((bool(*)(void*,void*))FUNC)(ARG1,ARG2)
-
-#define BLAH_INT_CALL_VOID_VOID(FUNC,ARG1,ARG2) ((int(*)(void*,void*))FUNC)(ARG1,ARG2)
-*/
+// Use this macro to determine the number of elements in a static array
+// DO NOT USE WITH POINTER VALUES!
+#define blah_countof(array) ((sizeof(array)/sizeof(0[array])) / ((size_t)(!(sizeof(array) % sizeof(0[array])))))
 
 #endif
