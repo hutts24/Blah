@@ -48,16 +48,13 @@ static bool Blah_Image_Targa_loadMapped(Blah_Image* newImage, FILE *fileStream, 
 	Blah_Image_init(newImage, imageName, header->colourMapEntrySize, header->width,
 		header->height,	mapEntryByteSize == 3 ? BLAH_PIXEL_FORMAT_BGR : BLAH_PIXEL_FORMAT_BGRA);
 
-	void* colourMap = (void*)malloc(colourMapSize); // Allocate Temporary pointer to store colour map data
+	uint8_t colourMap[colourMapSize]; // Allocate Temporary pointer to store colour map data
 	if (fread(colourMap, colourMapSize, 1, fileStream) < 1) { // Read colour map from file into buffer
         blah_error_raise(errno, "Failed to read colour map from targa image '%s'", imageName);
         return false;
 	}
 
-	char test[numPixels];
-
-	//Allocate index buffer
-	void* indexBuffer = (void*)malloc(numPixels * pixelByteSize); // Temporary pointer to store pixel indices
+	uint8_t indexBuffer[numPixels * pixelByteSize]; // Allocate temporary buffer to store pixel indices
 	if (fread(indexBuffer, pixelByteSize, numPixels, fileStream) < numPixels) { // Read pixel map indexes into buffer
         blah_error_raise(errno, "Failed to read pixel indices from targa image '%s'", imageName);
         return false;
@@ -78,9 +75,6 @@ static bool Blah_Image_Targa_loadMapped(Blah_Image* newImage, FILE *fileStream, 
 		tempRasterPointer += mapEntryByteSize; //Advance raster data pointer
 	}
 
-	free(colourMap);	//temporary colour map no longer needed
-	free(indexBuffer);	//free index buffer
-
 	return true;	//Return complete raw image data
 }
 
@@ -96,14 +90,14 @@ static bool Blah_Image_Targa_loadRLEMapped(Blah_Image* newImage, FILE *fileStrea
 	Blah_Image_init(newImage, imageName, header->colourMapEntrySize, header->width,
 		header->height,	mapEntryByteSize == 3 ? BLAH_PIXEL_FORMAT_BGR : BLAH_PIXEL_FORMAT_BGRA);
 
-	void* colourMap = (void*)malloc(colourMapSize); // Allocate temp storage for colour map
+    uint8_t colourMap[colourMapSize]; // Allocate temp storage for colour map
 	if (fread(colourMap, colourMapSize, 1, fileStream) < 1) { // Read colour map from file into buffer
         blah_error_raise(errno, "Failed dot read colour map from targa image '%s'", imageName);
         return false;
 	}
 
    	// Construct raw image from colour map indices
-	void* indexBuffer = (void*)malloc(128 * pixelByteSize); // Allocate index buffer for largest possible run of indices
+	uint8_t indexBuffer[128 * pixelByteSize]; // Allocate index buffer for largest possible run of indices
 	void* tempRasterPointer = newImage->pixelData; // temp_raster pointer will be used to navigate raster buffer
 	long remainingPixels = numPixels; // counts down constructed pixels till complete (0) left
 	while (remainingPixels > 0) {
@@ -138,9 +132,6 @@ static bool Blah_Image_Targa_loadRLEMapped(Blah_Image* newImage, FILE *fileStrea
 			}
 		}
 	}
-
-	free(colourMap);	//temporary colour map no longer needed
-	free(indexBuffer);	//free index buffer
 
 	return true;	//Return complete raw image data
 }

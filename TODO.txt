@@ -1,5 +1,7 @@
 TODO LIST for Blah.
 
+- Hardware acceleration is broken.  Use it!
+
 - Use static temporary arrays and other objects where possible instead of dynamically allocating them.
 
 - Add new malloc function to do runtime checking for memory allocation failure and exit with error.
