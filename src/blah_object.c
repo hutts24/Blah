@@ -103,8 +103,14 @@ Blah_Object *Blah_Object_fromModel(Blah_Model *model) {
 
 			tempVerticesArray[vertexCount] = NULL; //Add terminating NULL pointer
 			mappingIndices[vertexCount] = NULL; //terminate array of mapping coordinates
+			blah_primitive_type primType;
+			switch (vertexCount) {
+                case 3: primType = BLAH_PRIMITIVE_TRIANGLE; break;
+                case 4: primType = BLAH_PRIMITIVE_QUADRILATERAL; break;
+                default: primType = BLAH_PRIMITIVE_POLYGON; break;
+            }
+			Blah_Primitive* newPrim = Blah_Primitive_new(primType, tempVerticesArray, vertexCount);
 
-			Blah_Primitive* newPrim = Blah_Primitive_new(vertexCount == 3 ? BLAH_PRIMITIVE_TRIANGLE : BLAH_PRIMITIVE_POLYGON, tempVerticesArray, vertexCount);
 
 			//Set material property for new Primitive
 			Blah_Primitive_setMaterial(newPrim, tempMaterial);

@@ -183,11 +183,13 @@ void blah_draw_solidSphere(float radius, int slices, int stacks, Blah_Material *
 
 void blah_draw_solidCone(float base, float height, int slices, int stacks, Blah_Material *material);
 
-void blah_draw_triangle(Blah_Vertex *points[],  Blah_Texture_Map *textureMap, Blah_Material *material);
-	//Draws a trianlge with vertices specified by points[]
+// Draws a trianlge with vertices specified by points[]
+void blah_draw_triangle(Blah_Vertex *points[], Blah_Texture_Map *textureMap, Blah_Material *material);
 
-void blah_draw_triangleStrip(Blah_Vertex *points[],  Blah_Texture_Map *textureMap, Blah_Material *material);
-	//Draws a trianlge strip with vertices specified by points[]
+void blah_draw_quadrilateral(Blah_Vertex* points[], Blah_Texture_Map* textureMap, Blah_Material* material);
+
+// Draws a trianlge strip with vertices specified by points[]
+void blah_draw_triangleStrip(Blah_Vertex *points[], Blah_Texture_Map *textureMap, Blah_Material *material);
 
 void blah_draw_wireCube(float side_length,  Blah_Material *material);
 	//Draws a wire cube with sides of given length

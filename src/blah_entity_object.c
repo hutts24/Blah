@@ -65,10 +65,11 @@ void Blah_Entity_Object_draw(Blah_Entity_Object *entityObject)
 		blah_draw_pushMatrix();
 		blah_draw_multMatrix(&entityObject->objectMatrix);
 		//If the entity object defines a special draw function, use it
-		if (entityObject->drawFunction)
+		if (entityObject->drawFunction) {
 			entityObject->drawFunction(entityObject);
-		else //Just use the standard object draw function
+		} else { //Just use the standard object draw function
 			Blah_Object_draw(entityObject->object);
+		}
 		blah_draw_popMatrix();
 	}
 }

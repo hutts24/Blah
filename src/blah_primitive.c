@@ -43,9 +43,9 @@ Blah_Primitive *Blah_Primitive_new(blah_primitive_type newType, Blah_Vertex* ver
 	return newPrim;
 }
 
-void Blah_Primitive_draw(Blah_Primitive *prim) { //Draws a primitive using the current matrix
 
-	if (prim->sequence) {
+void Blah_Primitive_draw(Blah_Primitive *prim) { //Draws a primitive using the current matrix
+	if (prim->sequence != NULL) {
 		switch (prim->type) {
 			case BLAH_PRIMITIVE_POLYGON :
 				blah_draw_polygon(prim->sequence, prim->textureMap, prim->material);
@@ -59,6 +59,9 @@ void Blah_Primitive_draw(Blah_Primitive *prim) { //Draws a primitive using the c
 			case BLAH_PRIMITIVE_TRIANGLE :
 				blah_draw_triangle(prim->sequence, prim->textureMap, prim->material);
 				break;
+            case BLAH_PRIMITIVE_QUADRILATERAL :
+                blah_draw_quadrilateral(prim->sequence, prim->textureMap, prim->material);
+                break;
 			case BLAH_PRIMITIVE_TRIANLGE_STRIP :
 				blah_draw_triangleStrip(prim->sequence, prim->textureMap, prim->material);
 				break;

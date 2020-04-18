@@ -90,8 +90,10 @@ void blah_draw_gl_solidCone(float base, float height, int slices, int stacks, Bl
 
 void blah_draw_gl_solidSphere(float radius, int slices, int stacks, Blah_Material *material);
 
+// Draws a trianlge with points specified by points
 void blah_draw_gl_triangle(Blah_Vertex *points[], Blah_Texture_Map *textureMap, Blah_Material *material);
-	// Draws a trianlge with points specified by points
+
+void blah_draw_gl_quadrilateral(Blah_Vertex* points[], Blah_Texture_Map* textureMap, Blah_Material* material);
 
 void blah_draw_gl_triangleStrip(Blah_Vertex *points[], Blah_Texture_Map *textureMap, Blah_Material *material);
 	// Draws a trianlge strip with points specified by points

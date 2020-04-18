@@ -83,8 +83,7 @@ void blah_draw_main()
 {	//Main drawing routine.  Sets perspective and draws enitites/objects
 	blah_draw_pushMatrix(); //Save the current
 	blah_draw_updatePerspective();
-	if (blah_draw_currentScene) //If a current scene has been defined,
-		Blah_Scene_draw(blah_draw_currentScene); //draw it
+	if (blah_draw_currentScene != NULL) { Blah_Scene_draw(blah_draw_currentScene); } //If a current scene has been defined, draw it
 	blah_draw_popMatrix();	//Revert to previous drawing matrix
 }
 
@@ -283,9 +282,15 @@ void blah_draw_solidSphere(float radius, int slices, int stacks, Blah_Material *
 	blah_draw_gl_solidSphere(radius, slices, stacks, !material ? &blah_draw_defaultMaterial : material);
 }
 
+// Draws a trianlge with points specified by points
 void blah_draw_triangle(Blah_Vertex *points[], Blah_Texture_Map *textureMap, Blah_Material *material )
-{	//Draws a trianlge with points specified by points
+{
 	blah_draw_gl_triangle(points, textureMap, !material ? &blah_draw_defaultMaterial : material); //If material not specified, use default material
+}
+
+void blah_draw_quadrilateral(Blah_Vertex* points[], Blah_Texture_Map* textureMap, Blah_Material* material)
+{
+    blah_draw_gl_quadrilateral(points, textureMap, !material ? &blah_draw_defaultMaterial : material);
 }
 
 void blah_draw_triangleStrip(Blah_Vertex *points[], Blah_Texture_Map *textureMap, Blah_Material *material )

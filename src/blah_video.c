@@ -85,15 +85,13 @@ bool blah_video_init() {
 		Blah_Debug_Log_message(&blah_video_log, "blah_video_init() failed.  No API is selected.");
 	} else if (blah_video_settings.initialised) { //if video already initialised
 		Blah_Debug_Log_message(&blah_video_log, "blah_video_init() failed.  Video is already initialised.");
-	} else { //Call current API init
-		if (blah_video_currentAPI->initFunction(&blah_video_settings) ) {
-			//Sort video modes list
-			Blah_List_sort(&blah_video_modes, (blah_list_sort_func*)blah_video_modeCompare);
-			blah_video_settings.initialised = true;
-			Blah_Debug_Log_message(&blah_video_log, "blah_video_init() successful.");
-			return true;
-		}
-	}
+	} else if (blah_video_currentAPI->initFunction(&blah_video_settings) ) { // Call current API init
+        // Sort video modes list
+        Blah_List_sort(&blah_video_modes, (blah_list_sort_func*)blah_video_modeCompare);
+        blah_video_settings.initialised = true;
+        Blah_Debug_Log_message(&blah_video_log, "blah_video_init() successful.");
+        return true;
+    }
 	Blah_Debug_Log_disable(&blah_video_log);
 	return false;
 }

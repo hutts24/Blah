@@ -238,7 +238,7 @@ static void blah_draw_gl_primitive(Blah_Vertex *vertices[], GLenum mode, Blah_Te
 	int vertexIndex = 0;
 	Blah_Point *mapping;
 
-	if (material!=blah_draw_gl_currentMaterial) {
+	if (material != blah_draw_gl_currentMaterial) {
 		//If using a different material than previous, change opengl state
 		blah_draw_gl_currentMaterial = material;
 		glMaterialfv(GL_FRONT, GL_AMBIENT, (GLfloat*)&material->ambient);
@@ -408,9 +408,16 @@ void blah_draw_gl_solidSphere(float radius, int slices, int stacks, Blah_Materia
 	//glutSolidSphere((GLdouble)radius, slices, stacks);
 }
 
+// Draws a trianlge with points specified by points
 void blah_draw_gl_triangle(Blah_Vertex *points[], Blah_Texture_Map *textureMap, Blah_Material *material)
-{	//Draws a trianlge with points specified by points
+{
 	blah_draw_gl_primitive(points, GL_TRIANGLES, textureMap, material);
+}
+
+// Draws a quadrilateral with points specified by points
+void blah_draw_gl_quadrilateral(Blah_Vertex* points[], Blah_Texture_Map* textureMap, Blah_Material* material)
+{
+    blah_draw_gl_primitive(points, GL_QUADS, textureMap, material);
 }
 
 void blah_draw_gl_triangleStrip(Blah_Vertex *points[], Blah_Texture_Map *textureMap, Blah_Material *material)
