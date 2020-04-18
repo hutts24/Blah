@@ -15,18 +15,16 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-Wfatal-errors" />
+					<Add option="-pg" />
 					<Add option="-m32" />
 					<Add option="-g" />
 					<Add option="-DBUILD_DLL" />
 				</Compiler>
 				<Linker>
+					<Add option="-pg -lgmon" />
 					<Add option="-m32" />
 					<Add library="user32" />
 				</Linker>
-				<ExtraCommands>
-					<Add after="postbuild.bat" />
-					<Mode after="always" />
-				</ExtraCommands>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/Blah" prefix_auto="1" extension_auto="1" />
@@ -36,9 +34,10 @@
 				<Option createDefFile="1" />
 				<Option createStaticLib="1" />
 				<Compiler>
+					<Add option="-O2" />
 					<Add option="-Wall" />
 					<Add option="-DBUILD_DLL" />
-					<Add option="-O2" />
+					<Add option="-DNDEBUG" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />

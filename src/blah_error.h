@@ -17,7 +17,11 @@ typedef int blah_error;
 // This is the real function prototype, but it should not be called directly.
 // Instead, it should be called by the macro below 'blah_error_raise' which shadows it.
 noreturn extern void _blah_error_raise(int errorCode, const char* messageFormat, ...);
-#define blah_error_raise(errCode, msgFmt, ...) (_blah_error_raise)(errCode, msgFmt ".  File: %s, Line: %d.", ## __VA_ARGS__, __FILE__, __LINE__)
+#ifdef NDEBUG
+#define blah_error_raise(errCode, msgFmt, ...) (_blah_error_raise)(errCode, msgFmt, ## __VA_ARGS__)
+#else
+#define blah_error_raise(errCode, msgFmt, ...) (_blah_error_raise)(errCode, msgFmt ".  File: %s, Function: %s, Line: %d.", ## __VA_ARGS__, __FILE__, __func__, __LINE__)
+#endif
 #define _blah_error_raise(...) error_do_not_call_this_function_directly
 
 #endif // _BLAH_ERROR
