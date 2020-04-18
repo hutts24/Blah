@@ -11,12 +11,8 @@
 
 bool Blah_Primitive_init(Blah_Primitive *prim, blah_primitive_type newType, Blah_Vertex* vertexArray[], unsigned int vertexCount) {
 	bool bSuccess = true;
-	// int vertexCount = 0;
 	prim->type=newType;
-	if (vertexArray) {
-		/* while (vertexArray[vertexCount])
-			vertexCount++; */
-		//fprintf(stderr,"vertex count:%d\n",vertex_count);
+	if (vertexArray != NULL) {
 		Blah_Vertex **newSequence = (Blah_Vertex**)malloc(sizeof(Blah_Vertex*) * (vertexCount+1));
 		if (newSequence != NULL) {
 			memcpy(newSequence, vertexArray, sizeof(Blah_Vertex*) * (vertexCount));

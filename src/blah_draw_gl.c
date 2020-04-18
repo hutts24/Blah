@@ -16,6 +16,7 @@
 #include "blah_texture.h"
 #include "blah_video.h"
 #include "blah_debug.h"
+#include "blah_console.h"
 
 /* Externally Referenced Variables */
 
@@ -236,9 +237,6 @@ static void blah_draw_gl_primitive(Blah_Vertex *vertices[], GLenum mode, Blah_Te
 
 	int vertexIndex = 0;
 	Blah_Point *mapping;
-	const Blah_Texture *texture;
-
-	//fprintf(stderr,"Enter blah_draw_gl_primitive\n");
 
 	if (material!=blah_draw_gl_currentMaterial) {
 		//If using a different material than previous, change opengl state
@@ -251,13 +249,14 @@ static void blah_draw_gl_primitive(Blah_Vertex *vertices[], GLenum mode, Blah_Te
 	}
 
 	if (textureMap) { //If there is a texture supplied
-		texture = textureMap->texture;
+		const Blah_Texture* texture = textureMap->texture;
 		if (texture != blah_draw_gl_currentTexture) {
 			if (glIsTexture((GLuint)(texture->handle))) {
 				blah_draw_gl_currentTexture = texture;
 				glBindTexture(GL_TEXTURE_2D, (GLuint)(texture->handle));
-			} else
-				fprintf(stderr,"invalid texture id\n");
+			} else {
+				blah_console_message("invalid texture id '%x'", texture->handle);
+			}
 		}
 
 		glBegin(mode);  //Begin GL primitive
@@ -265,12 +264,9 @@ static void blah_draw_gl_primitive(Blah_Vertex *vertices[], GLenum mode, Blah_Te
 		mapping = textureMap->mapping;
 		//use mapping coordinates provided
 		while (vertices[vertexIndex]) {
-			//fprintf(stderr,"processing vertex index %d\n",vertex_index);
-			glTexCoord2fv((GLfloat*)&mapping[vertexIndex]);
+		glTexCoord2fv((GLfloat*)&mapping[vertexIndex]);
 			glVertex3fv((GLfloat*)&vertices[vertexIndex]->location);
-			//fprintf(stderr,"begin normal");
 			glNormal3fv((GLfloat*)&vertices[vertexIndex]->normal);
-			//fprintf(stderr, "using normal %f,%f,%f\n",vertices[vertex_index]->normal.x,
 			//	vertices[vertex_index]->normal.y,vertices[vertex_index]->normal.z);
 			vertexIndex++;  //For each vertex there is a corresponding texture coord
 		}
@@ -282,14 +278,11 @@ static void blah_draw_gl_primitive(Blah_Vertex *vertices[], GLenum mode, Blah_Te
 		glBegin(mode);  //Begin GL primitive
 
 		while (vertices[vertexIndex]) {
-			//fprintf(stderr,"processing vertex\n");
 			glVertex3fv((GLfloat*)&vertices[vertexIndex]->location);
-			//fprintf(stderr,"begin normal");
 			glNormal3fv((GLfloat*)&vertices[vertexIndex]->normal);
-			//fprintf(stderr, "using normal %f,%f,%f\n",vertices[vertex_index]->normal.x,
 			//	vertices[vertex_index]->normal.y,vertices[vertex_index]->normal.z);
 			vertexIndex++;
-		}	//Call glVertex3fv for all Blah_PointS in vertex_list
+		}	// Call glVertex3fv for all Blah_PointS in vertex_list
 
 		glEnd(); //End GL primitive
 	}
@@ -314,8 +307,9 @@ static void blah_draw_gl_primitive2d(Blah_Vertex *vertices[], GLenum mode, Blah_
 	glPopMatrix(); //restore model view matrix
 }
 
-void blah_draw_gl_printError()
-{	//Print information about current GL error to standard error out
+// Print information about current GL error to standard error out
+/* void blah_draw_gl_printError()
+{
 	fprintf(stderr,"GL ERROR code:%d\n",glGetError());
 	switch (glGetError()) {
 		case GL_NO_ERROR :
@@ -343,7 +337,7 @@ void blah_draw_gl_printError()
 			fprintf(stderr,"Table too large\n");
 			break;
 	}
-}
+} */
 
 void blah_draw_gl_pushMatrix()
 {	//Push OpenGL matrix and save video state

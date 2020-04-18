@@ -80,13 +80,14 @@ bool Blah_Font_Raster_init(Blah_Font_Raster *rasterFont, const char* fontName, c
 	return success;
 }
 
+// Creates a new font structure from source image using index char map
+// and given width and height of each character.  Width and height of source
+// image must be a discreet multiple of character width and height. Index char
+// map begins with first character at position 1.  0 is ignored.
+// Returns NULL on error.
 Blah_Font_Raster* Blah_Font_Raster_new(const char* fontName, const Blah_Image* source, unsigned int charMap[BLAH_FONT_NUM_CHARS], int charWidth, int charHeight)
 {
-    // Creates a new font structure from source image using index char map
-	// and given width and height of each character.  Width and height of source
-	// image must be a discreet multiple of character width and height. Index char
-	// map begins with first character at position 1.  0 is ignored.
-	// Returns NULL on error.
+
 
 	Blah_Font_Raster* newFont = (Blah_Font_Raster*)malloc(sizeof(Blah_Font_Raster)); // allocate extended structure and assign basic font properties
 	if (newFont != NULL && !Blah_Font_Raster_init(newFont, fontName, source, charMap, charWidth, charHeight))
@@ -99,27 +100,25 @@ Blah_Font_Raster* Blah_Font_Raster_new(const char* fontName, const Blah_Image* s
 	return newFont;
 }
 
+// Prints a single text character using the given font at supplied screen
+// coordinates, in 2D mode.  Text is not rendered in 3D mode.
 void Blah_Font_Raster_printChar2d(Blah_Font_Raster *font, char singleChar, int x, int y)
-{	//Prints a single text character using the given font at supplied screen
-	//coordinates, in 2D mode.  Text is not rendered in 3D mode.
+{
 	void *rasterPointer = font->charIndices[(unsigned char)singleChar];
-	//fprintf(stderr,"begin font_print_char\n");
-	if (rasterPointer)
+	if (rasterPointer) {
 		blah_draw_pixels2d(rasterPointer, font->fontBase.pixelFormat, font->fontBase.width, font->fontBase.height, x, y);
-	//fprintf(stderr,"end font_print_char\n");
+	}
 }
 
+// Prints a text string using the given font at supplied screen coordinates,
+// in 2D mode.  Text is not rendered in 3D mode.
 void Blah_Font_Raster_printString2d(Blah_Font_Raster *font, char *text, int x, int y)
-{	//Prints a text string using the given font at supplied screen coordinates,
-	//in 2D mode.  Text is not rendered in 3D mode.
-	char *charPointer = text;
+{
+	const char *charPointer = text;
 	char tempChar = *charPointer;  //get first character in string
 	int xPos = x;
 
-	//fprintf(stderr,"begin font_print_string\n");
-
 	while (tempChar) {  //loop until NULL char encountered
-		//fprintf(stderr,"printing character '%c'\n",temp_char);
 		if (tempChar == '\n') { //if current character is a new line,
 			xPos = x; y -= font->fontBase.height;
 		} else {
@@ -129,7 +128,6 @@ void Blah_Font_Raster_printString2d(Blah_Font_Raster *font, char *text, int x, i
 		charPointer++;
 		tempChar = *charPointer; //get next character in string
 	}
-	//fprintf(stderr,"end font_print_string\n");
 }
 
 void Blah_Font_Raster_printChar3d(Blah_Font_Raster *font, char singleChar, float x, float y, float z)

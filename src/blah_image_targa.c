@@ -68,7 +68,6 @@ static bool Blah_Image_Targa_loadMapped(Blah_Image* newImage, FILE *fileStream, 
 		unsigned int tempIndex = 0;
 		//Get next palette index from pixel index buffer and store in temp_index
 		memcpy(&tempIndex, tempIndexPointer, pixelByteSize);
-		//fprintf(stderr,"Pixel index:%d\n",temp_index);
 		tempIndexPointer += pixelByteSize;  //Advance pointer to next index
 		memcpy(tempRasterPointer, colourMap + ((tempIndex + header->colourMapOrigin) * mapEntryByteSize), mapEntryByteSize);
 		//Copy colour map entry data for pixel into raster data
@@ -255,7 +254,7 @@ static bool Blah_Image_Targa_load(Blah_Image* image, const char* imageName, FILE
             Blah_Image_Targa_loadRLERGB(image, fileStream, &header, imageName);
             break;
         default:
-            fprintf(stderr,"Unsupported file type\n");
+            blah_error_raise(0, "Could not load targa image file '%s' because its type is unsupported", imageName);
             break;
     }
 	return true;

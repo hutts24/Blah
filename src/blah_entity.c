@@ -17,6 +17,7 @@
 #include "blah_list.h"
 #include "blah_draw.h"
 #include "blah_util.h"
+#include "blah_error.h"
 
 /* Static Globals - Private to entity.c */
 
@@ -61,7 +62,6 @@ void blah_entity_main()
 
 void blah_entity_processAll()
 {
-	// fprintf(stderr, "blah_entity_process_all()\n");
 	Blah_List_callFunction(&blah_entity_list, (blah_list_element_func*)Blah_Entity_process);
 }
 
@@ -123,30 +123,22 @@ bool Blah_Entity_checkCollisionEntity(Blah_Entity *entity1, Blah_Entity *entity2
 // Standard destroy routine for entity
 void Blah_Entity_destroy(Blah_Entity *entity)
 {
-	fprintf(stderr, "Blah_Entity_destroy %p\n", (void*)entity);
-
 	// TODO - Only remove enity from the list if it was dynamically allocated
 	Blah_List_removeElement(&blah_entity_list, entity);  // Remove from list of entities
-
 
 	if (entity->destroyFunction) { // call custom destroy function if there is one defined
 		entity->destroyFunction(entity);
 	} else {
-		fprintf(stderr, "removed entity from main list\n");
 		Blah_Entity_disable(entity);
 		free(entity);
-		fprintf(stderr, "freed entity\n");
 	}
 }
 
 void Blah_Entity_disable(Blah_Entity *entity)
 {	//Disables entity.  Nullifies its existence.  Removes all objects and events associated with it.
 	Blah_List_destroyElements(&entity->objects);  //Destroy all objects composing entity
-	fprintf(stderr,"destroyed child objects\n");
 	Blah_List_destroyElements(&entity->events);  //Destroy any events in the queue for the entity
-	fprintf(stderr,"destroyed events\n");
 	if (entity->entityData) {//if there is an allocated memory block for entity data
-		fprintf(stderr,"free entity data\n");
 		free(entity->entityData);  //free it
 	}
 }
@@ -158,22 +150,14 @@ float Blah_Entity_distanceEntity(Blah_Entity *entity1, Blah_Entity *entity2)
 
 void Blah_Entity_draw(Blah_Entity *entity)
 {
-	//fprintf(stderr,"Blah_Entity_draw");
-
-	//fprintf(stderr,"Entity name is %s\n",entity->name);
-
 	if (entity->drawFunction) {
-		//fprintf(stderr,"custom draw func:%p\n",entity->draw_function);
-		entity->drawFunction(entity); //, entity->drawFunctionData); //Call custom draw function if it exists for entity
+		entity->drawFunction(entity); // Call custom draw function if it exists for entity
 	} else {
-		//fprintf(stderr,"standard draw func");
 		blah_draw_pushMatrix();
-		//Blah_Matrix_set_translation(&entity->current_matrix,&entity->location);
 		blah_draw_multMatrix(&entity->fakeMatrix);
 		Blah_List_callFunction(&entity->objects, (blah_list_element_func*)Blah_Entity_Object_draw); //call Object_draw for all entity objects
 		blah_draw_popMatrix();
 	}
-
 }
 
 void *Blah_Entity_getData(Blah_Entity *entity)
@@ -181,9 +165,9 @@ void *Blah_Entity_getData(Blah_Entity *entity)
 	return entity->entityData;
 }
 
+// Gets entity's location in 3D space in 3 coordinates
 void Blah_Entity_getLocation(Blah_Entity *entity,Blah_Point *p)
 {
-	//Gets entity's location in 3D space in 3 coordinates
 	Blah_Point_set(p,entity->location.x,entity->location.y,entity->location.z);
 }
 
@@ -192,9 +176,9 @@ int Blah_Entity_getType(Blah_Entity *entity)
 	return entity->type;
 }
 
+// Gets entity's velocity in 3 vector float values
 void Blah_Entity_getVelocity(Blah_Entity *entity, Blah_Vector *v)
 {
-	//Gets entity's velocity in 3 vector float values
 	Blah_Vector_set(v,entity->velocity.x,entity->velocity.y,entity->velocity.z);
 }
 
@@ -223,15 +207,15 @@ void Blah_Entity_init(Blah_Entity *newEntity, char *name, int type, size_t dataS
 	Blah_Quaternion_setIdentity(&newEntity->orientation);
 }
 
-Blah_Entity *Blah_Entity_new(char *name, int type, size_t dataSize)
+Blah_Entity *Blah_Entity_new(char* name, int type, size_t dataSize)
 {	//constructs a new plain entity without objects, positioned at origin
 	Blah_Entity *newEntity = (Blah_Entity*)malloc(sizeof(Blah_Entity));
 
 	if (newEntity) {
 		Blah_Entity_init(newEntity, name, type, dataSize);
-		Blah_List_appendElement(&blah_entity_list, newEntity);  //Add to list of entities
+		Blah_List_appendElement(&blah_entity_list, newEntity); // Add to list of entities
 	} else {
-		fprintf(stderr,"Blah_Entity_new - Failed to allocate memory for entity\n");  //FIXME - add proper log debugging
+		blah_error_raise(errno, "Failed to allocate memory for entity '%x'", name);
 	}
 	return newEntity;
 }
@@ -306,7 +290,6 @@ void Blah_Entity_setDestroyFunction(Blah_Entity* entity, blah_entity_destroy_fun
 
 void Blah_Entity_setDrawFunction(Blah_Entity* entity, blah_entity_draw_func* function) //, void *externData)
 {
-	//fprintf(stderr,"entity set draw func %p, data:%p\n",function,extern_data);
 	entity->drawFunction = function;
 	//entity->drawFunctionData = externData;
 }
@@ -324,14 +307,14 @@ void Blah_Entity_setVelocity(Blah_Entity *entity, float x, float y, float z)
 
 /* Entity Event Functions */
 
+// destroys an event structure
 void Blah_Entity_Event_destroy(Blah_Entity_Event *event)
-{	//destroys an event structure
-	//fprintf(stderr,"Blah_Entity_Event_destroy\n");
-	if (event->destroyFunction) { // If custom destroy function pointer exists,
-		event->destroyFunction(event); //, NULL); //Call it instead to destroy the event obj
+{
+	if (event->destroyFunction) {
+		event->destroyFunction(event);  // If custom destroy function pointer exists, Call it instead to destroy the event obj
 	} else {
 		if (event->eventData) { free(event->eventData); } // Free event data if allocated
-		free(event);	//free event
+		free(event); // free event
 	}
 }
 
@@ -365,6 +348,5 @@ static bool Blah_Entity_processEvent(Blah_Entity *entity,  Blah_Entity_Event *ev
 }
 
 void Blah_Entity_sendEvent(Blah_Entity *recipient, Blah_Entity_Event *event) {
-	//fprintf(stderr,"sending event to :%s\n",recipient->name);
 	Blah_List_appendElement(&recipient->events, event); //Add the new event to the entity's list
 }

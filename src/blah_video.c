@@ -106,12 +106,11 @@ void blah_video_main() { // Handles video buffer swapping and drawing
 	if (blah_video_currentMode->doubleBuffered) { blah_video_swapBuffers(); } // If double buffering enabled, swap buffers
 }
 
-void blah_video_exit() { //Exit video engine component
-	if (!blah_video_settings.initialised) { //if video not yet initialised
-		fprintf(stderr,"blah_video_exit() failed.  Video is not initialised.\n");
-	} else {
+// Exit video engine component if appropriate
+void blah_video_exit() {
+	if (blah_video_settings.initialised) {
 		Blah_Debug_Log_message(&blah_video_log, "blah_video_exit() called.");
-		blah_video_currentAPI->exitFunction(); //Call current API exit()
+		blah_video_currentAPI->exitFunction(); // Call current API exit()
 		blah_video_settings.initialised = false;
 		Blah_List_destroyElements(&blah_video_modes);
 		Blah_Debug_Log_disable(&blah_video_log);

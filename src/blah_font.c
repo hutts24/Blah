@@ -65,19 +65,17 @@ Blah_Font* Blah_Font_load(const char* filename)
 	return NULL;
 }
 
+// Creates a new font structure from source image using index char map
+// and given width and height of each character.  Width and height of source
+// image must be a discreet multiple of character width and height. Index char
+// map begins with first character at position 1.  0 is ignored.
+// Implictly adds to the internal font tree.  Returns NULL on error.
 Blah_Font* Blah_Font_new(blah_font_type type, const char *fontName, const Blah_Image* source, unsigned int charMap[BLAH_FONT_NUM_CHARS], int charWidth, int charHeight)
-{	//Creates a new font structure from source image using index char map
-	//and given width and height of each character.  Width and height of source
-	//image must be a discreet multiple of character width and height. Index char
-	//map begins with first character at position 1.  0 is ignored.
-	//Implictly adds to the internal font tree.  Returns NULL on error.
+{
 	Blah_Font *newFont = NULL;
 
 	if (!(source->width % charWidth) && !(source->height % charHeight)) {
 		//continue if source width and height divisible by char width and height
-
-		//fprintf(stderr,"font source image is %d x %d chars\n",chars_wide,chars_high);
-
 		switch (type) {
 			case BLAH_FONT_RASTER :
 				newFont = (Blah_Font*)Blah_Font_Raster_new(fontName, source, charMap, charWidth, charHeight);
@@ -116,34 +114,17 @@ void Blah_Font_printString2d(const Blah_Font* font, const char* text, int x, int
 	char tempChar = *charPointer;  // get first character in string
 	int xPos = x;
 
-	//fprintf(stderr,"begin font_print_string\n");
-
 	while (tempChar) {  //loop until NULL char encountered
-		//fprintf(stderr,"printing character '%c'\n",temp_char);
 		if (tempChar == '\n') { //if current character is a new line,
 			xPos = x;
 			y -= font->height;
 		} else {
 			Blah_Font_printChar2d(font, tempChar, xPos, y);
-
-			/* switch (font->type) {
-				case BLAH_FONT_RASTER :
-					Blah_Font_Raster_print_char_2d((Blah_Font_Raster*)font,
-						temp_char, x_pos, y);
-					break;
-				case BLAH_FONT_TEXTURE :
-					Blah_Font_Texture_print_char_2d((Blah_Font_Texture*)font,
-						temp_char, x_pos, y);
-					break;
-				default : break;
-			} */
-
 			xPos += font->width; //advance to position for next character
 		}
 		charPointer++;
 		tempChar = *charPointer; //get next character in string
 	}
-	//fprintf(stderr,"end font_print_string\n");
 }
 
 void Blah_Font_printChar3d(const Blah_Font* font, char singleChar, const Blah_Matrix* matrix)

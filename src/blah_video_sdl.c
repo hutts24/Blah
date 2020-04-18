@@ -108,7 +108,7 @@ void blah_video_sdl_clearBuffer() {  //Clears current drawing buffer
 
 void blah_video_sdl_setDoubleBuffered(bool flag) {
 	//Turns double buffering on/off depending on flag
-	fprintf(stderr, "setting double buffering:%d\n",flag);
+	Blah_Debug_Log_message(&blah_video_sdl_log, "Setting SDL video double buffering flag: %s", flag ? "true" : "false");
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, blah_video_currentMode->doubleBuffered);
 	//FIXME blah_video_sdl_set_mode();
 }

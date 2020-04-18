@@ -33,17 +33,14 @@ void blah_input_keyboard_glut_init () { //initialises GLUT keyboard input
 	int activeKeyIndex=0;
 	int glutActiveKeys[] = {27,BLAH_INPUT_KEY_ESCAPE, 'w',BLAH_INPUT_KEY_UP, ' ',BLAH_INPUT_KEY_SPACE, -1};
 
-	fprintf(stderr,"Checking if GLUT video inited\n");
 	//GLUT Video is required for GLUT keyboard input.  (Window must catch events)
 	if (!blahVideoGLUTInitialised) //if SDL Video hasn't been initialised
 		blah_video_glut_init(); //Initialise SDL with video subsystem and we get keyboard also
 
-	fprintf(stderr,"GLUT:initing key mappings\n");
 	//Set all mappings to -1, meaning not mapped to engine key symbols
 	for (symCount=0; symCount < BLAH_INPUT_KEYBOARD_GLUT_NUM_KEYSYMS; symCount++)
 		blahInputKeyboardGLUTMap[symCount] = -1;
 
-	fprintf(stderr,"GLUT:setting up key mappings\n");
 	//Set up active mappings
 	while (glutActiveKeys[activeKeyIndex] !=-1) { //while end of mapping list hasn't been reached
 		blahInputKeyboardGLUTMap[glutActiveKeys[activeKeyIndex]] = glutActiveKeys[activeKeyIndex+1];

@@ -44,7 +44,6 @@ static void Blah_Tree_Element_recursiveDestroy(Blah_Tree_Element *element, blah_
 	//Recurse into left and right elements of parent element and
 	//frees memory occupied by element structure, and also destroys the data contained
 	//stored in element->data
-	//fprintf(stderr,"Recursive element destroy %p\n",element);
 	if (element->left) { Blah_Tree_Element_recursiveDestroy(element->left, destFunc); } // call for left if valid
 	if (element->right) { Blah_Tree_Element_recursiveDestroy(element->right, destFunc); } // call for right if valid
 	destFunc(element->data);  // Use destroy function

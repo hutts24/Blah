@@ -11,6 +11,8 @@
 #include "blah_util.h"
 #include "blah_file.h"
 #include "blah_macros.h"
+#include "blah_error.h"
+#include "blah_console.h"
 
 /* Static Globals - Private to blah_debug.c */
 static Blah_List logList = {
@@ -30,7 +32,7 @@ static FILE* Blah_Debug_Log_createFile(char* logName)
     snprintf(tempFileName, blah_countof(tempFileName), "%s.log", logName);
     FILE* newFile = fopen(tempFileName, BLAH_FILE_MODE_OVERWRITE);
     // TODO - Exit here if log file could not be created
-	if (!newFile) { fprintf(stderr, "Create log file failed\n"); }
+	if (newFile == NULL) { blah_error_raise(errno, "Failed to create logfile '%s'", logName); }
 
 	return newFile;  //If file creation failed, NULL pointer will be returned
 }
@@ -86,7 +88,7 @@ void Blah_Debug_Log_init(Blah_Debug_Log *log, const char *logName)
 bool Blah_Debug_Log_message(Blah_Debug_Log* log, const char* messageFormat, ...)
 {
 	if (log->filePointer == NULL) { // If invalid file pointer, return false immediately
-        fprintf(stderr, "Failed to write to log: %s - FILE NOT OPEN\n", log->name);
+        blah_console_message("Failed to write to log: %s - FILE NOT OPEN", log->name);
 		return false;
     }
 
@@ -101,7 +103,7 @@ bool Blah_Debug_Log_message(Blah_Debug_Log* log, const char* messageFormat, ...)
 bool Blah_Debug_Log_error(Blah_Debug_Log* log, blah_error errorCode, const char* messageFormat, ...)
 {
 	if (log->filePointer == NULL) { // If invalid file pointer, return false immediately
-        fprintf(stderr, "Failed to write to log: %s - FILE NOT OPEN\n", log->name);
+        blah_console_message("Failed to write to log: %s - FILE NOT OPEN", log->name);
 		return false;
     }
 
@@ -118,11 +120,11 @@ Blah_Debug_Log *Blah_Debug_Log_new(const char *logName)
 {
 	Blah_Debug_Log *newLog = malloc(sizeof(Blah_Debug_Log));  //Allocate memory for new log structure;
 
-	if (newLog) { //If memory allocation ok
+	if (newLog != NULL) { //If memory allocation ok
 		Blah_Debug_Log_init(newLog, logName);
 		Blah_List_appendElement(&logList, newLog); //Register log in resource list
 	} else {
-		fprintf(stderr, "Memory allocation for new log failed\n");
+		blah_error_raise(errno, "Memory allocation for new log failed");
 	}
 
 	return newLog;

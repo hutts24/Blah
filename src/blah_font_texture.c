@@ -122,53 +122,24 @@ Blah_Font_Texture* Blah_Font_Texture_new(const char* fontName, const Blah_Image*
 	return newFont;
 }
 
+// Prints a single text character using the given font at supplied screen
+// coordinates, in 2D mode.  Text is rendered in 3D mode to appear as 2D.
 void Blah_Font_Texture_printChar2d(const Blah_Font_Texture* font, char singleChar, int x, int y)
-{	//Prints a single text character using the given font at supplied screen
-	//coordinates, in 2D mode.  Text is rendered in 3D mode to appear as 2D.
+{
 	Blah_Texture_Map *texMap = font->charMaps[(unsigned char)singleChar];
-	//Blah_Point points[4];
-	int coordLeft = x;	int coordRight = x + (font->fontBase.width - 1);
-	int coordBottom = y; int coordTop = y + (font->fontBase.height - 1);
-	Blah_Vertex vertices[4] = { {{coordLeft, coordTop, 0}, {0,0,1}},
-		{{coordRight, coordTop, 0}, {0,0,1}}, {{coordRight, coordBottom, 0}, {0,0,1}},
-		{{coordLeft, coordBottom, 0}, {0,0,1}} };
-	Blah_Vertex *vertexArray[5] = {&vertices[0], &vertices[1], &vertices[2], &vertices[3], NULL};
-	//Blah_Point *point_array[5] = {&points[0], &points[1], &points[2], &points[3], NULL};
+	if (texMap != NULL) {
+        int coordLeft = x;
+        int coordRight = x + (font->fontBase.width - 1);
+        int coordBottom = y; int coordTop = y + (font->fontBase.height - 1);
+        Blah_Vertex vertices[4] = { {{coordLeft, coordTop, 0}, {0,0,1}},
+            {{coordRight, coordTop, 0}, {0,0,1}}, {{coordRight, coordBottom, 0}, {0,0,1}},
+            {{coordLeft, coordBottom, 0}, {0,0,1}} };
+        Blah_Vertex *vertexArray[5] = {&vertices[0], &vertices[1], &vertices[2], &vertices[3], NULL};
 
-	Blah_Material mat;
-	//int count;
-
-	//fprintf(stderr,"begin text_print_char_2d\n");
-
-	Blah_Material_setColour(&mat, 1,1,1,1);
-	/* Blah_Material_set_ambient(&mat, 1, 1, 1, 1);
-	Blah_Material_set_diffuse(&mat, 1, 1, 1, 1);
-	Blah_Material_set_specular(&mat, 1,1,1,1);
-	Blah_Material_set_emission(&mat, 1, 1, 1, 1);
-	Blah_Material_set_shininess(&mat, 1); */
-	//Sets the shininess propertie of the material
-
-	if (texMap) {
-		/* coord_left = x;
-		coord_right = x + (font->font_base.width - 1);
-		coord_bottom = y;
-		coord_top = y + (font->font_base.height - 1);
-
-		points[0].x = points[3].x = coord_left;
-		points[1].x = points[2].x = coord_right;
-		points[0].y = points[1].y = coord_top;
-		points[2].y = points[3].y = coord_bottom;
-		points[0].z = points[1].z = points[2].z = points[3].z = 0;
-
-		for (count=0;count<4;count++)
-			fprintf(stderr,"Point %d - %f,%f,%f\n",count,points[count].x,
-				points[count].y, points[count].z);
-		*/
-
-		blah_draw_polygon2d(vertexArray,texMap,&mat);
-	}
-
-	//fprintf(stderr,"end font_print_char\n");
+        Blah_Material mat;
+        Blah_Material_setColour(&mat, 1,1,1,1);
+        blah_draw_polygon2d(vertexArray,texMap,&mat);
+    }
 }
 
 void Blah_Font_Texture_printString2d(const Blah_Font* font, const char* text, int x, int y)

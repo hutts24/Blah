@@ -23,7 +23,6 @@ void Blah_Overlay_Text_destroy(Blah_Overlay_Text *text) {
 
 void Blah_Overlay_Text_draw(Blah_Overlay_Text *text) {
 	//Draw text in 2D space within overlay region
-	//fprintf(stderr,"begin overlay_text_draw\n");
 	if (text->visible) {
 		//If the text defines a special draw function, use it
 		if (text->drawFunction)
@@ -34,7 +33,6 @@ void Blah_Overlay_Text_draw(Blah_Overlay_Text *text) {
 			//or add coordinate parameters Blah_Text_2D_draw(text->text);
 			Blah_Font_printString2d(text->fontStyle, text->stringBuffer, text->position.x, text->position.y);
 	}
-	//fprintf(stderr,"end overlay_text_draw\n");
 }
 
 void Blah_Overlay_Text_init(Blah_Overlay_Text* text, const char* name, unsigned int size, const Blah_Font* fontStyle) {

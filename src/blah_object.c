@@ -62,21 +62,18 @@ Blah_Object *Blah_Object_fromModel(Blah_Model *model) {
 			tempIndexElement = ((Blah_Model_Face*)tempFaceElement->data)->indices.first;
 			vertexCount = 0;
 
-			//FIXME - this sucks, need to allow for multiple textures
+			// FIXME - Need to allow for multiple textures
 			while (tempIndexElement) { //create temp_indices_array as an array of
 				vertexIndex = tempIndexElement->data - NULL;
 				currentVertex = tempVerticesPointerArray[vertexIndex];
 				tempVerticesArray[vertexCount] = currentVertex;
 				if (currentSurface->textures.first) { //do texture mapping_array
 					texMap = (Blah_Model_Texture_Map*)currentSurface->textures.first->data;
-					//fprintf(stderr,"texture name: %s\n",tex_map->texture->name);
 
 					//calculate texture origin (0,0)
 					textureOrigin.x = texMap->textureCenter.x - texMap->textureSize.x/2.0;
 					textureOrigin.y = texMap->textureCenter.y - texMap->textureSize.y/2.0;
 					textureOrigin.z = texMap->textureCenter.z - texMap->textureSize.z/2.0;
-					//fprintf(stderr,"using coordinates: %f,%f, %f\n",texture_origin.x,
-					//	texture_origin.y, texture_origin.z);
 
 					Blah_Point_deltaPoint(&textureOrigin, &currentVertex->location, &delta);
 
@@ -96,8 +93,9 @@ Blah_Object *Blah_Object_fromModel(Blah_Model *model) {
 					z=0;
 					Blah_Point_set(&mappingArray[vertexCount], x, y, z);
 					mappingIndices[vertexCount] = &mappingArray[vertexCount];
-				} else
+				} else {
 					texMap = NULL;
+				}
 
 				tempIndexElement = tempIndexElement->next;
 				vertexCount++;
@@ -259,14 +257,12 @@ void Blah_Object_updateBounds(Blah_Object* object) {
 
 			while (vertexList[vertexIndex]) {
 				tempRadius = Blah_Point_distancePoint(&origin, &vertexList[vertexIndex]->location);
-				if (tempRadius > maxRadius)
-					maxRadius = tempRadius; //update max radius
+				if (tempRadius > maxRadius) { maxRadius = tempRadius; } // update max radius
 				vertexIndex++;
 			}
 		}
 		primElement = primElement->next;
 	}
-	//fprintf(stderr,"new radius calculated:%f\n",max_radius);
 	object->boundRadius = maxRadius;
 }
 

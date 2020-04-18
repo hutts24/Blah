@@ -63,13 +63,9 @@ void Blah_Scene_destroy(Blah_Scene *scene) {
 void Blah_Scene_disable(Blah_Scene *scene) {
 	//Destroy all entities and scene_objects belonging to the scene.
 	Blah_List_destroyElements(&scene->objects);
-	fprintf(stderr,"Destroyed scene objects\n");
 	Blah_List_destroyElements(&scene->entities);
-	fprintf(stderr,"Destroyed scene entities\n");
 	Blah_List_destroyElements(&scene->overlays);
-	fprintf(stderr,"Destroyed scene overlays\n");
 	Blah_List_destroyElements(&scene->lights);
-	fprintf(stderr,"Destroyed scene lights\n");
 }
 
 void Blah_Scene_draw(Blah_Scene *scene) {
