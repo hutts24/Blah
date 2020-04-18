@@ -120,13 +120,18 @@ bool Blah_Entity_checkCollisionEntity(Blah_Entity *entity1, Blah_Entity *entity2
 	return collision;
 }
 
+// Standard destroy routine for entity
 void Blah_Entity_destroy(Blah_Entity *entity)
-{	//standard destroy routine for entity
+{
 	fprintf(stderr, "Blah_Entity_destroy %p\n", (void*)entity);
-	if (entity->destroyFunction) {//call custom destroy function if there is one defined
-		entity->destroyFunction(entity); //, entity->destroyFunctionData);
+
+	// TODO - Only remove enity from the list if it was dynamically allocated
+	Blah_List_removeElement(&blah_entity_list, entity);  // Remove from list of entities
+
+
+	if (entity->destroyFunction) { // call custom destroy function if there is one defined
+		entity->destroyFunction(entity);
 	} else {
-		Blah_List_removeElement(&blah_entity_list, entity);  //Remove from list of entities
 		fprintf(stderr, "removed entity from main list\n");
 		Blah_Entity_disable(entity);
 		free(entity);
@@ -322,11 +327,10 @@ void Blah_Entity_setVelocity(Blah_Entity *entity, float x, float y, float z)
 void Blah_Entity_Event_destroy(Blah_Entity_Event *event)
 {	//destroys an event structure
 	//fprintf(stderr,"Blah_Entity_Event_destroy\n");
-	if (event->destroyFunction) //If custom destroy function pointer exists,
+	if (event->destroyFunction) { // If custom destroy function pointer exists,
 		event->destroyFunction(event); //, NULL); //Call it instead to destroy the event obj
-	else {
-		if (event->eventData)
-			free(event->eventData); //free event data if allocated
+	} else {
+		if (event->eventData) { free(event->eventData); } // Free event data if allocated
 		free(event);	//free event
 	}
 }

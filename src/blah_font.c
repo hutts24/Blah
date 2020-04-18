@@ -23,9 +23,12 @@ Blah_Tree blah_font_tree = {"font tree", NULL, (blah_tree_element_dest_func*)Bla
 
 /* Element Function Definitions */
 
+// Frees any allocated memory occupied by the font structure and destroys it
+// Removes font from internal font tree
 void Blah_Font_destroy(Blah_Font *font)
-{	//Frees any allocated memory occupied by the font structure and destroys it
-	//Removes font from internal font tree
+{
+	Blah_Tree_removeElement(&blah_font_tree, font->name);
+
 	switch (font->type) {
 		case BLAH_FONT_RASTER :
 			Blah_Font_Raster_destroy((Blah_Font_Raster*)font);
@@ -37,8 +40,6 @@ void Blah_Font_destroy(Blah_Font *font)
 		    free(font);
 		    break;
 	}
-
-	Blah_Tree_removeElement(&blah_font_tree, font->name);
 }
 
 void blah_font_destroyAll()
