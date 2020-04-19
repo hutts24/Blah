@@ -6,7 +6,7 @@ Why C and not C++?  When I started creating it, I wanted it to work with both Li
 It features:
 - Basic material properties
 - Simple textured polygons
-- Support for Lightwave .lwo file format
+- Support for Lightwave .lwo 3D model file format
 - Support for TARGA .tga image files
 - Collision detecting using bounding spheres
 - Customisable runtime behaviour of individual objects through the use of function pointers (akin to virtual functions in C++)
