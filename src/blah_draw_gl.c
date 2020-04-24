@@ -17,6 +17,7 @@
 #include "blah_video.h"
 #include "blah_debug.h"
 #include "blah_console.h"
+#include "blah_error.h"
 
 /* Externally Referenced Variables */
 
@@ -28,7 +29,7 @@ extern Blah_Video_Mode *blah_video_currentMode;
 
 //Since OpenGL is a state machine, we should avoid setting the same state repeatedly
 
-const Blah_Texture *blah_draw_gl_currentTexture;
+static const Blah_Texture* blah_draw_gl_currentTexture;
 	//Holds the pointer to the previously used texture
 
 Blah_Material *blah_draw_gl_currentMaterial;
@@ -126,7 +127,8 @@ void blah_draw_gl_init()
 
 	//Set initial states
 	Blah_Debug_Log_message(&blah_draw_gl_log, "Setting initial states\n");
-	blah_draw_gl_currentMaterial = NULL; blah_draw_gl_currentTexture = NULL;
+	blah_draw_gl_currentMaterial = NULL;
+	blah_draw_gl_currentTexture = NULL;
 	Blah_Matrix_setIdentity(&blah_draw_gl_drawportMatrix);
 
 	Blah_Debug_Log_message(&blah_draw_gl_log, "Exiting blah_draw_gl_init\n");
@@ -233,13 +235,12 @@ void blah_draw_gl_popMatrix()
 	glPopMatrix();
 }
 
-static void blah_draw_gl_primitive(Blah_Vertex *vertices[], GLenum mode, Blah_Texture_Map *textureMap, Blah_Material *material) {
-
-	int vertexIndex = 0;
-	Blah_Point *mapping;
-
-	if (material != blah_draw_gl_currentMaterial) {
-		//If using a different material than previous, change opengl state
+// Set the current material properties of the GL state machine.  Parameter 'material' must not be NULL
+static void blah_draw_gl_setMaterial(Blah_Material* material)
+{
+    if (material == NULL) {
+        blah_error_raise(GL_INVALID_VALUE, "OpenGL Material cannot be set to NULL");
+    } else if (material != blah_draw_gl_currentMaterial) { // If using a different material than previous, change opengl state
 		blah_draw_gl_currentMaterial = material;
 		glMaterialfv(GL_FRONT, GL_AMBIENT, (GLfloat*)&material->ambient);
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, (GLfloat*)&material->diffuse);
@@ -247,46 +248,41 @@ static void blah_draw_gl_primitive(Blah_Vertex *vertices[], GLenum mode, Blah_Te
 		glMaterialfv(GL_FRONT, GL_EMISSION, (GLfloat*)&material->emission);
 		glMateriali(GL_FRONT, GL_SHININESS, (GLint)material->shininess);
 	}
+}
 
-	if (textureMap) { //If there is a texture supplied
-		const Blah_Texture* texture = textureMap->texture;
-		if (texture != blah_draw_gl_currentTexture) {
-			if (glIsTexture((GLuint)(texture->handle))) {
-				blah_draw_gl_currentTexture = texture;
-				glBindTexture(GL_TEXTURE_2D, (GLuint)(texture->handle));
-			} else {
-				blah_console_message("invalid texture id '%x'", texture->handle);
-			}
-		}
+// Set the current texture used by the OpenGL state to render primives etc.
+// This function may be called with 'texture' set to a NULL pointer, which will disable the use of textures for the current state.
+static void blah_draw_gl_setTexture(const Blah_Texture* texture)
+{
+    if (texture != blah_draw_gl_currentTexture) { // Only update OpenGL state if current texture has changed
+        if (texture == NULL) {
+            glBindTexture(GL_TEXTURE_2D, 0); // Bind to default texture (should be none)
+            blah_draw_gl_currentTexture = NULL;
+        } else if (glIsTexture((GLuint)(texture->handle))) { // Bind to valid texture
+            blah_draw_gl_currentTexture = texture;
+            glBindTexture(GL_TEXTURE_2D, (GLuint)(texture->handle));
+        } else {
+            blah_error_raise(GL_INVALID_VALUE, "OpenGL texture id '%x' is invalid", texture->handle);
+        }
+    }
+}
 
-		glBegin(mode);  //Begin GL primitive
+// Plot the given primitive into the OpenGL 3D space using specified texture and material
+static void blah_draw_gl_primitive(Blah_Vertex *vertices[], GLenum mode, Blah_Texture_Map *textureMap, Blah_Material *material) {
+	blah_draw_gl_setMaterial(material);
+    blah_draw_gl_setTexture(textureMap != NULL ? textureMap->texture : NULL);
 
-		mapping = textureMap->mapping;
-		//use mapping coordinates provided
-		while (vertices[vertexIndex]) {
-		glTexCoord2fv((GLfloat*)&mapping[vertexIndex]);
-			glVertex3fv((GLfloat*)&vertices[vertexIndex]->location);
-			glNormal3fv((GLfloat*)&vertices[vertexIndex]->normal);
-			//	vertices[vertex_index]->normal.y,vertices[vertex_index]->normal.z);
-			vertexIndex++;  //For each vertex there is a corresponding texture coord
-		}
-		glEnd(); //End GL primitive
+    const Blah_Point* mapping = textureMap != NULL ? textureMap->mapping : NULL;
+	int vertexIndex = 0;
 
-	} else { //Draw primitive without texture
-		glBindTexture(GL_TEXTURE_2D, 0);  //Bind to default texture (should be none)
-		blah_draw_gl_currentTexture = NULL; //mark current texture as being none
-		glBegin(mode);  //Begin GL primitive
-
-		while (vertices[vertexIndex]) {
-			glVertex3fv((GLfloat*)&vertices[vertexIndex]->location);
-			glNormal3fv((GLfloat*)&vertices[vertexIndex]->normal);
-			//	vertices[vertex_index]->normal.y,vertices[vertex_index]->normal.z);
-			vertexIndex++;
-		}	// Call glVertex3fv for all Blah_PointS in vertex_list
-
-		glEnd(); //End GL primitive
-	}
-
+	glBegin(mode);  //Begin GL primitive
+	while (vertices[vertexIndex]) {
+        if (mapping != NULL) { glTexCoord2fv((GLfloat*)&mapping[vertexIndex]); }
+        glVertex3fv((GLfloat*)&vertices[vertexIndex]->location);
+        glNormal3fv((GLfloat*)&vertices[vertexIndex]->normal);
+        vertexIndex++; // For each vertex there is a corresponding texture coord
+    }
+	glEnd(); //End GL primitive
 }
 
 static void blah_draw_gl_primitive2d(Blah_Vertex *vertices[], GLenum mode, Blah_Texture_Map *textureMap, Blah_Material *material) {

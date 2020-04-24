@@ -1,6 +1,8 @@
 TODO LIST for Blah.
 
-- Hardware acceleration is broken.  Use it!
+- OpenGL subsytem needs to be optimised for modern drivers, drawing masses of trianlges together, use VAOs or VBOs, eliminate unnecessary calls to glBegin() and glEnd().
+
+- Enable OpenGL debugging and add error handler callback function.
 
 - Use static temporary arrays and other objects where possible instead of dynamically allocating them.
 
